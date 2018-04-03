@@ -1,0 +1,88 @@
+// @PARAM: -verbose -regression -DEPGRAPH -CPP -d ./tmp -cp ../../../../../../input/current/
+// @TEST noerror
+// @CUSTOM ./custom.sh
+
+import ffi.stdio;
+//import ffi.stdlib;
+//import ffi.math;
+
+//import stdlib.File;
+import stdlib.dynArray;
+import stdlib.Array;
+//import stdlib.StringBuilder;
+
+//members of a unique class are not unique by default??
+//elements of unique array are not unique??
+
+class Class
+{
+    public Array<int> data;
+    Class()
+    {
+        data=new Array<int>(new int[one_d{2}],0);
+    }
+    
+    
+    Class get(out Array<int> val)
+    {
+        val=data;
+        cancel this;
+    }
+
+    Array<int> get()
+    {
+        cancel data;
+    }
+}
+
+unique class uClass extends Class
+{
+    uClass()
+    {
+        super();
+    }
+    
+    dynArray<int> get()
+    {
+        cancel (dynArray<int>)data;
+    }
+    
+    uClass add(int i)
+    {
+        cancel this where data=((dynArray<int>)data).append(i);
+    }
+}
+
+public class volat
+{
+
+    static int main(int argc,inout unique String[one_d{-1}] argv)
+    {
+        uClass uc=new uClass();
+        
+        uc__x=uc.add(0).add(1);
+        
+        volatile Class c=uc__x;
+        
+        c.get().getData().\[i]{stdio.printf("[%d]=%d\n",i,c.get().getData()[i]);};
+        
+        uc__next=(uClass)c;
+        
+        uc__final=uc__next.add(2);
+        
+        c__final=uc__final;//also volatile
+        
+        c__final.get().getData().\[i]{stdio.printf("[%d]=%d\n",i,c__final.get().getData()[i]);}; 
+        
+        uc__del=(uClass)c__final;
+        
+        dynArray<int> da=uc__del.get();     
+        
+        Array<int> a=da;
+        
+        a.getData().\[i]{stdio.printf("[%d]=%d\n",i,a.getData()[i]);}; 
+    
+        finally 0;
+    }
+}
+

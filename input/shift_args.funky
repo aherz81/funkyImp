@@ -1,0 +1,21 @@
+interface unique DrawPrim //interface..but there can be only one!
+{
+	fun DrawPrim DrawX(\Z coord);
+	static DrawPrim GetDP(); //static is an attribute for the function
+}
+
+fun DrawPrim DoDraw(\Z coord,DrawPrim dp)
+{
+	return dp.DrawX(coord);
+}
+
+fun \0 main()
+{
+	DrawPrim dp=DrawPrim::GetDP();
+
+	dp'new=dp>>>DoDraw(1)>>>DoDraw(2); // a>>>b operator is left assoiciative and supplys the left hand side (a) as last argument(s) to the function on the right hand side
+	//so the above is equivalent to:
+
+	//dp'new=DoDraw(2,DoDraw(1,dp))
+	
+}

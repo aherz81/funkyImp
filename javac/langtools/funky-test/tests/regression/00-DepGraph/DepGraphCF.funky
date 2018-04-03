@@ -1,0 +1,59 @@
+// @PARAM: -verbose -regression -XD-skipgenerate
+// @TEST noerror
+
+public class DepGraphCF
+{
+    int CondTest2(int x,int y)
+    {
+        int z;
+        if(x>10)
+        {
+            z=5;
+        }
+        else
+        {
+            int i=g1(x);
+            i__2=g1(i);
+            int j=g1(y);
+            j__2=g1(j);
+            z=g2(i__2,j__2);
+        }
+
+        resume z;
+    }
+/*
+    int CondTest(int x,int y)
+    {
+        int b=0;
+        int c=1;
+        int z;
+        if(x>10)
+        {
+        		int u=b;
+            z=u;
+        }
+        else
+        {
+        		int u=y+1;
+            int v;
+            if(y>2)v=1;else v=c;
+            z=u+v;
+        }
+
+        int d=z;
+        resume d;
+    }
+*/
+
+    int g1(int x)
+    {
+        resume x+1;
+    }
+
+    int g2(int x, int y)
+    {
+        resume x+y;
+    }
+
+
+}    

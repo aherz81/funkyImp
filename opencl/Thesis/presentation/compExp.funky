@@ -1,0 +1,1 @@
+return ma.\(a,b,c) {ma[c,a,b] + g(a)};

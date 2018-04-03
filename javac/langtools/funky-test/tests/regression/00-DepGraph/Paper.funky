@@ -1,0 +1,198 @@
+// @PARAM: -verbose -regression -XD-skipgenerate
+// @TEST noerror
+
+singular Input //it__s an event object
+{
+    int currentkey;
+    Input(int key){currentkey=key;}
+    event KeyDown(int keycode){finally new Input(keycode);}
+    event KeyUp(int keycode){finally new Input(0);}
+    int GetKeyState(){finally currentkey;}
+}
+
+class Packet
+{
+    public int data,id;
+
+    Packet(int data,int id)
+    {
+        this.data=data;
+        this.id=id;
+    }
+}
+
+//domains fail in desugar (no output what so ever)
+//domain linear<q>(j) = { (j) | j < q }
+//domain range<a,b,c>(i):linear<a> = { linear<c>(i) | i <= a & i <= b }
+
+singular Network //buffered, so we don__t miss any packets
+{
+    //Packet[linear<100>] buffer; //currently fixed buffer size
+    int size;
+    int id;
+
+    Network()
+    {
+        size=0;
+        id=0;
+    }
+
+    event NewMessage(int code)
+    {
+        if(size<100)
+            finally this where {/*buffer[size]=new Packet(code,id);*/ size=size+1;id=id+1;};
+    }
+
+    event DiscardMessage(int lastMsgId)
+    {
+        //remove first message from buffer
+        finally this where {/*buffer=buffer.\range<0,99,100>(i) {buffer[i+1]};*/ size=size-1;}; //missing copying
+    }
+
+    Packet GetNewMessage(int lastMsgId) //currently only one message is resumeed...not quite realistic :)
+    {
+        /*
+        buffer.\linear(i)
+        {
+            if(buffer[i].id==lastMsgId)
+            {
+                if(size>i)
+                    resume buffer[i+1];
+                else
+                    resume new Packet(0,lastMsgId);
+            }
+        };
+        */
+
+        finally new Packet(0,lastMsgId);
+    }
+}
+
+native unique interface DrawHandle; //is linear!
+
+native class directdraw
+{
+    public static DrawHandle GetDrawHandle();
+    public static void Rect(inout DrawHandle d,int x0, int y0,int x1, int y1);
+}
+
+unique class Draw
+{
+    private DrawHandle& mHandle;
+
+    //private static unsafe DrawHandle GetDrawHandle(); //should be DrawHandle &??
+
+    Draw()
+    {
+        mHandle=directdraw.GetDrawHandle();
+    }
+
+    public Draw Rect(int x0, int y0,int x1, int y1)
+    {
+        directdraw.Rect([mHandle__next=mHandle],x0,y0,x1,y1);
+        finally this where mHandle=mHandle__next;
+    }
+    //more draw funs
+}
+
+interface OSKeyCallback
+{
+    void KeyPressed(int key,Object data);
+    void KeyReleased(int key,Object data);
+}
+
+native class OS
+{
+    static void install_key_callback(OSKeyCallback cb,Object data);
+}
+
+class KeyCallBackImpl implements OSKeyCallback
+{
+    public void KeyPressed(int key,Object data)
+    {
+//        ((Input)data).KeyDown(key);
+
+//        ((Input)data).TriggerKey()=key;
+    }
+    public void KeyReleased(int key,Object data)
+    {
+        //((Input)data).KeyUp(key);
+    }
+}
+
+class GameState
+{
+    public int phys,ai,anim,player;
+
+    static int ExpensiveUpdate(int old,int player)
+    {
+        resume old+player;
+    }
+
+    GameState(int phys,int ai,int anim,int player)
+    {
+        this.phys=phys;
+        this.ai=ai;
+        this.anim=anim;
+        this.player=player;
+    }
+}
+
+class Paper
+{
+    int ESCAPE=1;
+
+    GameState Update(GameState g,int key,Packet p)
+    {
+        int new_player=g.player+key;
+        int new_phys=GameState.ExpensiveUpdate(g.phys,new_player);
+        int new_ai=GameState.ExpensiveUpdate(g.ai,new_player);
+        int new_anim=GameState.ExpensiveUpdate(g.anim,new_player);
+
+        resume new GameState(new_phys,new_ai,new_anim,new_player);
+    }
+
+    Draw DrawState(GameState g, Draw d)
+    {
+        resume d.Rect(0,0,10,10).Rect(10,10,20,20);
+    }
+
+    int main_loop(GameState g,Input i,Network n,Draw d,int lastMsgId)
+    {
+        int key=i.GetKeyState(); //sample key state, might miss some key events
+
+        Packet packet=n.GetNewMessage(lastMsgId);
+
+        if(packet.data!=0)
+            n.DiscardMessage(packet.id); //if it__s a new packet, tell the evo that we have seen it
+
+        if(key==ESCAPE)
+        {
+            resume key;
+        }
+        else
+        {
+            g__input=Update(g,key,packet);
+            d__next=DrawState(g__input,d);
+            resume main_loop(g__input,i,n,d__next,packet.id);
+        }
+    }
+
+    public int main()
+    {
+        GameState g=new GameState(0,0,0,0);
+        Draw d=new Draw();
+        Input i=new Input(0);
+
+        KeyCallBackImpl cbi=new KeyCallBackImpl();
+        OS.install_key_callback(cbi,i);
+
+        Network n=new Network();
+
+//        NetCallBackImpl ncbi=new NetCallBackImpl();
+//        OS.install_net_callback(ncbi,ni);
+
+        resume main_loop(g,i,n,d,0);
+    }
+
+}    

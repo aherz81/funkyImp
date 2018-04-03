@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage[a4paper,text={160mm,255mm},centering,headsep=5mm,footskip=10mm]{geometry}
+\usepackage{nameref}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\usepackage{pgf}
+\usepackage{tikz}
+\pagestyle{fancy}
+
+
+
+%Infos zum Arbeitsblatt
+\lhead{Handout}
+\chead{ }
+\rhead{Begriffe}
+\lfoot{Alexander Pöppl}
+\rfoot{5. September 2014}
+\begin{document}
+
+\begin{itemize}
+	\item \textbf{GPGPU Computing} - General Purpose GPU Computing
+\end{itemize}
+
+\section{OpenCL}
+
+\begin{itemize}
+	\item Offener Standard zur Durchführung von parallelen Berechnungen auf heterogenen Systemen
+	\item Unterstützt GPUs, CPUs, Accelerators
+	\item Implementierungen u.a. von Intel, AMD, NVidia, Apple
+\end{itemize}
+
+\section{OpenCL - Ausführungsmodell}
+
+\begin{itemize}
+	\item \textbf{Platform:} ``Konventionelle'' Ausführungsumgebung. Kann Devices nutzen, um Berechnungen durchzuführen.
+	\item \textbf{Device:} Gerät, auf dem OpenCL-Code ausgeführt wird
+	\item \textbf{Kernel:} Die Funktion, die auf der GPU ausgeführt wird. Muss kompiliert werden.
+	\item \textbf{Memory:} Die Daten, die der Kernel nutzt. Müssen transferiert werden.
+	\item \textbf{Work-Item:} Einzelner Thread, ein Durchlauf des Kernels
+	\item \textbf{Work-Group:} Gruppe von Work-Items, die nebenläufig ausgeführt wird
+\end{itemize}
+
+\subsection{Einschränkungen}
+\begin{itemize}
+	\item Es werden immer nur Work-Items einer Work-Group gleichzeitig ausgeführt
+	\item Vor Beginn der Ausführung einer neuen Work-Group muss die vorhergehende abgeschlossen sein
+	\item $n_{Work-Items} \operatorname{mod} s_{Work-Group} = 0$	
+\end{itemize}
+
+\section{OpenCL - Speichermodell}
+Siehe Graphik. \\
+
+\begin{center}
+	\includegraphics[width=0.75\linewidth]{../../images/memory_hierarchy}
+\end{center}
+
+\section{funkyIMP}
+\paragraph{Domain Iterations} Intuition: \texttt{map} Operation auf mehrdimensionalen Arrays. \\
+
+\begin{gather*}
+		M = \begin{pmatrix}
+			1 & 2 & 3 \\
+			5 & 6 & 7  \\
+			42 & 7 & 10
+		\end{pmatrix} \\
+		M' = M.\backslash(a,b) \{M[a,b] * 2\} \\
+		\rightarrow M' = \begin{pmatrix}
+			2 & 4 & 6 \\
+			10 & 12 & 14  \\
+			84 & 14 & 20
+		\end{pmatrix}
+\end{gather*}
+
+\section{Statistik}
+Sei $V$ eine Sammlung von Werten $v \in \mathbb{R}$. Dann sind das arithmetische Mittel \emph{avg}, die Standardabweichung \emph{stdDev} und der Standardfehler \emph{stdErr} definiert als:
+\begin{gather}
+\label{eq:suite_avg}
+\operatorname{avg}(V) = \frac{\sum_{v \in V} v}{|V|}\\[2ex]
+\label{eq:suite_stdDev}
+\operatorname{stdDev}(V) = \sqrt{\frac{\sum_{v\in V} (v - \operatorname{avg}(V))^2}{|V|}}\\[2ex]
+\label{eq:suite_stdErr}
+\operatorname{stdErr}(V) = \frac{\operatorname{stdDev}(V)}{\sqrt{|V|}}
+\end{gather}
+
+\end{document}

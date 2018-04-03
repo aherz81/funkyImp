@@ -1,0 +1,17 @@
+Server Setup:
+
+there is a running mail server on the server and there is a cron job that rus three times each 
+hour . to access the server configration follow the belwo steps .
+
+open internet browser 
+go to : localhost:10000 and login
+to access the mail sever select from the menu "server" and then select "Postfix Mail Server "
+the mail server is only forwarding the emails using hotmail account.
+
+to change the account details click on "SMTP Authentication And Encryption"
+
+To modify the cron job select "system" from the upper menu then select "Scheduled Cron Jobs "
+click on the cron job to modify it and then save it 
+
+/home/waleeds/svn/nsvn/run
+

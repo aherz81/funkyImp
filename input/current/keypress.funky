@@ -1,0 +1,95 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces a couple of text files.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+//can use c-style pre processor: (must compile with -PP "")
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+native class stdio
+{
+    static FILE fopen(String f,String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt,int size,int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static void printf(String txt,Object .. j); //HACK!
+}
+
+native class unistd
+{
+	static mem(0) work(0) int usleep(long amount);
+}
+
+
+singular KeyHandler
+{
+	event setKey(char key)
+	{
+		getKey()=key;
+		finally this;
+	}
+
+	final char getKey();
+/*
+	{ //this code is executed after getKey() succeeded
+		keyProcessed()=0;
+	}
+*/
+}
+
+class TestKey
+{
+	static KeyHandler& handler=new KeyHandler(); //use static handler, as some callbacks do not allow to pass through values
+
+	static void callback(char key,int x, int y) //glut compatible keyboard callback
+	{
+		cancel handler.setKey(key); //currently not merged with resume path as keyProcessed() is blocking...
+	}
+
+	//MUST be careful with cancel!!
+	loop void test(char exit)
+	{
+		if(handler.getKey) //check if we can pick up a key (doesn__t block and returns whether getKey would currently not block)
+		{
+			char k=handler.getKey(); //pick up key (can still block if somebody else executed getKey())
+			if(k==exit)
+				cancel; //stop (tail) recursion
+		}
+		else
+		{
+			unistd.usleep(1000);
+		}
+
+		finally test(exit);
+	}
+}
+
+
+public class cur
+{
+    static int main()
+    {
+		TestKey tk=new TestKey();
+		void t1=tk.test(__x__);
+		void t2=tk.test(__y__);
+
+//#FORCE(t1,t2)
+
+		finally 0;
+    }
+}
+
+

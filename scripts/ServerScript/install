@@ -1,0 +1,123 @@
+
+#./install SVNPATH SVNUSER SVNPASS SVNlOCALF INSTALLPATH EMAIL REGTEST
+# svn project path
+SVNPATH=$1
+# svn Username
+SVNUSER=$2
+# svn Password
+SVNPASS=$3
+# Svn local folder 
+SVNlOCALF=$4
+# installation folder path required by the ./install.sh
+INSTALLPATH=$5
+# the email address where the list of errors will be send to 
+EMAIL=$6
+# the name of the regression test
+REGTEST=$7
+
+ERRORFILE=$(pwd)/error.Log
+CERRORFILE=$(pwd)/cerror.Log
+NOERRORFILE=$(pwd)/noerror.temp
+TEMPFILE=$(pwd)/temp.Log
+#EMAIL='herz@in.tum.de'
+INSTALLFILE=$(pwd)/$SVNlOCALF/'install_path.txt'
+BASHRCFILE=/home/$USER/.bashrc
+
+#################################################################
+#Remove the errors file and the temp file if they are exists 
+#################################################################
+
+if [ -s $ERRORFILE ]; then
+rm $ERRORFILE
+fi
+
+if [ -s $TEMPFILE ] ; then
+rm $TEMPFILE
+fi
+
+####################################################################
+# connect to SVN server and download the latest source code
+####################################################################
+svn co $SVNPATH $SVNlOCALF --username $SVNUSER --password $SVNPASS
+cd $SVNlOCALF
+
+
+####################################################################
+# Give the below files a execute permission
+####################################################################
+chmod a+x configure
+chmod a+x install.sh
+chmod a+x uninstall.sh
+
+####################################################################
+# Run the configure command
+####################################################################
+./configure 2>> $ERRORFILE
+ grep -i "error" $ERRORFILE > $TEMPFILE
+
+if [ -s $TEMPFILE ] ; then
+ echo "There is Some Configuration Errors For More Information Please see $ERRORFILE"
+else
+   ####################################################################
+   # if there is no errors from the configure command 
+   # run the install script and export LD_LIBRARY_PATH
+   ###################################################################
+
+  if [ -s  $INSTALLFILE ]; then 
+   ./uninstall.sh
+  fi;
+  
+  make clean 
+  make 
+  ./install.sh $INSTALLPATH 2>> $ERRORFILE 1>$TEMPFILE
+
+  if ! grep -i LD_LIBRARY_PATH $BASHRCFILE ; then 
+     echo "export FUNKY_LIB_PATH=$INSTALLPATH/funkyimp" >> $BASHRCFILE
+  fi;
+
+
+####################################################################
+# run the regression test 
+###################################################################
+
+cd javac/langtools/make
+echo " " >> $ERRORFILE 
+ant $REGTEST 2>> $ERRORFILE
+
+fi ;
+
+####################################################################
+# if the error file is not empty send it by email
+###################################################################
+grep -i "error" $ERRORFILE > $CERRORFILE
+
+if [ -s $CERRORFILE ] ; then
+  cdate=$(date '+%y-%m-%d %H:%M')
+  mail -s "Installation Errors - $cdate" $EMAIL < $CERRORFILE
+  echo "send email" > Count
+  echo "mail sent"
+else
+  
+  count=`wc -l Count`
+  if [ "$count" == "8 Count" ]; then
+     echo "no email" > Count
+     mail -s "Installation Errors - $cdate" $EMAIL < $NOERRORFILE 
+     
+  else
+    echo "no email" >> Count
+  fi;
+
+fi;
+
+
+ 
+
+
+
+
+
+
+
+
+
+

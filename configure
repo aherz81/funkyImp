@@ -1,0 +1,7 @@
+cd ./backend/boehm/bdwgc
+./config
+cd ../../../
+cd ./srclib/barvinok-0.35
+./config
+cd ../../
+

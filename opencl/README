@@ -1,0 +1,53 @@
+README
+created by Alexander Pöppl, July 2014
+
+This directory was created as a container for the tools and data generated during creation of the Master's Thesis of Alexander Pöppl. There are a number of subfolders.
+
+- AutomatedTest
+	Holds a set of tools and script used to compare the predictions made by
+	the runtime model with actual execution data. See the thesis for 
+	details.
+
+- BackupsCurFile
+	There is a collection of files that can be used as a sample compilation
+	unit that contains domains suitable to be compiled by the funkyIMP 
+	compiler.
+
+- Benchmarks
+	This folder contains all the measurements that were taken in the course
+	of the thesis. They may not necessarily reflect the most recent values.
+	Benchmarks holding values made with the most current installation of the
+	suite can be found in the subfolder "Final Measurements".
+
+- BenchmarkSuite
+	This folder contains the XCode/CMake project that implements the suite 
+	of benchmarks used to obtain the model.
+
+- Literature
+	This folder contains a collection of the Literature used in the thesis,
+	in PDF format.
+
+- Pasted Misc
+	This folder contains text dumps. Nothing to see here. Move along.
+
+- ResultStatisticsGenerator
+	This folder contains the NetBeans Project for the tool that evaluates
+	how precise the prediction is for the different memory sizes. More or
+	less deprecated.
+
+- SampleCodegen
+	This folder contains the NetBeans Project for the tool that generates
+	random domain iterations.
+
+- TestResultQualityCheck
+	This folder contains the NetBeans project for the tool that evaluates
+	how precise a prediction was for a certain benchmark.
+
+- Thesis
+	This folder holds the LaTeX source code of the thesis as well as the
+	pdf output and a Makefile to build it from source.
+
+- Utilities
+	This folder contains an Objective-C application that can be used to
+	parse the output of the compiler. Deprecated, and replaced by a shell
+	script. 

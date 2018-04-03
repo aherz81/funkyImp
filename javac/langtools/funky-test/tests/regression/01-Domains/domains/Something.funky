@@ -1,0 +1,14 @@
+package domains;
+
+public singular Something
+{
+    int state=0;
+    
+   	public static int exported = 10;
+
+    public event eSome(int i)
+    {
+        //return this where state = i;
+    }
+    
+}

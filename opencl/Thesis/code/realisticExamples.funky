@@ -1,0 +1,30 @@
+476.69772f * y
+(matrix[1 % HEIGHT, 1013 % WIDTH] - matrix[1 % HEIGHT, 1 % WIDTH]) + matrix[x % HEIGHT, 1003 % WIDTH]
+matrix[1 % HEIGHT, 705 % WIDTH] - (matrix[x,y] + matrix[x,y])
+83.511986f * matrix[226 % HEIGHT, 1 % WIDTH]
+matrix[1 % HEIGHT, 1 % WIDTH] * matrix[485 % HEIGHT, x % WIDTH]
+(matrix[1 % HEIGHT, y % WIDTH] - 306.78958f) - matrix[x,y]
+y + (matrix[283 % HEIGHT, 1 % WIDTH] * (matrix[x,y] + matrix[y % HEIGHT, 1003 % WIDTH]))
+matrix[1 % HEIGHT, 1 % WIDTH] - ((matrix[x,y] - matrix[x,y]) + matrix[1258 % HEIGHT, 366 % WIDTH])
+matrix[x,y] * matrix[x,y]
+223.77031f + matrix[1 % HEIGHT, x % WIDTH]
+matrix[x,y] * matrix[1 % HEIGHT, 130593752 % WIDTH]
+((693.6514f * y) + 832.9588f) + matrix[937 % HEIGHT, 1 % WIDTH]
+matrix[x,y] + ((matrix[461 % HEIGHT, 1 % WIDTH] + x) - 392.35892f)
+matrix[x,y] * matrix[x,y]
+((matrix[x % HEIGHT, 360 % WIDTH] + matrix[x,y]) * (y * x)) + matrix[1 % HEIGHT, 898 % WIDTH]
+matrix[536 % HEIGHT, 60023 % WIDTH] + 824.17957f
+729.0632f - (246.68416f - (y * matrix[x,y]))
+(matrix[141643328 % HEIGHT, 348 % WIDTH] * ((matrix[x,y] * y) - matrix[x,y])) + matrix[1 % HEIGHT, 1 % WIDTH]
+(106.30486f * (y * matrix[x % HEIGHT, 1025157568 % WIDTH])) * matrix[x,y]
+matrix[x % HEIGHT, 712 % WIDTH] - y
+matrix[x,y] - (matrix[y % HEIGHT, 486 % WIDTH] - ((matrix[x % HEIGHT, 225 % WIDTH] + matrix[942 % HEIGHT, 470 % WIDTH]) * matrix[x,y]))
+(matrix[x,y] + matrix[x,y]) * matrix[1 % HEIGHT, 1 % WIDTH]
+673.72705f * matrix[x % HEIGHT, 1 % WIDTH]
+(matrix[x,y] + (x - (x * matrix[x,y]))) + 913.85345f
+(matrix[x,y] * matrix[745 % HEIGHT, 1 % WIDTH]) - matrix[x,y]
+(707.8197f * y) + (matrix[x,y] - matrix[1 % HEIGHT, 1 % WIDTH])
+matrix[x,y] * matrix[x,y]
+matrix[y % HEIGHT, 1 % WIDTH] + 571.1834f
+y * matrix[1 % HEIGHT, y % WIDTH]
+(matrix[x,y] * (y * matrix[x,y])) * matrix[1 % HEIGHT, 1 % WIDTH]

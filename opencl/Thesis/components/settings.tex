@@ -1,0 +1,145 @@
+% Included by MAIN.TEX
+% Defines the settings for the CAMP report document
+
+\renewcommand{\sectfont}{\normalfont \bfseries}        % Schriftart der Kopfzeile
+
+% manipulate footer
+\usepackage{scrpage2}
+\pagestyle{scrheadings}
+\ifoot[\footertext]{\footertext} % \footertext set in INFO.TEX
+%\setkomafont{pagehead}{\normalfont\rmfamily}
+\setkomafont{pagenumber}{\normalfont\rmfamily}
+
+%% allow sophisticated control structures
+\usepackage{ifthen}
+
+% use Palatino as default font
+\usepackage{palatino}
+
+% enable special PostScript fonts
+\usepackage{pifont}
+
+%to use the subfigures
+\usepackage{subcaption}
+
+
+\usepackage{colortbl}
+
+% Double Spacing for Review.
+%\usepackage[doublespacing]{setspace}
+
+%% enable TUM symbols on title page
+\usepackage{styles/tumlogo}
+
+\usepackage{multirow}
+
+%% use colors
+\usepackage{color}
+
+%% make fancy math
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{textcomp}
+\usepackage{yhmath} % for the adots 
+
+
+%% create an index
+\usepackage{makeidx}
+
+% for the program environment
+\usepackage{float}
+
+%% load german babel package for german abstract
+%\usepackage[german,american]{babel}
+\usepackage[german,english]{babel}
+\selectlanguage{english}
+
+% use german characters as well
+\usepackage[utf8]{inputenc}       % allow utf8 characters
+
+% TikZ, PGF and such
+% UML diagrams
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{styles/pgf-umlcd}
+\usepackage{pgfplots, pgfplotstable}
+\pgfplotsset{compat=1.8}
+\usepgfplotslibrary{statistics}
+\usetikzlibrary{arrows,automata,shapes.geometric}
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+\usepackage{listings}
+
+%\usepackage{styles/shortoverview}
+%----------------------------------------------------
+%      Graphics and Hyperlinks
+%----------------------------------------------------
+
+%% check for pdfTeX
+\ifx\pdftexversion\undefined
+ %% use PostScript graphics
+ \usepackage[dvips]{graphicx}
+ \DeclareGraphicsExtensions{.eps,.epsi}
+ \graphicspath{{figures/}{figures/review}} 
+ %% allow rotations
+ \usepackage{rotating}
+ %% mark pages as draft copies
+ %\usepackage[english,all,light]{draftcopy}
+ %% use hypertex version of hyperref
+ \usepackage[hypertex,hyperindex=false,colorlinks=false]{hyperref}
+\else %% reduce output size \pdfcompresslevel=9
+ %% declare pdfinfo
+ %\pdfinfo { 
+ %  /Title (my title) 
+ %  /Creator (pdfLaTeX) 
+ %  /Author (my name) 
+ %  /Subject (my subject	) 
+ %  /Keywords (my keywords)
+ %}
+ %% use pdf or jpg graphics
+ %\usepackage[pdftex]{graphicx}
+ %\DeclareGraphicsExtensions{.jpg,.JPG,.png,.pdf,.eps}
+ %\graphicspath{{figures/}} 
+ 
+ %% Load float package, for enabling floating extensions
+ \usepackage{float}
+ 
+ %% allow rotations
+ \usepackage{rotating}
+ %% use pdftex version of hyperref
+ \usepackage[pdftex,colorlinks=true,linkcolor=blue,citecolor=blue,%
+ anchorcolor=blue,urlcolor=blue,bookmarks=true,%
+ bookmarksopen=true,bookmarksopenlevel=0,plainpages=false,%
+ bookmarksnumbered=true,hyperindex=false,pdfstartview=%
+ ]{hyperref}
+ \usepackage[nomain,acronym,xindy,toc]{glossaries}
+ \makeglossaries
+
+%\usepackage[pdftex,colorlinks=false,linkcolor=red,citecolor=red,%
+% anchorcolor=red,urlcolor=red,bookmarks=true,%
+% bookmarksopen=true,bookmarksopenlevel=0,plainpages=false%
+% bookmarksnumbered=true,hyperindex=false,pdfstartview=%
+% ]{hyperref}
+\fi
+
+
+
+
+%% Fancy chapters
+%\usepackage[Lenny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+%\usepackage[Bjarne‚]{fncychap}
+
+%\usepackage[avantgarde]{quotchap}
+
+% set the bibliography style
+%\bibliographystyle{styles/bauermaNum}
+%\bibliographystyle{alpha}
+\bibliographystyle{plain}

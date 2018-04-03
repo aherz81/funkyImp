@@ -1,0 +1,48 @@
+//class with generics
+
+class Parent
+{
+	\Z &mVal=NIL; //the & means it's an option, mVal is either a signed int (\Z) or NIL (like a pointer/reference)
+
+	fun \Z get()
+	{
+		if(mVal==Nil)
+			return 0;
+		else
+			return mVal;
+	}
+}
+
+class GenericClass<X,Y,T> extends Parent
+{
+    private:
+			T mData;
+
+    public:
+			GenericClass(T val) 
+			{
+					mData=val;
+			}
+
+      fun GenericClass<X,Y,T> create() 
+			{
+          return Matrix(X);
+			}
+/*
+      //ops are generic
+      com_bin_op Matrix<A,B,C>  * (Matrix<A,B,C> m,<C> v) //binary operator takes a marix and a scalar
+			{
+          return Matrix(Matrix<A,B,C>(m.mData*v)); //doesn't write test -> test is false
+			}
+*/
+		
+			fun T lengthSq()
+			{
+		      return mData;
+			}
+
+			fun T doit()
+			{
+		      return self.lengthSq(); //call a member function
+			}
+}

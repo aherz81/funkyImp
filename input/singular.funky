@@ -1,0 +1,32 @@
+//singular (like class/type, supports send event and trigger)
+
+singular MySingular //can be generic and can be derived from other objects!
+{
+    private:
+			\Z mData;
+
+    public:
+			MySingular(\Z val)
+			{
+					mData=val;
+			}
+
+			fun \Z lengthSq()
+			{
+		      return mData;
+			}
+
+			final \Z TriggerFun(out \Z val); //like a function but when called the calling function blocks until the TriggerFun is triggered
+
+			event eABC(\Z data1,\Z data2)
+			{
+				TriggerFun(data1)=data2; //trigger the TriggerFun (TriggerFun returns data2 via retval and data via first argument)
+			}
+
+			event eDoEvent(\Z data)
+			{
+				this->eABC(data,data); //send event to ourselfs (uses -> instead of . which would be used to call a member function)
+				return self where mData=data; //self is analog to the java self (this in C++)
+			}			
+		
+}

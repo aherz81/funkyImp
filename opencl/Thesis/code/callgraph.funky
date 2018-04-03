@@ -1,0 +1,35 @@
+static int[two_d{5,5}] kernel(int ma[two_d{5,5}]) {
+    cancel ma.\[r,c]{ma[c,r] * a(c)};
+}
+    
+static int a(int i) {
+    cancel b((int)f(i)*3) + f(2);
+}
+
+static int b(int i) {
+    int x = 5 * (7 + i);
+    x'doubl = 2*x;
+    cancel d(x'doubl);
+}
+
+static int d(int i) {
+    if (!(i < 0)) {
+        cancel f(i*2) - f(5);
+    } else if (i == 0) {
+        cancel 9;
+    } else {
+        cancel g(i*3)*f(3);
+    }
+}
+
+static int f(int i) {
+    cancel g(i*3);
+}
+
+static int g(int i) {
+    cancel h;
+}
+
+static int h(int x) {
+    cancel 42;
+}

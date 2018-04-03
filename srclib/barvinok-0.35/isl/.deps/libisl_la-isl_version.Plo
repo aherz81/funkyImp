@@ -1,0 +1,6 @@
+libisl_la-isl_version.lo: isl_version.c /usr/include/stdc-predef.h \
+ gitversion.h
+
+/usr/include/stdc-predef.h:
+
+gitversion.h:

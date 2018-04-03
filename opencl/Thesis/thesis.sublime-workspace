@@ -1,0 +1,625 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Op",
+				"OPERATION"
+			],
+			[
+				"st",
+				"stderr"
+			],
+			[
+				"en",
+				"enoughsamples"
+			],
+			[
+				"ru",
+				"runsample"
+			],
+			[
+				"cre",
+				"createsample"
+			],
+			[
+				"m",
+				"m"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"b",
+				"begin	\\begin{}…\\end{}"
+			],
+			[
+				"arr_",
+				"arr_work"
+			],
+			[
+				"fol",
+				"foldop"
+			],
+			[
+				"wo",
+				"work_item_id"
+			],
+			[
+				"plat",
+				"platform"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "chapters/Results.tex",
+			"settings":
+			{
+				"buffer_size": 11061,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "chapters/FutureWork.tex",
+			"settings":
+			{
+				"buffer_size": 15684,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "chapters/Conclusion.tex",
+			"settings":
+			{
+				"buffer_size": 1165,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "data/k4000/singleFloat.csv",
+			"settings":
+			{
+				"buffer_size": 9735,
+				"line_ending": "Unix",
+				"name": "singleFloat.csv"
+			}
+		},
+		{
+			"file": "data/hd4000/singleAccess.csv",
+			"settings":
+			{
+				"buffer_size": 20369,
+				"line_ending": "Unix",
+				"name": "singleAccess.csv"
+			}
+		},
+		{
+			"file": "chapters/RuntimeModel.tex",
+			"settings":
+			{
+				"buffer_size": 37824,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "bibliography/literature.bib",
+			"settings":
+			{
+				"buffer_size": 6263,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "chapters/BenchmarkSuite.tex",
+			"settings":
+			{
+				"buffer_size": 10511,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Packages/User/make_thesis.sublime-build",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"pac",
+				"Package Control: Install Package"
+			],
+			[
+				"open ter",
+				"Open in terminal"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"latexTo",
+				"LaTeXTools: Jump to PDF"
+			],
+			[
+				"late",
+				"LaTeXTools: View PDF"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"p",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/FunkyCompiler.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/Introduction.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/settings.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/Theory.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/appendix/Diagrams.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/info.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/acknowledgements.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/cpugpu.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/hd4000/wgSize.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/k4000/automatedTestRealisticDistance.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/automatedTestRealisticRatio.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/hd4000/singleFloat.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/text.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/testRun.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/appendix/Code.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/bibliography/literature.bib",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/automatedTestRatio.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/automatedTestDistance.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/realisticExamples.funky",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/appendix/Configurations.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/badTestResult.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/BenchmarkSuite.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/RuntimeModel.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/singleAccess.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/complexAccess.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/main.pdf",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/testRun.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/testTemplate.funky",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/FutureWork.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/opKernel.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/emptyKernel.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/multipleOps.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/Results.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/main.fls",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/complexAccess.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/multipleAccesses.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/memAccessKernel.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/multipleAccesses.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/multipleFloat.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/multipleInt.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/singleInt.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/singleFloat.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/wgSize.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/appendix/Examples.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/Conclusion.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/copyGPUData.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/emptyKernel.csv",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/wgKernel.cl",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/data/copyFromGPUData.csv",
+		"/Users/nax/Documents/Development/Rivent/cvs/gema/mega/development/batch/max-learned-matches/src/test/resources/common-types-001.xsd",
+		"/Users/nax/Desktop/automatedTest/generate.sh",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/callgraph.funky",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/commands.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/exampleDomain.cpp",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/exampleDomain.h",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/identifiers.funky",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/example.funky",
+		"/Users/nax/Documents/Development/Rivent/cvs/gema/mega/Management/30-Konzeption/310-Feinkonzept-Techn/XSD/ESB/Schema/MEGA/common-types.xsd",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/Examples.tex",
+		"/Users/nax/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/AppendixDiagrams.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/reverseList.sml",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/reverseArray.sml",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/simpleMatrix.c",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/arrayOfArraysMatrix.sml",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/funkyArray.funky",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/mapreduce.funky",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/outline.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/reverse_array.sml",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/BenchmarkResults.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/chapters/FunkyCompiler",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/code/reverse_list.sml",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/components/preface.tex",
+		"/Users/nax/Documents/Development/funkyimp/opencl/Thesis/main.tex",
+		"/Users/nax/Library/Application Support/Sublime Text 2/Packages/User/make_thesis.sublime-build",
+		"/Users/nax/Documents/Development/Rivent/ios/thrift/Makefile",
+		"/Users/nax/Documents/Development/Rivent/ios/thrift/interface.thrift",
+		"/Users/nax/Downloads/thrift-0.9.1/tutorial/README",
+		"/Users/nax/Documents/Development/Rivent/max-domain-classes/src/test/resources/metadata.xml",
+		"/Volumes/FRITZ.NAS/hosts",
+		"/Users/nax/Documents/Development/Rivent/cvs/mega/30-Konzeption/310-Feinkonzept-Techn/Entw%FCrfe/searchObject.xml"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"suite_value_distribution",
+			"then",
+			"work group",
+			",",
+			" ",
+			"Execution t",
+			"exection",
+			"\\_",
+			",",
+			"%",
+			"Execution times for ",
+			" ",
+			",",
+			"singleInt",
+			"multipleInt",
+			",",
+			"\\\\",
+			",",
+			"work grou",
+			" ",
+			",",
+			"		",
+			"								",
+			"fuji",
+			",",
+			"		",
+			"								",
+			"results",
+			"SearchType",
+			"lastProcess",
+			"BestValueType",
+			"BestComponentValuesType",
+			"EvaluationType",
+			"MetricQaResultType",
+			"QaResultsType",
+			"SearchHit",
+			" ",
+			"[text width=7.5cm]",
+			"compiler_code_function_kernel",
+			"TYPE",
+			"MATRIX_SIZE",
+			"\\operatorname{Path}",
+			"IdentifierValueType",
+			"sect:compiler_identifiers",
+			"mathcal",
+			"latex",
+			"fig:platform_example",
+			"searchResults"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 7,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "chapters/Results.tex",
+					"settings":
+					{
+						"buffer_size": 11061,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6258,
+								5394
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 469.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "chapters/FutureWork.tex",
+					"settings":
+					{
+						"buffer_size": 15684,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9182,
+								9182
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 813.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "chapters/Conclusion.tex",
+					"settings":
+					{
+						"buffer_size": 1165,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1165,
+								1165
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "data/k4000/singleFloat.csv",
+					"settings":
+					{
+						"buffer_size": 9735,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9735,
+								9735
+							]
+						],
+						"settings":
+						{
+							"auto_name": "singleFloat.csv",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "data/hd4000/singleAccess.csv",
+					"settings":
+					{
+						"buffer_size": 20369,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								20369,
+								20369
+							]
+						],
+						"settings":
+						{
+							"auto_name": "singleAccess.csv",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "chapters/RuntimeModel.tex",
+					"settings":
+					{
+						"buffer_size": 37824,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								649,
+								649
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "bibliography/literature.bib",
+					"settings":
+					{
+						"buffer_size": 6263,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2710,
+								2710
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/Bibtex.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "chapters/BenchmarkSuite.tex",
+					"settings":
+					{
+						"buffer_size": 10511,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6856,
+								6856
+							]
+						],
+						"settings":
+						{
+							"spell_check": true,
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 992.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 111.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 270.0,
+	"status_bar_visible": true
+}

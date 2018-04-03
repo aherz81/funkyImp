@@ -1,0 +1,5 @@
+These external libraries are provided as sources since the original sources needed to be modified and the modfications are not part of the official libs.
+
+Barinok is a c lib that provides counting of lattice points in polytopes, we provide a JNA interface for java so it can be used by the compiler to do type checking 
+and code gen (using the contained cloog lib).
+

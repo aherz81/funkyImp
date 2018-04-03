@@ -1,0 +1,11 @@
+//interface is like a class without definitions for the functions and no member variables:
+//unique is an optional attribute, interfaces can be derived from other interfaces but cannot have genercis
+
+interface unique DrawPrim //interface..but there can be only one!
+{
+	fun DrawPrim SetCol(\N col);
+	fun DrawPrim DrawRect(\Z x1,\Z y1,\Z x2,\Z y2);
+	fun DrawPrim DrawText(\Z x1,\Z y1,\S txt);
+	static DrawPrim GetDP(); //static is an attribute for the function
+}
+

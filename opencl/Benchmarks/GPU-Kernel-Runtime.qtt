@@ -1,0 +1,9 @@
+SciDAVis 0.2.4 template file
+<table>	12	3
+geometry	455	6	446	433	active
+header	Side Length[X]	Runtime in ms[Y]	stdDev in ms[Y]
+ColWidth	120	126	126	
+<com>
+</com>
+ColType	0;0/6	0;0/6	0;0/6
+Comments				

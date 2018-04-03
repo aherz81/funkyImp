@@ -1,0 +1,204 @@
+// @PARAM: -PP "" -g:none -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces some output to stdout.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+import ffi.stdio;
+import ffi.stdlib;
+import domains.*;
+
+class BinTree
+{
+	BinTree& left;
+	BinTree& right;
+	int value;
+
+	BinTree(BinTree left,int value,BinTree right)
+	{
+		this.left=left;
+		this.value=value;
+		this.right=right;
+	}
+
+	BinTree(int nvalue)
+	{
+		value=nvalue;
+	}
+
+
+	//loop member fun (must use lthis because this is rvalue)
+	loop int sum(int accum)
+	{
+		BinTree next;
+
+		if(left!=null&&right!=null)
+		{
+			int ls=left.sum(0);
+			int rs=right.sum(0);
+			cancel ls+rs+accum+value;
+		}
+		else
+		{
+			if(left!=null)
+				next=left;
+			else if(right!=null)
+				next=right;
+			else
+				cancel accum+value;
+		}
+
+		//could move cancel ls+rs+accum+value; into finally with ifexpr
+		finally next.sum(accum+value);
+	}
+
+	//non destructive add:
+	BinTree add(int value)
+	{
+		if(value==this.value)
+			cancel this;
+		else if(value<this.value)
+		{
+			if(left!=null)
+				cancel new BinTree(left.add(value),this.value,right);
+			else
+				cancel new BinTree(new BinTree(null,value,null),this.value,right);
+		}
+		else
+		{
+			if(right!=null)
+				cancel new BinTree(left,this.value,right.add(value));
+			else
+				cancel new BinTree(left,this.value,new BinTree(null,value,null));
+		}
+	}
+}
+
+unique class uBinTree
+{
+	uBinTree& left;
+	uBinTree& right;
+	int value;
+
+	uBinTree(int nvalue)
+	{
+		value=nvalue;
+	}
+
+	uBinTree(uBinTree nleft,int nvalue,uBinTree nright)
+	{
+		left=nleft;
+		value=nvalue;
+		right=nright;
+	}
+
+	uBinTree add(int nvalue)
+	{
+		uBinTree nl;
+		uBinTree nr;
+		if(nvalue<value)
+		{
+			if(left!=null)
+				left.add(nvalue);
+			else
+			{
+				cancel this where left=new uBinTree(null,nvalue,null);
+			}
+		}
+		else if(nvalue>value)
+		{
+			if(right!=null)
+				right.add(nvalue);
+			else
+			{
+				cancel this where right=new uBinTree(null,nvalue,null);
+			}
+		}
+
+		finally this;
+
+	}
+
+	loop int sum(int accum)
+	{
+		uBinTree next;
+
+		if(left!=null&&right!=null)
+		{
+			int ls=left.sum(0);
+			int rs=right.sum(0);
+			cancel ls+rs+accum+value;
+		}
+		else
+		{
+			if(left!=null)
+				cancel left.sum(accum+value);
+			else if(right!=null)
+				cancel right.sum(accum+value);
+			else
+				cancel accum+value;
+		}
+
+		//could move cancel ls+rs+accum+value; into finally with ifexpr
+		//finally next.sum(accum+value);
+	}
+}
+
+
+
+#define SIZE 100000
+
+public class bintree
+{
+	group gen;//we place gen_tree in group(gen) so that both funs are not executed concurrently
+	//also we call srand() before each gen_tree, so the results should be identical
+
+	static loop group(gen) BinTree gen_tree(int n,BinTree root)
+	{
+		if(n<=0)
+			cancel root;
+
+		finally gen_tree(n-1,root.add(stdlib.rand()));//SLOW!!
+	}
+
+	static loop group(gen) uBinTree gen_tree_U(int n,uBinTree root)
+	{
+		if(n<=0)
+			cancel root;
+		else
+			finally gen_tree_U(n-1,root.add(stdlib.rand()));//SLOW!!
+	}
+
+    static int main(int argc, String[linear{4}] argv)
+    {
+
+		BinTree t;
+		stdlib.srand(argc)::
+		t=gen_tree(SIZE,new BinTree(0));
+		#TIME(t,"gen_tree");//time (and dump) calc of t
+		int res=t.sum(0);
+		#TIME(res,"sum");
+
+
+
+		uBinTree t2;
+		stdlib.srand(argc)::
+		t2=gen_tree_U(SIZE,new uBinTree(0));
+		#TIME(t2,"gen_tree_U");//time (and dump) calc of t
+
+		int res2=t2.sum(0);
+		#TIME(res2,"sum2");
+
+        stdio.printf("bintree.sum %d=%d\n",SIZE,res);
+        stdio.printf("ubintree.sum %d=%d\n",SIZE,res2);
+        finally res;
+    }
+}

@@ -1,0 +1,220 @@
+import ffi.stdio;
+import ffi.math;
+import stdlib.File;
+import ffi.FILE;
+
+domain two_d{x,y}:one_d{x*y}(l) = { (j,k) | j<x & k<y }
+//domain two_d{x,y} = { (j,k) | j<x & k<y }
+
+
+public class cur {
+   
+
+    static double gaussian(double x, double mu, double sigma) {
+      finally math.exp( -(((x-mu)/(sigma))*((x-mu)/(sigma)))/2.0 );
+      
+    }
+    
+     static double sumKernal(double kernal [two_d{3,3}]){
+        
+     /* double r1[one_d{7}]=new double[one_d{7}].\[i] { kernal[0,i] };
+       double r2[one_d{7}]=new double[one_d{7}].\[i] { kernal[1,i] };
+       double r3[one_d{7}]=new double[one_d{7}].\[i] { kernal[2,i] };
+       double r4[one_d{7}]=new double[one_d{7}].\[i] { kernal[3,i] };
+       double r5[one_d{7}]=new double[one_d{7}].\[i] { kernal[4,i] };
+       double r6[one_d{7}]=new double[one_d{7}].\[i] { kernal[5,i] };
+       double r7[one_d{7}]=new double[one_d{7}].\[i] { kernal[6,i] };
+        
+       finally r1.\reduce{0}(i,accum){accum+r1[i]+r2[i]+r3[i]+r4[i]+r5[i]+r6[i]+r7[i]};
+       */
+     finally kernal.one_d.\reduce{0}(i,accum) {accum + kernal.one_d[i] }; 
+    }
+    
+     static double[two_d{3,3}] produce2dGaussianKernel(int radius){
+    double sigma = radius/2;
+     
+      double kernal[two_d{3,3}]=new double[two_d{3,3}].\[r,c] { 
+      gaussian(r, radius, sigma) * gaussian(c, radius, sigma) 
+       
+       };
+      
+    
+      
+    finally kernal;
+    }
+/*   
+     static char [one_d{-1}] readNextLine(char data[one_d{-1}],int i){
+    
+        char line[one_d{-1}];
+              
+        /* if(data[i]=='\n')
+             cancel line'new= new char[one_d{1}].\[i]{''};
+         else
+              line=readNextLine(data,i+1);
+        */
+        
+        data'ret =new char[one_d{line.size}].\[i]{
+            if(i==0){
+              data[i]
+            }else{
+              line[i-1]
+            }
+         };
+        
+        finally data'ret;
+                    
+    
+    } 
+*/
+    static int getOffset(int width,int r, int c)
+    {
+        cancel r*width+c;
+    }
+   
+    static double[two_d{10,10}] readImage(out int width){
+     
+        File f=new File("imagefile","rb");
+        
+        long size;
+        f'size=f.size(size); //get file size
+ 
+        char data[one_d{-1}]; //here we'll store the data
+        
+        int height;
+ 
+         f'next=
+         f'size
+         .read(width)
+         .read(height);
+         
+         f'next
+         .read(width*height*3,data)//read size times char into data
+         .close();//close file
+         
+         stdio.printf("width: %d\n",width);
+         stdio.printf("height: %d\n",height);
+         //stdio.printf("read: %s\n",(char[])data); //print data  
+
+         //data.two_d{width,height}.\[r,c] {stdio.printf("")};
+
+         //data[getOffset]
+         
+         double image[two_d{10,10}]=new double[two_d{10,10}].\[r,c] {             
+            //getdValue(data,r,c)
+            data[getOffset(width,r,c)]
+          };
+        
+       
+         finally image;
+     
+     }
+     
+     static double getdValue(char data [one_d{-1}],int r,int c){
+
+        int findex=c+(r*10)+(c*4)+(r*4);
+       
+/*       
+        char  num[one_d{4}]= new char[one_d{4}].\[i]{
+             data[findex+i]
+         };
+*/
+        //double val =math.atof(num);
+       
+
+
+        finally r*c*1.0;
+    
+    }
+     
+     static int getNextRow(int row,int hight){
+        if(row==hight-1)
+             cancel 0;
+         else
+            finally row+1;
+     }
+     static int getPreRow(int row,int hight){
+       if(row==0)
+             cancel hight-1;
+         else
+            finally row-1;
+     }
+     static int getNextCol(int col,int width){
+         if(col==width-1)
+             cancel 0;
+         else
+            finally col+1;
+     
+     }
+     static int getPreCol(int col,int width){
+         if(col==0)
+             cancel width-1;
+         else
+            finally col-1;
+             
+     }
+      static double getValue(int r,int c, int width, int hight,double kernal [two_d{3,3}],double image [two_d{10,10}]){
+
+          
+          
+         // kernal.size[]
+          int preCol=getPreCol(c,width);
+          int nextCol=getNextCol(c,width);
+          int preRow=getPreRow(r,hight);
+          int nextRow=getNextRow(r,hight);
+          
+          // can i use reduce here 
+          // or is there a better algorithm 
+          double d1=kernal[0,0]*image[preRow,preCol];
+          double d2=kernal[0,1]*image[r,preCol];
+          double d3=kernal[0,2]*image[nextRow,preCol];
+          double d4=kernal[1,0]*image[preRow,c];
+          double d5=kernal[1,1]*image[r,c];
+          double d6=kernal[1,2]*image[nextRow,c];
+          double d7=kernal[2,0]*image[preRow,nextCol];
+          double d8=kernal[2,1]*image[r,nextCol];
+          double d9=kernal[2,2]*image[nextRow,nextCol];
+          
+          
+         finally d1+d2+d3+d4+d5+d6+d7+d8+d9;
+             
+     }
+     static double[two_d{10,10}] blurfilter(double kernal [two_d{3,3}],double image [two_d{10,10}]){
+     
+        image'filtered = new double[two_d{10,10}].\[r,c] { 
+        getValue(r,c,10,10,kernal,image)
+       
+        };
+        
+        finally image'filtered;
+         
+     }
+    static int main(int argc, inout unique String argv [one_d{-1}]) {
+       
+     
+       /* double kernal [two_d{3,3}]=produce2dGaussianKernel(3);    
+        double sum= sumKernal(kernal);
+        kernal'normalized = new double[two_d{3,3}].\[r,c] { math.round((kernal[r,c]/sum)*1000)/1000};
+        
+       stdio.printf("****************************************");
+        kernal.\[i,j]{stdio.printf("kernal[%d,%d]=%f\n",i,j,kernal[i,j]);};
+        stdio.printf("****************************************");
+        stdio.printf("kernal Sum %f\n",sum);
+        stdio.printf("****************************************");
+        kernal'normalized.\[i,j]{stdio.printf("normalized[%d,%d]=%f\n",i,j,kernal'normalized[i,j]);};*/
+        int width;
+        double image[two_d{10,10}]=readImage(width);
+        
+       // image.\[i,j]{stdio.printf("iamge[%d,%d]=%f\n",i,j,image[i,j]);};
+        
+       /* image'nimage=blurfilter(kernal,image);
+        image'nimage.\[i,j]{stdio.printf("image'nimage[%d,%d]=%f\n",i,j,image'nimage[i,j]);};
+        
+       
+        */
+        
+        
+        finally 0;
+        
+      
+    }
+}

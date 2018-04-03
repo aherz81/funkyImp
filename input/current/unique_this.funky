@@ -1,0 +1,20 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// as can be seen from the cmdl, the CWD is set to the .funky file
+
+unique class XXX
+{
+	void ttt()
+	{
+		ttt();
+		ttt(); //ERROR this must be unique!
+	}
+}
+
+public class cur
+{
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+		finally 0;
+    }
+}

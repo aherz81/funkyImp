@@ -1,0 +1,217 @@
+% !TEX root = ../main.tex
+
+\chapter{Theory}
+\label{chap:theory}
+
+In this chapter the technologies, programming languages and algorithms that form the foundation for this thesis will be explained in detail. The underlying technology used to perform GPGPU computing is the  OpenCL\footnote{OpenCL homepage: \url{https://www.khronos.org/opencl/}} computing environment. As the intent of the thesis is to provide runtime predictions for a scheduler in a compiler, the other important part is that compiler and the programming language it belongs to, the FunkyIMP\footnote{FunkyIMP homepage: \url{http://www2.in.tum.de/funky}} programming language. 
+%Foundation okay?
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{OpenCL}
+\label{sect:theory_opencl}
+OpenCL was originally released by Apple in 2008 in conjunction with the 10.6 release of OS X. Subsequently, stewardship for the project was transferred to the Khronos Group, which is also responsible for OpenGL, and then released as an open standard for general purpose GPU computing. It is now widely used, with implementations for the major operating systems, as well as a wide range of devices. There are implementations by Apple for OS X, and by NVidia, AMD and Intel for their GPU and CPU products, respectively. \cite{khronos2008release,apple2013opencl} \\
+
+Thus, in contrast to other GPGPU computing frameworks such as the CUDA framework maintained by NVidia, OpenCL is not constricted to a single vendor or type of device. A valid OpenCL kernel may be executed on any device that supports OpenCL, without the need for modifications. This makes the technology viable to be used in an environment with a multitude of heterogeneous devices, enabling an on-demand distribution of data parallel tasks onto available devices. \cite{vejarano2013parallel} \\
+
+The following sections will give an overview of the OpenCL architecture, its execution model, memory model, and the C dialect used to write OpenCL kernels.
+
+\subsection{The OpenCL platform architecture}
+\label{sect:theory_opencl_platform}
+The OpenCL platform consists of a host and multiple devices. Figure \ref{fig:theory_platform_model} illustrates the basic architecture. The Platform, also referred to as Host, is the environment the main program is executed on. It is not an OpenCL device itself, and the code does not have to be written in OpenCL. Any Programming language can be used, although the APIs for interfacing with OpenCL are written in C. There are wrappers for other Programming languages, such as C++. The platform uses these APIs to control the devices. \cite{khronos2012specification} \\
+
+The Devices execute the actual data parallel programs, also known as kernels. Devices are hardware entities such as a GPU, a CPU or accelerators (in embedded environments) that can perform computations on their own. Each device consists of one or more execution units. For example, an execution unit may map to a core of a CPU. These execution units in turn have a number of ProcessingElements, each of which models the most fine-grained element of parallelism, e.g. a Shader Core. ProcessingElements may be called in a SIMD (\textbf{S}ingle \textbf{I}nstruction \textbf{M}ultiple \textbf{D}ata) fashion resulting in a completely parallel execution or in a SPMD (\textbf{S}ingle \textbf{P}rogram \textbf{M}ultiple \textbf{D}ata) fashion, wherein each ProcessingElement retains its own Program Counter. \cite{khronos2012specification} \\
+
+For an example configuration of the platform architecture, see figure \ref{fig:platform_example} in the Appendix.
+
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{class}{Platform}{7,0} 
+				\attribute{name : const char*}
+				\attribute{vendor : const char*}
+			\end{class}
+			\begin{class}{Device}{0,0}
+				\attribute{name : const char*}
+				\attribute{vendor : const char*}
+				\attribute{deviceType : DeviceType}
+			\end{class}
+			\begin{class}{ExecutionUnit}{0, -4.5}
+				\attribute{processingElements: int}
+			\end{class}
+			\composition{Platform}{}{*}{Device}
+			\composition{Device}{}{1..*}{ExecutionUnit}
+		\end{tikzpicture}
+	\end{center}
+	\caption{UML class diagram of the OpenCL platform}
+	\label{fig:theory_platform_model}
+\end{figure}
+
+\subsection{The OpenCL execution model}
+In order to execute code in OpenCL, the following resources need to be managed:
+\begin{itemize}
+	\item The \textbf{device} that is to be used for the computations.
+	\item The \textbf{kernel}, a function that is to be executed on the OpenCL device.
+	\item The \textbf{program}, the actual source of the program that is to be executed.
+	\item The \textbf{memory} objects the kernel is executed on.
+\end{itemize}
+This functionality is bundled in the so-called \textbf{context}. Interactions with the device are done using \textbf{command queues}. These are used to execute operations, manage the device's memory, or to determine the order the commands are executed in. \cite{khronos2012specification} \\
+
+The OpenCL programs are written in OpenCL C, which will be discussed in detail in section \ref{sect:theory_opencl_c}. They are then executed in parallel over a defined computation domain with each thread, also known as \textbf{work item}, handling one element of that domain. This element might be a single computation on one value in an array, or more involved operations on a column in a matrix. The work items are again grouped into \textbf{work-groups}\footnote{Sometimes also known as wave fronts.}, which enable synchronization within a work-group. There is also a level in the memory hierarchy that is shared within a work-group. The different work-groups on the other hand are completely independent from each other. As there are many threads executed at the same time, they usually share one program counter, executing the same instruction on multiple threads at once. This has some interesting effects. If there are control structures or branches in the code, every branch will still have to be executed, and results of the computations will have to be canceled out if the computation is not to be done on that particular work item. This also translates to performance penalties for very control-flow-heavy programs. \cite{tompson2012introduction}
+
+\subsection{The OpenCL memory model}
+\label{sect:theory_opencl_memory}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.75\linewidth]{images/memory_hierarchy}
+	\end{center}
+	\caption{The OpenCL memory hierarchy.}
+	\label{fig:theory_memory_hierarchy}
+\end{figure}
+
+An important design aspect for OpenCL is the closeness to the hardware. This implies the need for a memory architecture that maps well to real graphics hardware. To achieve this, a multi-layer memory architecture has been chosen. Consider figure \ref{fig:theory_memory_hierarchy} for an overview. The fastest type of memory is the \textbf{private memory}. Every work item has its own, and it is typically the part of memory where all local variables and parameters used in a kernel are stored. For a NVidia graphics card, the access time would typically be comparable to a register access. However, this is not guaranteed. \cite{tompson2012introduction,nvidia2009opencl} \\
+
+Next in the memory hierarchy is the local memory. This part of memory is shared amongst the work items of a single work-group. On NVidia graphics cards, local memory is located in the off-chip DRAM, resulting in longer latencies for memory accesses, typically around 200-300 cycles. \cite{nvidia2009opencl,hwu2009compute} \\
+
+There also is a special area of memory reserved for constant data. Data in Constant memory is immutable for the duration of the kernel execution, and can thus be cached for quicker access. This usually results in shorter latencies, for NVidia graphics cards it is usually about as fast as a register access. \cite{hwu2009compute} \\
+
+Lastly, there is the Global Memory. It has the greatest amount of available memory, and it is shared across the whole device. On NVidia graphics cards it is usually implemented as a dedicated off-chip DRAM. This implies a high access latency, and as with the local memory, it is around 200-300 cycles.
+\cite{hwu2009compute,tompson2012introduction} \\
+
+It is also notable that there is no concept of memory protection on the GPU. Segmentation faults are not reported, that means if a work item modifies a memory segment outside of its own memory segment, anything can happen, up to and including gibberish on the screen or a full crash of the operating system. When implementing a new OpenCL kernel, it is usually a good idea to test it on a CPU device first, as those usually implement memory protection, and a segmentation fault will be reported instead of causing random undefined behavior on the system. \cite{tompson2012introduction}
+
+\subsection{The OpenCL C dialect}
+\label{sect:theory_opencl_c}
+OpenCL kernels are written in a slightly modified version of C99, a language called OpenCL C. It features some additional data types for handling vector types, as well as well as implementations for basic operations on them. Vectors can have a length of 2, 3, 4, 8 or 16. The following data types are supported: \code{char}, \code{short}, \code{int}, \code{long} and their unsigned counterparts, as well as \code{float} for floating point values. The operations are the usual operators, and they are applied component-wise (see equation \ref{eq:theory_vector_add}). \cite{khronos2012specification} 
+\begin{gather}
+	\label{eq:theory_vector_add}
+	\begin{pmatrix}
+		a_1\\
+		a_2\\
+		a_3\\
+		a_4
+	\end{pmatrix} + 
+	\begin{pmatrix}
+		b_1\\
+		b_2\\
+		b_3\\
+		b_4
+	\end{pmatrix} =
+	\begin{pmatrix}
+	a_1+b_1\\
+	a_2+b_2\\
+	a_3+b_3\\
+	a_4+b_4
+	\end{pmatrix}
+\end{gather}
+There are several limitations as well, the most important one shall be explained here. For the full list, see \cite{khronos2012specification}. In OpenCL, function calls are implemented via inlining, that means that functions that are called from within a kernel simply have their body copied into the original kernel, replacing the parameters by the function call arguments. This implies two limitations. The inlining has to be a finite process, that means that \emph{recursion is not possible}, specifically, there may not be any cycles in the function call graph. It also means that all the called code has to be known at (kernel) compile time. The second implication is therefore the impossibility of function pointers, as they would enable the programmer to call any code at runtime, thus rendering the inlining impossible. There are some more limitations for pointers. They may only be declared in conjunction with either the \code{global}, the \code{local} or the \code{private} address space qualifier. Pointers of one address space specifier may not be assigned to a pointer with a different address space specifier.  \cite{khronos2012specification} \\ %Font? Fett?
+
+Figure \ref{fig:theory_opencl_kernel} shows a very simple OpenCL kernel. It illustrates several elements that are common to all kernels. In the function signature, kernels are marked as such using the \code{kernel} keyword. The return type of a kernel is always \code{void}. Parameters are used for the communication between the kernel and the host. There are parameters that point to the data transferred to the GPU by the host, and a pointer to the memory segment that is to hold the result. By default, the parameters reside in the \code{private} address space. The \code{constant} and \code{global} address space specifiers denote the type of memory the pointers are pointing to. Local variables, such as \code{work\_item\_id} are also in the \code{private} address space by default. The function \code{get\_global\_id(0)} is called to determine the id of the current work item. \cite{khronos2012specification} %Font?
+
+
+\begin{figure}[hb]
+	\lstset{language=c}
+	\lstset{morekeywords={kernel}}
+	\lstset{morekeywords={global}}
+	\lstset{morekeywords={constant}}
+	\begin{lstlisting}
+kernel void vector_add(constant float *a, constant float *b, 
+				global float *c)
+{
+	int work_item_id = get_global_id(0);
+	c[work_item_id] = a[work_item_id] + b[work_item_id];
+}
+	\end{lstlisting}
+	\caption{This is an example of an OpenCL-Kernel. It adds the content of two vectors and writes the result into a third one. \code{get\_global\_id(0)} returns the current work item number, in this case it corresponds to the position in the arrays.}
+	\label{fig:theory_opencl_kernel}
+\end{figure}
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The FunkyIMP programming language}
+\label{sect:theory_funky}
+The FunkyIMP programming language is developed by Alexander Herz as a race and deadlock-free, implicitly parallel, functional programming language. It employs task as well as data parallelism in order to maximize the number of computations that are executed in parallel. This is done without losing the ability to handle I/O and events. Thus funkyIMP can be considered a general purpose programming language. For this thesis, the type system, with its polyedric array domains, is of most interest. It is explained below. \cite{herz2013funkywiki} \\ %Should also be okay, they are not the whole type system.
+
+Most functional languages use single linked lists as their main way of storing data in bulk. For these lists, a wide range of operations, such as \code{map}, \code{filter} or \code{foldl}\footnote{For descriptions of those functions, please see \ref{sect:appendix_functional}} are available. These operations enable the programmer to write very concise, declarative code, focusing on what to achieve instead of how to do it. A simple example of this is the reversing of lists. Using functional code with lists, this can be expressed as below. The example is written in Standard ML.
+
+\lstinputlisting[language=ml, tabsize=2]{code/reverseList.sml}
+
+The code is short and very declarative, and the meaning should be clear at first glance. However, the implementation of the same functionality is more difficult with arrays. In Standard ML, arrays are declared in the structure \code{Array}. To reverse an array, one has to write code such as the following.
+
+\lstinputlisting[language=ml, tabsize=2]{code/reverseArray.sml}
+
+This code is much more complicated. It needs to use array indices and several temporary variables. Additionally, \code{Array}s are mutable in SML, and the implementation has to make use of this. To sum it up, the declarative nature of the code is largely absent, instead it is solved with an iterative approach. With that added complexity comes several possible problems. First, consider \code{(*1*)}. This line will fail to execute if the array has zero elements, a case that should be handled using a conditional statement as well, otherwise the execution will fail with an exception at run time. The other index operations also need to perform bounds checks at runtime, and would raise exceptions if the accesses were outside the array bounds. Programming errors like that can easily happen, for example one might forget to subtract the 1 at line marked with \code{(*2*)}.\\
+
+How does this complexity arise? In most programming languages, arrays are treated as one-dimensional pieces of memory, just as in the example above. In a functional environment, and with immutable values, the actual structure with which the values are saved in memory might not matter too much. It may be more important to have a type system that enables reasoning about array size and structure at compile time, enabling the programmer to create subarrays that fulfill certain criteria, and to perform operations on them. In other cases, such as the reverse example, it might be enough to provide a different way to address the original array. \\
+
+FunkyImp allows the programmer to do that. Given an one-dimensional array defined as 
+\begin{gather*}
+	\operatorname{domain} \ arr_{1D}\{x\}() = \{(i) : i < x\}
+\end{gather*}
+one can define the reversed array as follows:
+\begin{gather*}
+	\operatorname{domain} \ arr_{rev}\{x\}() : arr_{1D}(a) = \{arr_{1D}\{x\}(i) : a = x-i-1\}
+\end{gather*}
+Now all the programmer needs to do is create a new variable and cast the old value into the new one, e.g.:
+\begin{verbatim}
+int[arr_1D{10}] x = new int[arr_1D{10}];
+int[arr_rev{10} y = (int[arr_rev{10}]) x;
+\end{verbatim}
+
+\subsection{Multidimensional Arrays}
+\label{sect:theory_funky_multidim}
+
+Multidimensional arrays are another problem that are efficiently solved by polyedric domains. This is shown with the implementation of a matrix as an example. There are several different approaches to solve this problem. These will be illustrated with the following example:
+\begin{align*}
+	M &\in \real^{3\times4} \\
+	M &= \begin{pmatrix}
+			1 & 2 & 26 & 4 \\
+			5 & 6 & 14 & 8 \\
+			42 & 7 & 3 & 89
+		\end{pmatrix}\\
+	v &= M_{i,j}
+\end{align*}
+
+The least involved approach is to simply implement the matrix as a one-dimensional array. In an imperative language such as C, it might be implemented as follows:
+
+\lstinputlisting[language=c, tabsize=2]{code/simpleMatrix.c}
+
+This approach is the most simple one to implement in the compiler, but leaves most of the computational burden for the programmer. For one, the structure of the matrix is not expressed in the type of \code{M}. If the programmer wants to use the matrix in another function, they will have to manually transfer all the information about the structure of the matrix to that other function. If that is not done, nothing prevents the programmer from interpreting the matrix as, say, for example, a $\real^{6\times2}$ matrix. Additionally, array access is not straightforward. Again, the programmer has to maintain the semantic meaning of the array. If they want to access an element of the matrix, they will have to compute the right index for the array index themselves. To sum it up, this is the approach that is closest to the actual memory structure of the computer, but it does assume careful attention by the programmer. \\
+
+Another approach is to implement the matrix as an array of arrays. This might be implemented as follows, for example in Standard ML:
+
+\lstinputlisting[language=ml, tabsize=2]{code/arrayOfArraysMatrix.sml}
+
+This approach is still quite simple to implement from a compiler point of view. It has several advantages from a type safety point of view. It is now no longer possible to reinterpret the matrix as something other than a two-dimensional array with the given dimensions. This type safety, however, comes at a cost. It is now no longer guaranteed that the matrix is stored in one continual segment of memory. That might have negative side effects on the performance. Additionally, from a semantic standpoint, an array of arrays is still a slightly different concept than a two-dimensional array. \\
+
+The FunkyIMP approach combines type safety while still retaining the continuous memory segment by taking the address computations out of the programmer's hands and generating the necessary code during complilation. It might be implemented as follows:
+
+\lstinputlisting[language=java, morekeywords={domain}]{code/funkyArray.funky}
+
+The first line defines a simple one-dimensional array. Usually, that will be predefined. The second line describes a two-dimensional array with $a$ rows and $b$ columns. It inherits the properties of a one-dimensional array with the length of $a*b$. Then, constraints for the indexing parameters are specified. Here, the parameters may only be within the limits set by $a$ and $b$. Constraints specifying that $x,y \geq 0$ are implicitly added. In line 3, the newly created domain is used to build a matrix with a size of $4\times3$. After the values are initiated, the programmer can simply retrieve them using an indexed access. %Should be okay in this context.
+ This solution captures the semantics of a matrix, while still retaining the runtime benefits of the C implementation, as it basically performs the same index computations. In contrast to the C example, here they are generated by the compiler.
+
+\subsection{Map and Reduce}
+\label{sect:theory_funky_mapreduce}
+Recall the listing from the beginning of section \ref{sect:theory_funky}. It describes several operations typically implemented on lists in functional programming languages, namely \code{map}, \code{filter} and \code{foldl}. They provide a simple and easily understandable way to iterate on lists. These operations (except for \code{filter}\footnote{It does not make too much sense to remove elements from an array that cannot be resized.}) on arrays are implemented as language features in funkyIMP.\\
+
+To illustrate their functionality, the following operations will be performed, the first using map and the second one using reduce.
+\begin{gather*}
+	M = \begin{pmatrix}
+			1 & 2 & 3 \\
+			4 & 5 & 6 \\
+			7 & 8 & 9
+		\end{pmatrix}^T\\
+	v = \sum_{m_{ij} : i, j \in \nat_3 } m_{ij}
+\end{gather*}  
+
+The code looks as follows:
+
+\lstinputlisting[morekeywords={reduce, int, new,}]{code/mapreduce.funky}
+
+The \verb!.\! performs the map operation. It returns a new Array with the same type as the old one. The second operation, the \verb!.\reduce! describes how to collect the contents of the array into a single value. \\
+
+For this thesis, the \code{map}-Operation\footnote{Also referred to as a domain iteration in later chapters.} is considered the most interesting. The original matrix is immutable and the new value only depends on the old matrix (and other, also immutable, variables). Hence the operation may be parallelized readily. Chapter \ref{chap:compiler} will highlight the steps to be taken in order to incorporate the generation of code for the GPU-accelerated \code{map}-operation into the funkyIMP compiler.

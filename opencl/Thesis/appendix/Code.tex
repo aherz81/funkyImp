@@ -1,0 +1,99 @@
+% !TEX root = ../main.tex
+
+\chapter{Code Samples}
+\section{OpenCL Code}
+\label{sect:appendix_opencl}
+\subsection{An Empty Kernel}
+\label{sect:appendix_opencl_empty}
+This is basically an empty OpenCL C kernel. The only operation that is in its body determines the global id of the thread it is executed in. In the context of the Benchmark Suite, it is used to determine the basic cost that occurs whenever a kernel is run.\\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/emptyKernel.cl}
+
+\subsection{Kernel used for the Work-Group Size Benchmark}
+\label{sect:appendix_opencl_wg}
+This kernel is used for determining the impact of the work-group size. The kernel only reads a segment of the global memory, and stores it again. It serves to show the benefits of using work-groups that are as large as possible. \\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/wgKernel.cl}
+
+\subsection{Kernels used to measure Basic Operations}
+\label{sect:appendix_opencl_ops}
+\subsubsection{Kernel used to measure basic Performance}
+\label{sect:appendix_opencl_ops_single}
+This Kernel is used to determine the cost of executing basic operations. The \textbf{defines} at the top of the code are inserted in the code below, and then executed. \\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/opKernel.cl}
+
+\subsubsection{Kernel used to measure behavior with multiple operations}
+\label{sect:appendix_opencl_ops_multiple}
+
+This kernel is used to analyze the runtime behavior in the presence of multiple operations. The number of operations is varied, and the operator and type is changeable as well. The operation is applied on the variable a certain number of times, and then written back to memory. \\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/multipleOps.cl}
+
+\subsection{Kernels used to measue Memory Accesses}
+\label{sect:appendix_opencl_access}
+\subsubsection{Kernel used to measure Basic Memory Access Performance}
+\label{sect:appendix_opencl_access_single}
+This Kernel is used to determine the cost of executing memory accesses. The defines at the top of the code are inserted in the code below, and then executed. \\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/memAccessKernel.cl}
+
+\subsubsection{Kernel used to measure Complex Memory Access Performance}
+\label{sect:appendix_opencl_access_complex}
+This Kernel is used to determine the cost of executing complex memory accesses. The calculations in the beginning are used to make the access as random as possible. \\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/complexAccess.cl}
+
+\subsubsection{Kernel used to measure Multiple Memory Access Performance}
+\label{sect:appendix_opencl_access_multiple}
+This kernel is used to determine the cost scaling of using multiple memory accesses in one kernel. The benchmark is executed multiple times, each time with another number of memory accesses. The accesses are inserted at the \code{/* +... */} comment. \\
+
+\lstinputlisting[language=c, frame=single, morekeywords={__kernel, __global, global}]{code/multipleAccesses.cl}
+
+\newpage
+
+\section{Functional Code}
+\label{sect:appendix_functional}
+
+\subsection{The \code{map} function}
+\label{code:map}
+The function \code{map} applies a function \code{f} to each element of a list, and returns a list with all the results, while preserving the order. \\
+\lstset{language=ml}
+\begin{lstlisting}
+fun map f nil     = nil
+  | map f (x::xs) = x :: map f xs
+\end{lstlisting} 
+
+\subsection{The \code{filter} function}
+\label{code:filter}
+The function \code{filter} applies a predicate \code{p}, that is a function that returns a boolean value to each value of the list, and returns a list with all elements for which the predicate returns true, while preserving the original order. \\
+\lstset{language=ml}
+\begin{lstlisting}
+fun filter p nil     = nil
+  | filter p (x::xs) = if p x then (x::filter p xs) 
+                              else filter p xs
+\end{lstlisting} 
+
+
+\subsection{The \code{foldl} function}
+\label{code:foldl}
+The function \code{foldl} applies a function \code{f} to each element of a list and the result of the previous application of \code{f} or a parameter given at the start. It returns the result of the last application of \code{f} (or the start value if the list was empty). \\
+\lstset{language=ml}
+\begin{lstlisting}
+fun foldl s f nil     = s
+  | foldl s f (x::xs) = foldl (f(s,x)) f xs
+\end{lstlisting} 
+
+\newpage
+
+\section{FunkyIMP Code}
+\label{sect:appendix_funky}
+\subsection{Full Example class}
+\label{sect:appendix_funky_full}
+The following code is an example of what valid funkyIMP code looks like. First, a domain for three-dimensional arrays is created, and then a class with three static methods is defined. The \code{main} method functions similarly to the main method in C++, with the first parameter being the number of command line arguments, and the second being the actual arguments. In \code{main} a new array (\code{test}) is created and initialized. Then \code{test'a} is assigned the result of \code{f}, which performs a domain iteration on \code{test}. \\
+\lstinputlisting[frame=single, morekeywords={cancel, int, new, domain, public, static, class, inout, unique, finally}, tabsize=2]{code/example.funky}
+
+\subsection{Automated Test Template class}
+\label{sect:appendix_funky_template}
+The following code is used as a template for the automated Test suite. It uses macros to execute a test over different array sizes. The code that is to be executed in the domain iteration is inserted at the \code{/*!!*/} comment.
+\lstinputlisting[frame=single, morekeywords={cancel, int, new, domain, public, static, class, inout, unique, finally, define}, tabsize=2]{code/testTemplate.funky}

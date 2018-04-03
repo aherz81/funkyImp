@@ -1,0 +1,21 @@
+// @PARAM: -PP "" -g:none -skipgenerate -d ./tmp
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+    Alex: imports TestExport
+
+    <<<<<<< You should try NOT to break this. >>>>>>>>
+
+ */
+//import TestExport; //it__s in the same dir as this file to circumvent __package__ trouble
+
+public class Import
+{
+	static int main(int argc, inout unique String[one_d{-1}] argv)
+	{
+		TestExport te=new TestExport(20); 
+		te.test();
+		finally 0;
+	}
+}

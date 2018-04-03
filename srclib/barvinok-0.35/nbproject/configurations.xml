@@ -1,0 +1,2883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="89">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="barvinok-0.35">
+      <df name="barvinok">
+        <in>NTL.h</in>
+        <in>NTL_QQ.h</in>
+        <in>barvinok.h</in>
+        <in>basis_reduction.h</in>
+        <in>evalue.h</in>
+        <in>genfun.h</in>
+        <in>isl.h</in>
+        <in>options.h</in>
+        <in>polylib.h</in>
+        <in>sample.h</in>
+        <in>set.h</in>
+        <in>util.h</in>
+      </df>
+      <df name="cloog">
+        <df name="include">
+          <df name="cloog">
+            <df name="isl">
+              <in>backend.h</in>
+              <in>cloog.h</in>
+              <in>constraintset.h</in>
+              <in>domain.h</in>
+            </df>
+            <in>block.h</in>
+            <in>clast.h</in>
+            <in>cloog.h</in>
+            <in>constraints.h</in>
+            <in>domain.h</in>
+            <in>input.h</in>
+            <in>int.h</in>
+            <in>loop.h</in>
+            <in>matrix.h</in>
+            <in>names.h</in>
+            <in>options.h</in>
+            <in>pprint.h</in>
+            <in>program.h</in>
+            <in>state.h</in>
+            <in>statement.h</in>
+            <in>stride.h</in>
+            <in>union_domain.h</in>
+            <in>version.h</in>
+          </df>
+        </df>
+        <df name="source">
+          <df name="isl">
+            <in>backend.c</in>
+            <in>constraints.c</in>
+            <in>domain.c</in>
+          </df>
+          <in>block.c</in>
+          <in>clast.c</in>
+          <in>cloog.c</in>
+          <in>input.c</in>
+          <in>int.c</in>
+          <in>loop.c</in>
+          <in>matrix.c</in>
+          <in>names.c</in>
+          <in>options.c</in>
+          <in>pprint.c</in>
+          <in>program.c</in>
+          <in>state.c</in>
+          <in>statement.c</in>
+          <in>stride.c</in>
+          <in>union_domain.c</in>
+          <in>version.c</in>
+        </df>
+        <df name="test">
+          <in>generate_test.c</in>
+        </df>
+        <in>version.h</in>
+      </df>
+      <df name="isl">
+        <df name="include">
+          <df name="isl">
+            <in>aff.h</in>
+            <in>aff_type.h</in>
+            <in>arg.h</in>
+            <in>band.h</in>
+            <in>blk.h</in>
+            <in>config.h</in>
+            <in>constraint.h</in>
+            <in>ctx.h</in>
+            <in>dim.h</in>
+            <in>flow.h</in>
+            <in>hash.h</in>
+            <in>id.h</in>
+            <in>ilp.h</in>
+            <in>int.h</in>
+            <in>list.h</in>
+            <in>local_space.h</in>
+            <in>lp.h</in>
+            <in>map.h</in>
+            <in>map_type.h</in>
+            <in>mat.h</in>
+            <in>multi.h</in>
+            <in>obj.h</in>
+            <in>options.h</in>
+            <in>point.h</in>
+            <in>polynomial.h</in>
+            <in>polynomial_type.h</in>
+            <in>printer.h</in>
+            <in>schedule.h</in>
+            <in>seq.h</in>
+            <in>set.h</in>
+            <in>set_type.h</in>
+            <in>space.h</in>
+            <in>stdint.h</in>
+            <in>stream.h</in>
+            <in>union_map.h</in>
+            <in>union_set.h</in>
+            <in>vec.h</in>
+            <in>version.h</in>
+            <in>vertices.h</in>
+          </df>
+        </df>
+        <in>basis_reduction_tab.c</in>
+        <in>basis_reduction_templ.c</in>
+        <in>bound.c</in>
+        <in>cat.c</in>
+        <in>closure.c</in>
+        <in>gitversion.h</in>
+        <in>isl_aff.c</in>
+        <in>isl_aff_private.h</in>
+        <in>isl_affine_hull.c</in>
+        <in>isl_arg.c</in>
+        <in>isl_band.c</in>
+        <in>isl_band_private.h</in>
+        <in>isl_basis_reduction.h</in>
+        <in>isl_bernstein.c</in>
+        <in>isl_bernstein.h</in>
+        <in>isl_blk.c</in>
+        <in>isl_bound.c</in>
+        <in>isl_bound.h</in>
+        <in>isl_coalesce.c</in>
+        <in>isl_config.h</in>
+        <in>isl_config_post.h</in>
+        <in>isl_constraint.c</in>
+        <in>isl_constraint_private.h</in>
+        <in>isl_convex_hull.c</in>
+        <in>isl_ctx.c</in>
+        <in>isl_ctx_private.h</in>
+        <in>isl_dim.c</in>
+        <in>isl_dim_map.c</in>
+        <in>isl_dim_map.h</in>
+        <in>isl_equalities.c</in>
+        <in>isl_equalities.h</in>
+        <in>isl_factorization.c</in>
+        <in>isl_factorization.h</in>
+        <in>isl_farkas.c</in>
+        <in>isl_flow.c</in>
+        <in>isl_fold.c</in>
+        <in>isl_gmp.c</in>
+        <in>isl_hash.c</in>
+        <in>isl_hmap_map_basic_set.c</in>
+        <in>isl_hmap_map_basic_set.h</in>
+        <in>isl_id.c</in>
+        <in>isl_id_private.h</in>
+        <in>isl_ilp.c</in>
+        <in>isl_input.c</in>
+        <in>isl_list.c</in>
+        <in>isl_list_private.h</in>
+        <in>isl_list_templ.c</in>
+        <in>isl_list_templ.h</in>
+        <in>isl_local_space.c</in>
+        <in>isl_local_space_private.h</in>
+        <in>isl_lp.c</in>
+        <in>isl_lp_no_piplib.c</in>
+        <in>isl_lp_piplib.h</in>
+        <in>isl_map.c</in>
+        <in>isl_map_no_piplib.c</in>
+        <in>isl_map_piplib.h</in>
+        <in>isl_map_private.h</in>
+        <in>isl_map_simplify.c</in>
+        <in>isl_map_subtract.c</in>
+        <in>isl_mat.c</in>
+        <in>isl_mat_private.h</in>
+        <in>isl_morph.c</in>
+        <in>isl_morph.h</in>
+        <in>isl_multi_templ.c</in>
+        <in>isl_multi_templ.h</in>
+        <in>isl_obj.c</in>
+        <in>isl_options.c</in>
+        <in>isl_options_private.h</in>
+        <in>isl_output.c</in>
+        <in>isl_point.c</in>
+        <in>isl_point_private.h</in>
+        <in>isl_polynomial.c</in>
+        <in>isl_polynomial_private.h</in>
+        <in>isl_printer.c</in>
+        <in>isl_printer_private.h</in>
+        <in>isl_pw_templ.c</in>
+        <in>isl_qsort.c</in>
+        <in>isl_qsort.h</in>
+        <in>isl_range.c</in>
+        <in>isl_range.h</in>
+        <in>isl_reordering.c</in>
+        <in>isl_reordering.h</in>
+        <in>isl_sample.c</in>
+        <in>isl_sample.h</in>
+        <in>isl_sample_no_piplib.c</in>
+        <in>isl_sample_piplib.h</in>
+        <in>isl_scan.c</in>
+        <in>isl_scan.h</in>
+        <in>isl_schedule.c</in>
+        <in>isl_schedule_private.h</in>
+        <in>isl_seq.c</in>
+        <in>isl_space.c</in>
+        <in>isl_space_private.h</in>
+        <in>isl_stream.c</in>
+        <in>isl_stream_private.h</in>
+        <in>isl_tab.c</in>
+        <in>isl_tab.h</in>
+        <in>isl_tab_pip.c</in>
+        <in>isl_test.c</in>
+        <in>isl_transitive_closure.c</in>
+        <in>isl_union_map.c</in>
+        <in>isl_union_map_private.h</in>
+        <in>isl_union_templ.c</in>
+        <in>isl_vec.c</in>
+        <in>isl_version.c</in>
+        <in>isl_vertices.c</in>
+        <in>isl_vertices_private.h</in>
+        <in>pip.c</in>
+        <in>polyhedron_detect_equalities.c</in>
+        <in>polyhedron_minimize.c</in>
+        <in>polyhedron_sample.c</in>
+        <in>polytope_scan.c</in>
+        <in>print.c</in>
+        <in>print_templ.c</in>
+      </df>
+      <df name="isl-polylib">
+        <df name="include">
+          <in>isl_map_polylib.h</in>
+          <in>isl_polylib.h</in>
+          <in>isl_set_polylib.h</in>
+        </df>
+        <in>isl_map_polylib.c</in>
+      </df>
+      <df name="polylib">
+        <df name="applications">
+          <in>Zpolytest.c</in>
+          <in>c2p.c</in>
+          <in>disjoint_union_adj.c</in>
+          <in>disjoint_union_sep.c</in>
+          <in>ehrhart_lower_bound.c</in>
+          <in>ehrhart_quick_apx.c</in>
+          <in>ehrhart_ranking.c</in>
+          <in>ehrhart_union.c</in>
+          <in>ehrhart_upper_bound.c</in>
+          <in>example.c</in>
+          <in>findv.c</in>
+          <in>polytest.c</in>
+          <in>pp.c</in>
+          <in>r2p.c</in>
+          <in>testCompressParms.c</in>
+          <in>testehrhart.c</in>
+          <in>testlib.c</in>
+          <in>verif_ehrhart.c</in>
+        </df>
+        <df name="include">
+          <df name="polylib">
+            <in>Lattice.h</in>
+            <in>Matop.h</in>
+            <in>NormalForms.h</in>
+            <in>SolveDio.h</in>
+            <in>Zpolyhedron.h</in>
+            <in>alpha.h</in>
+            <in>arithmetic_errors.h</in>
+            <in>arithmetique.h</in>
+            <in>compress_parms.h</in>
+            <in>ehrhart.h</in>
+            <in>errormsg.h</in>
+            <in>eval_ehrhart.h</in>
+            <in>ext_ehrhart.h</in>
+            <in>homogenization.h</in>
+            <in>matrix.h</in>
+            <in>matrix_addon.h</in>
+            <in>matrix_permutations.h</in>
+            <in>param.h</in>
+            <in>polyhedron.h</in>
+            <in>polylib.h</in>
+            <in>polylibgmp.h</in>
+            <in>polyparam.h</in>
+            <in>ranking.h</in>
+            <in>types.h</in>
+            <in>vector.h</in>
+          </df>
+        </df>
+        <df name="source">
+          <df name="arith">
+            <in>arithmetic_errors.h</in>
+            <in>arithmetique.h</in>
+            <in>errors.c</in>
+          </df>
+          <df name="ehrhart">
+            <in>ehrhart.c</in>
+            <in>eval_ehrhart.c</in>
+            <in>ext_ehrhart.c</in>
+            <in>homogenization.c</in>
+            <in>ranking.c</in>
+          </df>
+          <df name="kernel">
+            <in>Lattice.c</in>
+            <in>Matop.c</in>
+            <in>NormalForms.c</in>
+            <in>SolveDio.c</in>
+            <in>Zpolyhedron.c</in>
+            <in>alpha.c</in>
+            <in>compress_parms.c</in>
+            <in>errormsg.c</in>
+            <in>matrix.c</in>
+            <in>matrix_addon.c</in>
+            <in>matrix_permutations.c</in>
+            <in>param.c</in>
+            <in>polyhedron.c</in>
+            <in>polyparam.c</in>
+            <in>vector.c</in>
+          </df>
+          <in>count.c</in>
+        </df>
+        <in>config.h</in>
+      </df>
+      <df name="zsolve">
+        <in>banner.h</in>
+        <in>cputime.c</in>
+        <in>cputime.h</in>
+        <in>defs.c</in>
+        <in>defs.h</in>
+        <in>indexarray.c</in>
+        <in>indexarray.h</in>
+        <in>lattice.c</in>
+        <in>lattice.h</in>
+        <in>libzsolve.c</in>
+        <in>libzsolve.h</in>
+        <in>linearsystem.c</in>
+        <in>linearsystem.h</in>
+        <in>matrix.c</in>
+        <in>matrix.h</in>
+        <in>opts.c</in>
+        <in>opts.h</in>
+        <in>solve.c</in>
+        <in>valuetrees.c</in>
+        <in>valuetrees.h</in>
+        <in>varproperties.c</in>
+        <in>varproperties.h</in>
+        <in>vector.c</in>
+        <in>vector.h</in>
+        <in>vectorarray.c</in>
+        <in>vectorarray.h</in>
+      </df>
+      <in>4coins.cc</in>
+      <in>NTL_QQ.cc</in>
+      <in>barvinok.cc</in>
+      <in>barvinok_count.c</in>
+      <in>barvinok_e.cc</in>
+      <in>barvinok_ehrhart.cc</in>
+      <in>barvinok_ehrhart_options.c</in>
+      <in>barvinok_ehrhart_options.h</in>
+      <in>barvinok_enumerate.cc</in>
+      <in>barvinok_enumerate_e.cc</in>
+      <in>barvinok_enumerate_e_options.c</in>
+      <in>barvinok_enumerate_e_options.h</in>
+      <in>barvinok_enumerate_options.c</in>
+      <in>barvinok_enumerate_options.h</in>
+      <in>barvinok_summate.c</in>
+      <in>barvinok_union.cc</in>
+      <in>barvinok_union_options.c</in>
+      <in>barvinok_union_options.h</in>
+      <in>basis_reduction.c</in>
+      <in>bernoulli.c</in>
+      <in>bernoulli.h</in>
+      <in>bfcounter.cc</in>
+      <in>bfcounter.h</in>
+      <in>binomial.c</in>
+      <in>binomial.h</in>
+      <in>bound.c</in>
+      <in>cone_hilbert_basis.c</in>
+      <in>cone_integer_hull.c</in>
+      <in>config.h</in>
+      <in>conversion.cc</in>
+      <in>conversion.h</in>
+      <in>counter.cc</in>
+      <in>counter.h</in>
+      <in>decomposer.cc</in>
+      <in>decomposer.h</in>
+      <in>dpoly.cc</in>
+      <in>dpoly.h</in>
+      <in>edomain.cc</in>
+      <in>edomain.h</in>
+      <in>euler.cc</in>
+      <in>euler.h</in>
+      <in>evalue.c</in>
+      <in>evalue_convert.cc</in>
+      <in>evalue_convert.h</in>
+      <in>evalue_convert_options.c</in>
+      <in>evalue_isl.c</in>
+      <in>evalue_read.c</in>
+      <in>evalue_read.h</in>
+      <in>evalue_util.cc</in>
+      <in>evalue_util.h</in>
+      <in>fdstream.cc</in>
+      <in>fdstream.h</in>
+      <in>genfun.cc</in>
+      <in>genfun_constructor.cc</in>
+      <in>genfun_constructor.h</in>
+      <in>hilbert.c</in>
+      <in>hilbert.h</in>
+      <in>hull.c</in>
+      <in>hull.h</in>
+      <in>ilp.c</in>
+      <in>ilp.h</in>
+      <in>iscc.c</in>
+      <in>isl_obj_list.c</in>
+      <in>isl_obj_list.h</in>
+      <in>isl_obj_str.c</in>
+      <in>isl_obj_str.h</in>
+      <in>isl_param_util.c</in>
+      <in>isl_param_util.h</in>
+      <in>lattice_point.cc</in>
+      <in>lattice_point.h</in>
+      <in>lattice_width.c</in>
+      <in>lattice_width.h</in>
+      <in>laurent.cc</in>
+      <in>laurent.h</in>
+      <in>laurent_old.cc</in>
+      <in>laurent_old.h</in>
+      <in>lexmin.cc</in>
+      <in>lexmin.h</in>
+      <in>lexmin_options.c</in>
+      <in>mat_util.cc</in>
+      <in>mat_util.h</in>
+      <in>matrix_read.cc</in>
+      <in>matrix_read.h</in>
+      <in>normalization.c</in>
+      <in>normalization.h</in>
+      <in>options.c</in>
+      <in>param_polynomial.cc</in>
+      <in>param_polynomial.h</in>
+      <in>param_util.c</in>
+      <in>param_util.h</in>
+      <in>polyhedron_integer_hull.c</in>
+      <in>polyhedron_sample.c</in>
+      <in>polysign.c</in>
+      <in>polysign.h</in>
+      <in>polysign_isl.c</in>
+      <in>polysign_polylib.c</in>
+      <in>polytope_lattice_width.c</in>
+      <in>polytope_scan.c</in>
+      <in>polytope_volume.c</in>
+      <in>power.h</in>
+      <in>randomtest.c</in>
+      <in>reduce_domain.c</in>
+      <in>reduce_domain.h</in>
+      <in>reducer.cc</in>
+      <in>reducer.h</in>
+      <in>remove_equalities.c</in>
+      <in>remove_equalities.h</in>
+      <in>remove_redundant_equalities.c</in>
+      <in>sample.c</in>
+      <in>scale.c</in>
+      <in>scale.h</in>
+      <in>scarf.cc</in>
+      <in>section_array.h</in>
+      <in>semigroup_holes.cc</in>
+      <in>series.cc</in>
+      <in>skewed_genfun.cc</in>
+      <in>skewed_genfun.h</in>
+      <in>summate.c</in>
+      <in>summate.h</in>
+      <in>test.c</in>
+      <in>test_approx.c</in>
+      <in>test_bound.c</in>
+      <in>testlib.cc</in>
+      <in>topcom.h</in>
+      <in>util.c</in>
+      <in>vector_partition_chambers.c</in>
+      <in>verif_ehrhart.c</in>
+      <in>verif_ehrhart.h</in>
+      <in>verify.c</in>
+      <in>verify.h</in>
+      <in>verify_lexsmaller.c</in>
+      <in>verify_series.cc</in>
+      <in>verify_series.h</in>
+      <in>version.c</in>
+      <in>version.h</in>
+      <in>vertex_cone.cc</in>
+      <in>vertex_cone.h</in>
+      <in>volume.c</in>
+      <in>volume.h</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>configure</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>.libs/iscc</executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>.</pElem>
+              <pElem>polylib/include</pElem>
+              <pElem>isl/include</pElem>
+              <pElem>isl-polylib/include</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>HAVE_CONFIG_H</Elem>
+            </preprocessorList>
+          </ccTool>
+        </makeTool>
+      </makefileType>
+      <item path="4coins.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="NTL_QQ.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="barvinok.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="barvinok/NTL.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/NTL_QQ.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/barvinok.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/basis_reduction.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/evalue.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/genfun.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/isl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/polylib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/sample.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/set.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok/util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok_count.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="barvinok_e.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="barvinok_ehrhart.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="barvinok_ehrhart_options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="barvinok_ehrhart_options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok_enumerate.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="barvinok_enumerate_e.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="barvinok_enumerate_e_options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="barvinok_enumerate_e_options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok_enumerate_options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="barvinok_enumerate_options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="barvinok_summate.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="barvinok_union.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="barvinok_union_options.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="barvinok_union_options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="basis_reduction.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="bernoulli.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="bernoulli.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="bfcounter.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="bfcounter.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="binomial.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="binomial.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="bound.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/include/cloog/block.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/clast.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/cloog.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/constraints.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/domain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/input.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/int.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/isl/backend.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/isl/cloog.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/isl/constraintset.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/isl/domain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/loop.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/matrix.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/names.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/pprint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/program.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/state.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/statement.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/stride.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/union_domain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/include/cloog/version.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cloog/source/block.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/clast.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/cloog.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cloog/source/input.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/int.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/isl/backend.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cloog/source/isl/constraints.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cloog/source/isl/domain.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cloog/source/loop.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/matrix.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/names.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/pprint.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/program.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/state.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/statement.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/stride.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/union_domain.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/source/version.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cloog/test/generate_test.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="cloog/version.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cone_hilbert_basis.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="cone_integer_hull.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="conversion.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="conversion.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="counter.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="counter.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="decomposer.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="decomposer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="dpoly.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="dpoly.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="edomain.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="edomain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="euler.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="euler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="evalue.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="evalue_convert.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="evalue_convert.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="evalue_convert_options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="evalue_isl.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="evalue_read.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="evalue_read.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="evalue_util.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="evalue_util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <folder path="barvinok-0.35/cloog">
+        <cTool>
+          <incDir>
+            <pElem>cloog/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>CLOOG_INT_GMP=1</Elem>
+            <Elem>CLOOG_RUSAGE=/**/</Elem>
+            <Elem>HAVE_DECL_MP_GET_MEMORY_FUNCTIONS=1</Elem>
+            <Elem>HAVE_DLFCN_H=1</Elem>
+            <Elem>HAVE_GETRUSAGE=1</Elem>
+            <Elem>HAVE_INTTYPES_H=1</Elem>
+            <Elem>HAVE_MEMORY_H=1</Elem>
+            <Elem>HAVE_STDINT_H=1</Elem>
+            <Elem>HAVE_STDLIB_H=1</Elem>
+            <Elem>HAVE_STRINGS_H=1</Elem>
+            <Elem>HAVE_STRING_H=1</Elem>
+            <Elem>HAVE_STRTOL=1</Elem>
+            <Elem>HAVE_SYS_STAT_H=1</Elem>
+            <Elem>HAVE_SYS_TYPES_H=1</Elem>
+            <Elem>HAVE_UNISTD_H=1</Elem>
+            <Elem>LT_OBJDIR=".libs/"</Elem>
+            <Elem>PACKAGE="cloog"</Elem>
+            <Elem>PACKAGE_BUGREPORT="cloog-development@googlegroups.com"</Elem>
+            <Elem>PACKAGE_NAME="cloog"</Elem>
+            <Elem>PACKAGE_STRING="cloog 0.17.0"</Elem>
+            <Elem>PACKAGE_TARNAME="cloog"</Elem>
+            <Elem>PACKAGE_URL=""</Elem>
+            <Elem>PACKAGE_VERSION="0.17.0"</Elem>
+            <Elem>STDC_HEADERS=1</Elem>
+            <Elem>VERSION="0.17.0"</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/cloog/source">
+        <cTool>
+          <incDir>
+            <pElem>cloog</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/cloog/source/isl">
+        <cTool>
+          <incDir>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/cloog/test">
+        <cTool>
+          <incDir>
+            <pElem>cloog/test</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/isl">
+        <cTool>
+          <incDir>
+            <pElem>isl</pElem>
+            <pElem>isl/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/isl-polylib">
+        <cTool>
+          <incDir>
+            <pElem>isl-polylib</pElem>
+            <pElem>isl-polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_DLFCN_H=1</Elem>
+            <Elem>HAVE_INTTYPES_H=1</Elem>
+            <Elem>HAVE_MEMORY_H=1</Elem>
+            <Elem>HAVE_STDINT_H=1</Elem>
+            <Elem>HAVE_STDLIB_H=1</Elem>
+            <Elem>HAVE_STRINGS_H=1</Elem>
+            <Elem>HAVE_STRING_H=1</Elem>
+            <Elem>HAVE_SYS_STAT_H=1</Elem>
+            <Elem>HAVE_SYS_TYPES_H=1</Elem>
+            <Elem>HAVE_UNISTD_H=1</Elem>
+            <Elem>LT_OBJDIR=".libs/"</Elem>
+            <Elem>PACKAGE="isl-polylib"</Elem>
+            <Elem>PACKAGE_BUGREPORT="isl-development@googlegroups.com"</Elem>
+            <Elem>PACKAGE_NAME="isl-polylib"</Elem>
+            <Elem>PACKAGE_STRING="isl-polylib 0.01"</Elem>
+            <Elem>PACKAGE_TARNAME="isl-polylib"</Elem>
+            <Elem>PACKAGE_URL=""</Elem>
+            <Elem>PACKAGE_VERSION="0.01"</Elem>
+            <Elem>PIC</Elem>
+            <Elem>STDC_HEADERS=1</Elem>
+            <Elem>VERSION="0.01"</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/polylib">
+        <cTool>
+          <incDir>
+            <pElem>polylib</pElem>
+            <pElem>polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>GNUMP</Elem>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/polylib/source/arith">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/polylib/source/ehrhart">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/polylib/source/kernel">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="barvinok-0.35/zsolve">
+        <cTool>
+          <incDir>
+            <pElem>zsolve</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </cTool>
+      </folder>
+      <item path="fdstream.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="fdstream.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="genfun.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="genfun_constructor.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="genfun_constructor.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hilbert.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="hilbert.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="hull.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="hull.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ilp.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ilp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="iscc.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>cloog/include</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>CLOOG_INT_GMP=1</Elem>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl-polylib/include/isl_map_polylib.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="isl-polylib/include/isl_polylib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl-polylib/include/isl_set_polylib.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="isl-polylib/isl_map_polylib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/basis_reduction_tab.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/basis_reduction_templ.c" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/bound.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/cat.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/closure.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/gitversion.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/aff.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/aff_type.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/arg.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/band.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/blk.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/constraint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/ctx.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/dim.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/flow.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/hash.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/id.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/ilp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/int.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/list.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/local_space.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/lp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/map.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/map_type.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/mat.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/multi.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/obj.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/options.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/point.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/polynomial.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/polynomial_type.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/printer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/schedule.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/seq.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/set.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/set_type.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/space.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/stdint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/stream.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/union_map.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/union_set.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/vec.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/version.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/include/isl/vertices.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_aff.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_aff_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_affine_hull.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_arg.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_band.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_band_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_basis_reduction.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_bernstein.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_bernstein.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_blk.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_bound.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_bound.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_coalesce.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_config_post.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_constraint.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_constraint_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_convex_hull.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_ctx.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_ctx_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_dim.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_dim_map.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_dim_map.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_equalities.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_equalities.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_factorization.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_factorization.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_farkas.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_flow.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_fold.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_gmp.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_hash.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_hmap_map_basic_set.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_hmap_map_basic_set.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_id.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_id_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_ilp.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_input.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_list.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_list_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_list_templ.c" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_list_templ.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_local_space.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_local_space_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_lp.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_lp_no_piplib.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_lp_piplib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_map.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_map_no_piplib.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_map_piplib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_map_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_map_simplify.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_map_subtract.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_mat.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_mat_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_morph.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_morph.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_multi_templ.c" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_multi_templ.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_obj.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_options_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_output.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_point.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_point_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_polynomial.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_polynomial_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_printer.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_printer_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_pw_templ.c" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_qsort.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_qsort.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_range.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_range.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_reordering.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_reordering.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_sample.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_sample.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_sample_no_piplib.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_sample_piplib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_scan.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_scan.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_schedule.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_schedule_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_seq.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_space.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_space_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_stream.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_stream_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_tab.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_tab.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_tab_pip.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_test.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/isl_transitive_closure.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_union_map.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_union_map_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_union_templ.c" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/isl_vec.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_version.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_vertices.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/isl_vertices_private.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl/pip.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/polyhedron_detect_equalities.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/polyhedron_minimize.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/polyhedron_sample.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/polytope_scan.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="isl/print.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl/print_templ.c" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl_obj_list.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>cloog/include</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>CLOOG_INT_GMP=1</Elem>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl_obj_list.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl_obj_str.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>cloog/include</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>CLOOG_INT_GMP=1</Elem>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl_obj_str.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="isl_param_util.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="isl_param_util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lattice_point.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="lattice_point.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lattice_width.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="lattice_width.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="laurent.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="laurent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="laurent_old.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="laurent_old.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lexmin.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="lexmin.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lexmin_options.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="mat_util.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="mat_util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="matrix_read.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="matrix_read.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="normalization.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="normalization.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="options.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="param_polynomial.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="param_polynomial.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="param_util.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="param_util.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polyhedron_integer_hull.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polyhedron_sample.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polylib/applications/Zpolytest.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/c2p.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/disjoint_union_adj.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/disjoint_union_sep.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/ehrhart_lower_bound.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/ehrhart_quick_apx.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/ehrhart_ranking.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/ehrhart_union.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/ehrhart_upper_bound.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/example.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/findv.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/polytest.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/pp.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/r2p.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/testCompressParms.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/applications/testehrhart.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/testlib.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/applications/verif_ehrhart.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/Lattice.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/Matop.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/NormalForms.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/SolveDio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/Zpolyhedron.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/alpha.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/arithmetic_errors.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/arithmetique.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/compress_parms.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/ehrhart.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/errormsg.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/eval_ehrhart.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/ext_ehrhart.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/homogenization.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/matrix.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/matrix_addon.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/matrix_permutations.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/param.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/polyhedron.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/polylib.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/polylibgmp.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/polyparam.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/ranking.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/types.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/include/polylib/vector.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polylib/source/arith/arithmetic_errors.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/arith/arithmetique.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/arith/errors.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/count.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/ehrhart/ehrhart.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/ehrhart/eval_ehrhart.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/ehrhart/ext_ehrhart.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/ehrhart/homogenization.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/ehrhart/ranking.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/Lattice.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/Matop.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/NormalForms.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/SolveDio.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/Zpolyhedron.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/alpha.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/compress_parms.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/errormsg.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/matrix.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/matrix_addon.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/matrix_permutations.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/param.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/polyhedron.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/polyparam.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polylib/source/kernel/vector.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="polysign.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polysign.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="polysign_isl.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polysign_polylib.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polytope_lattice_width.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polytope_scan.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="polytope_volume.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="power.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="randomtest.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="reduce_domain.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="reduce_domain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="reducer.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="reducer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="remove_equalities.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="remove_equalities.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="remove_redundant_equalities.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="sample.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="scale.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="scale.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="scarf.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="section_array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="semigroup_holes.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="series.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="skewed_genfun.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="skewed_genfun.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="summate.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="summate.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="test_approx.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="test_bound.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="testlib.cc" ex="false" tool="1" flavor2="4">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="topcom.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="util.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="vector_partition_chambers.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="verif_ehrhart.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="verif_ehrhart.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="verify.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="verify.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="verify_lexsmaller.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="verify_series.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="verify_series.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="version.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="version.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="vertex_cone.cc" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="vertex_cone.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="volume.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>polylib/include</pElem>
+            <pElem>isl/include</pElem>
+            <pElem>isl-polylib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>HAVE_CONFIG_H</Elem>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="volume.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/banner.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/cputime.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/cputime.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/defs.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/defs.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/indexarray.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/indexarray.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/lattice.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/lattice.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/libzsolve.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/libzsolve.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/linearsystem.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/linearsystem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/matrix.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/matrix.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/opts.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="zsolve/opts.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/solve.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="zsolve/valuetrees.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/valuetrees.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/varproperties.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/varproperties.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/vector.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/vector.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="zsolve/vectorarray.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>PIC</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="zsolve/vectorarray.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

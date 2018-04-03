@@ -1,0 +1,269 @@
+% !TEX root = ../main.tex
+\chapter{Results and Evaluation}
+\label{chap:results}
+In this chapter, the results of this thesis are presented and evaluated. the chapter is divided into three sections. Section \ref{sect:results_preamble} serves as an introduction and discusses the tools and configurations that the other two sections are based upon. In section \ref{sect:results_results} the results of the thesis are described, namely the analysis built using the runtime model described in chapter \ref{chap:model} and the predictions made using that analysis. In section \ref{sect:results_evaluation} the quality of the predictions made by the analysis is evaluated and discussed on a quantitative scale.
+
+\section{Preamble}
+\label{sect:results_preamble}
+\subsection{Generation of Random Domain Iterations}
+\label{sect:results_preamble_random}
+
+For the tests conducted in \ref{sect:results_evaluation}, randomly generated domain iterations were used. A Java utility\footnote{Included in the funkyIMP repository. Requires Java 8} was built to generate these. Domain iterations are generated randomly, and embedded into the template shown in section \ref{sect:appendix_funky_template} in the appendix. The resulting class acts as the test driver for the individual test cases, executing a single domain iteration with different memory sizes ranging from $2^{10}$ elements to $2^{26} (=67108864)$ elements. \\
+
+The utility generates the expression tree that forms the body of the domain iterations recursively. The tree consists of several different subtypes of expressions, as listed below.
+
+\begin{itemize}
+	\item \textbf{Literal Expressions} hold floating point literals, e.g. \code{5.3f}.
+	\item \textbf{Identifier Expressions} are expressions consisting of an identifier that contains a private variable, e.g. \code{x}.
+	\item \textbf{Simple Array Access Expressions} hold a simple array access to the memory address that matches the current work-item, e.g. \verb!matrix[x,y]!.
+	\item \textbf{Random Array Access Expressions} hold an arbitrary array access. This is a recursive type, with expression trees generated recursively for each dimension. These may consist of identifiers, literals, or binary expressions. To avoid negative values and divisions by zero, there can be no subtractions and no divisions. Additionally, to avoid out of bounds array accesses, the accesses must be taken modulo the array bounds, e.g. \verb!matrix[342%HEIGHT, (x*2)%WIDTH]!.
+    \item \textbf{Local Array Access Expressions} hold an arbitrary access to an array that is located in local memory. The index expression is generated recursively. The same restrictions as for the index expressions for random array accesses apply. To avoid out of bounds accesses, only the seven least significant bits will be considered. (e.g. \verb!xxx[(x*23)&0x7F]!) The indexed array has to have the same name that is passed to the funkyimp compiler using the \code{LOCAL\_HACK} switch. When the argument is set, the compiler will convert accesses to the identifier specified in the argument. (e.g. \verb!-LOCAL\_HACK "xxx"!)
+	\item \textbf{Binary Expressions} each hold a basic operator ($+$, $-$, $*$, $/$) and two subexpressions, e.g. \code{3.434 - (x/y)}
+\end{itemize}
+
+Whenever a new tree is generated, it is created with a random type. Each type of tree is assigned a probability. Binary expressions have a probability of 0.5, all other expression types a probability of 0.1. To avoid the expression trees from growing too large, and hence causing the stack to overflow, the number of nodes in a tree is capped at three hundred. \\
+
+The code generator may be configured by entering values in a standard Java properties file, and passing it as a command line parameter for the utility. One may choose whether to allow divisions and complex memory accesses, and to limit the number of nodes in the generated domain iterations with a lower and an upper bound. One may also specify the number of examples that are generated, and the directory they are written to. For a description of the keys used in the configuration file, see section \ref{sect:appendix_config_random} in the appendix. \\
+
+\subsection{Setup for Automated Testing}
+\label{sect:results_preamble_automated}
+
+Test classes are created automatically with the help of a shell script that uses the generator and template files to create test cases. It may be called by executing the command \verb!./generate.sh! in the \code{AutomatedTest} directory in the funkyIMP repository. The script runs the Code generator with a specified number of examples, and moves each test case to its own folder, adding in a copy of a Makefile and a template for the result table.\\
+
+The test cases are executed by calling \code{./execute.sh} in the automated test directory. The script recurses into each of the generated directories, invoking \code{make clean} to remove any previously generated files. Afterwards it invokes \code{make} to compile the funkyIMP source. The \code{Makefile} is configured to compile the code in a way that causes the program to be executed five times, with run times being recorded for each run. In the course of the compilation the runtime for the kernel and the time spent on memory transfer will be predicted. The script captures and saves these times into a file. Next the newly generated executable is started. It prints the average runtime and the standard deviation between the different runs before terminating. This information is collected, and, finally, everything is merged into a single CSV file. \\
+
+\subsection{The Platform}
+\label{sect:results_preamble_platform}
+The model has been developed and tested on a MacBook Pro with an Intel Core i7-3740QM processor, 16 GB of RAM and on OS X 10.9. This notebook has a dedicated, \textit{Kepler Architecture} based, NVidia GT-650M GPU featuring 1024 MB of exclusive video memory, and two compute cores with a combined pipeline width of 384. It is clocked at 900 MHz.
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sect:results_results}
+
+\subsection{A Runtime Prediction Analysis}
+\label{sect:results_results_analysis} 
+In chapter \ref{chap:model}, a model of the execution time for kernels executed on the GPU was presented. The model was used to create an analysis that is able to predict execution times. It is presented here in this section. Let $\mathcal{C}$ denote the set of all cost types that are considered in the analysis. The update operator $\oplus$ is used to increment the number of occurrences of a particular type in a set of $\mathcal{C}\times\nat$ tuples. The set update operator $\uplus$ denotes a shorthand for applying the update operator on all elements of the left-hand side to the right-hand side. The definitions are shown below. 
+
+
+\begin{align}
+    \label{eq:results_results_analysis_costset}
+	\mathcal{C} &= \accolade{+_{int}, -_{int}, *_{int}, /_{int}, +_{float}, -_{float}, *_{float}, /_{float}, BASE}\\
+                    &\quad \cup \accolade{A_{Private}, A_{Local}, W_{Global}, R_{Global}^{Constant}, R_{Global}^{Cached}, R_{Global}^{Complex}, R_{Global}^{Continuous}}\notag 
+\end{align}
+
+\begin{align}
+    \label{eq:results_results_analysis_update}
+    \oplus  &:\quad   \mathcal{C} \times \nat \rightarrow \mathcal{P}\left(\mathcal{C} \times \nat\right) \rightarrow \mathcal{P}\left(\mathcal{C} \times \nat\right) \\
+    (c, n) \oplus M &=      
+        \begin{cases}
+            \accolade{(c,n)} \cup M & ((c,\_) \not\in M) \\
+            \accolade{(a,b)| (a,b) \in M \wedge a \not= c} \cup \accolade{(c, n+n') | (c,n') \in M} & ((c,\_) \in M)
+        \end{cases} \notag
+\end{align}
+
+\begin{align}
+    \label{eq:results_results_analysis_setupdate}
+    \uplus  :\quad \mathcal{P}\left(\mathcal{C} \times \nat\right) &\rightarrow \mathcal{P}\left(\mathcal{C} \times \nat\right) \rightarrow \mathcal{P}\left(\mathcal{C} \times \nat\right) \\
+    \emptyset \uplus M &= M \notag\\
+    \accolade{(a_1,n_1), (a_2, n_2), ... (a_k, n_k)} \uplus M &= (a_1,n_1) \oplus (\accolade{(a_2, n_2, ..., a_k, n_k)} \uplus M) \notag
+\end{align}
+
+The abstract semantics function collects the number of times each language construct is used. It is defined below, in equation \ref{eq:results_results_analysis_collect}. The function $accessType$, utilized in the analysis, returns the cost type of the index expression given as a parameter, according to the rules discussed in section \ref{sect:model_access_classifying}.
+
+\begin{align}
+        \label{eq:results_results_analysis_collect}
+	\abstsyntax{} &:\ \mathcal{T} \rightarrow \mathcal{P}\left(\mathcal{C} \times \nat\right)\\
+	\abstsyntax{x} &= \accolade{(\operatorname{A_{Private}}, 1)}   & (storage\ x = Private) \notag\\
+    \abstsyntax{x} &= \accolade{(\operatorname{A_{Local}}, 1)}   & (storage\ x = Local) \notag\\
+    \abstsyntax{e_1 op_{float}\ e_2} &= (op_{float}, 1) \oplus (\abstsyntax{e_1} \uplus \abstsyntax{e_2}) \notag\\
+    \abstsyntax{e_1 op_{int}\ e_2} &= (op_{int}, 1) \oplus (\abstsyntax{e_1} \uplus \abstsyntax{e_2}) \notag\\
+    \abstsyntax{e_0[e_1,...e_k]} &= (accessType\ (e_0[e_1,...,e_k]), 1) \oplus \bigoplus_{e_l = e_0}^{e_k}\abstsyntax{e_l} \notag\\
+    \abstsyntax{program} &= (BASE, 1) \oplus \abstsyntax{e_1;...e_k} \notag
+\end{align}
+
+The total execution time of a program is computed from the sum of the run times of the cost types, based on the number of work items that are to be executed and the size of the work-group. The formula is shown in equation \ref{eq:results_results_analysis_total}. The run times of the cost types may be computed using the function $assignCosts$ defined in equation \ref{eq:results_results_analysis_assign}. This utilizes the multiplicity and runtime functions deduced in chapter \ref{chap:model}.
+
+\begin{align}
+    \label{eq:results_results_analysis_assign}
+    \operatorname{assignCosts} &:\ \mathcal{C} \rightarrow \nat \rightarrow \nat \rightarrow \real\\
+    \operatorname{assignCosts} c\ n_{Ops}\ n_{Input} &= n_{Ops} * T_{c}(n_{Input}) * M_{c}(n_{Ops})\notag\\
+    \label{eq:results_results_analysis_total}
+    T_{program}(n_{Input}, n_{work-group}) &= M_{WG}(n_{work-group}) \\
+    &\qquad        *  \sum_{(c,n) \in \abstsyntax{program}} \operatorname{assignCosts}\ c\ n_{Ops}\ n_{Input}\notag
+\end{align}
+
+\subsection{Runtime Predictions}
+\label{sect:results_results_predictions}
+The analysis presented in the previous section was implemented in Java and utilizes the classes and data structures of the funkyIMP compiler to analyze domain iterations. The result of this analysis is presented in tabular form. It displays every cost type, the number of its occurrences, and the combined time estimated to be spent on it. An example output for a prediction is depicted in figure \ref{results_results_predictions_table}. \\
+
+\begin{figure}[h]
+        \begin{center}
+                \begin{tabular}{r|c|l}
+                        \textbf{Cost Type} & \textbf{\# in Kernel} & \textbf{Time} \\
+                        \hline
+                        FLOAT\_ADD & 1 & 54.82778805217169 \\
+                        FLOAT\_SUB & 0 & 0.0 \\
+                        FLOAT\_MUL & 0 & 0.0 \\
+                        FLOAT\_DIV & 0 & 0.0 \\
+                        INT\_ADD & 2 & 55.128781833866825 \\
+                        INT\_SUB & 0 & 0.0 \\
+                        INT\_MUL & 3 & 81.04237583646253 \\
+                        INT\_DIV & 4 & 1509.3169877866271 \\
+                        LOCAL\_ACCESS & 0 & 0.0 \\
+                        PRIVATE\_ACCESS & 1 & 0.0 \\
+                        GLOBAL\_WRITE & 0 & 0.0 \\
+                        CONSTANT\_GLOBAL\_READ & 0 & 0.0 \\
+                        CACHED\_GLOBAL\_READ & 0 & 0.0 \\
+                        GLOBAL\_READ & 1 & 4981.5752014161835 \\
+                        COMPLEX\_GLOBAL\_READ & 0 & 0.0  \\
+                        BASE\_COST & 1 & 3191.479259200592 \\
+                        \hline
+                        \textbf{TOTAL\_COST} & \textbf{X} & \textbf{9873.370394125905}
+                \end{tabular}
+        \end{center}
+        \caption{The table shows the predictions for the domain iteration \code{x + matrix[x,y]} on a matrix with $4096\times4096$ elements.}
+        \label{results_results_predictions_table}
+\end{figure}
+In figure \ref{fig:results_results_predictions_comparison}, the execution times of four different domain iterations are compared to predictions that were made during their compilation. The funkyIMP compiler is able to generate profiling code that executes the program multiple times, and to return the arithmetic mean and standard deviation of the runtime for the whole program and for parts marked for profiling. This was used to compare the predictions to real-world data. Each domain iteration was executed on a range of matrices with the number of elements increasing from $2^{10}$ to $2^{26}$. \\
+
+\begin{figure}
+        \centering
+        \begin{subfigure}{.475\textwidth}
+                \centering
+                \begin{tikzpicture}
+                        \begin{loglogaxis}[     small, width=0.99\textwidth,
+                                                xlabel=Number of Elements, 
+                                                ylabel=Time in µs]
+                                \addplot [red] table [x=NumElements, y=RuntimePrediction]{data/exampleComp1.csv};
+                                \addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=ActualRuntime, y error=StandardDeviation]{data/exampleComp1.csv};
+                        \end{loglogaxis}
+                \end{tikzpicture}
+                \caption{\code{428.3741f + ((matrix[1 \% HEIGHT, 1 \% WIDTH] + matrix[x,y]) + matrix[y \% HEIGHT, x \% WIDTH])}}
+                \label{fig:results_results_predictions_predA}
+        \end{subfigure}
+        \begin{subfigure}{.475\textwidth}
+                \centering
+                \begin{tikzpicture}
+                        \begin{loglogaxis}[     small, width=0.99\textwidth,
+                                                xlabel=Number of Elements, 
+                                                ylabel=Time in µs]
+                                \addplot [red] table [x=NumElements, y=RuntimePrediction]{data/exampleComp2.csv};
+                                \addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=ActualRuntime, y error=StandardDeviation]{data/exampleComp2.csv};
+                        \end{loglogaxis}
+                \end{tikzpicture}
+                \caption{\code{(((matrix[x,y] * matrix[1 \% HEIGHT, 572 \% WIDTH]) - matrix[y \% HEIGHT, y \% WIDTH]) + matrix[y \% HEIGHT, 1 \% WIDTH]) + matrix[x,y]}}
+                \label{fig:results_results_predictions_predB}
+        \end{subfigure}
+        \begin{subfigure}{.475\textwidth}
+                \centering
+                \begin{tikzpicture}
+                        \begin{loglogaxis}[     small, width=0.99\textwidth,
+                                                xlabel=Number of Elements, 
+                                                ylabel=Time in µs]
+                                \addplot [red] table [x=NumElements, y=RuntimePrediction]{data/exampleComp3.csv};
+                                \addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=ActualRuntime, y error=StandardDeviation]{data/exampleComp3.csv};
+                        \end{loglogaxis}
+                \end{tikzpicture}
+                \caption{\code{matrix[x,y] * (matrix[x,y] * matrix[x,y])}}
+                \label{fig:results_results_predictions_predC}
+        \end{subfigure}
+        \begin{subfigure}{.475\textwidth}
+                \centering
+                \begin{tikzpicture}
+                        \begin{loglogaxis}[     small, width=0.99\textwidth,
+                                                xlabel=Number of Elements, 
+                                                ylabel=Time in µs]
+                                \addplot [red] table [x=NumElements, y=RuntimePrediction]{data/exampleComp4.csv};
+                                \addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=ActualRuntime, y error=StandardDeviation]{data/exampleComp4.csv};
+                        \end{loglogaxis}
+                \end{tikzpicture}
+                \caption{\code{matrix[x,y] + matrix[1 \% HEIGHT, 1 \% WIDTH]}}
+                \label{fig:results_results_predictions_predD}
+        \end{subfigure}
+
+        \caption{Comparison of predictions against actual execution time. To increase readability both axes use logarithmic scale. The prediction is depicted in red, the observed execution time in blue, with error bars marking the standard deviation.}
+        \label{fig:results_results_predictions_comparison}
+\end{figure}
+
+For data sets with less than fifty thousand elements the prediction generated estimations that were significantly too large. This inaccuracy may be due to incorrectly deduced fixed costs for the individual cost functions. Consider, for example, the cost function for a \textit{continuous read} from global memory, $T_{cont}(x) = 0.521932ns * x + 3\mu s$. It has a constant offset of $3\mu s$. For small array sizes this has the greatest share of the total estimated time for the operation. The same holds for other cost functions with constant offsets. The cost functions are fitted to the data obtained by running the benchmark suite. Most have a constant offset, due to imprecisions in the data, hence causing mis-predictions for small array sizes. A quantitative analysis of the runtime predictions is given in section \ref{sect:results_evaluation}.
+
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation}
+\label{sect:results_evaluation}
+The quality of the predictions obtained using the runtime prediction analysis was evaluated with two tests. The first one tested the quality of the predictions made for a largely unrestricted set of randomly generated sample domain iterations, the second one for a more restricted set, to evaluate the predictions for domain iterations that are likely to occur in productive environments.
+
+\subsection{Unrestricted Sample Set}
+\label{sect:results_evaluation_unrestricted}
+The first test was executed with one thousand randomly generated domain iterations using the techniques and the platform described in section \ref{sect:results_preamble}. The number of nodes in the expression tree was limited to the interval of $[2;50]$. Other than that, no restrictions were applied. \\
+
+\begin{figure}[h]
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                xlabel=Quotient, 
+                ylabel=Number of Samples,
+                ybar,
+                ymin=0
+            ]
+            \addplot +[
+                hist={
+                    bins=30,
+                    data min=0,
+                    data max=3
+                }   
+            ] table [y=ratioPredActual] {data/automatedTestRatio.csv};
+            \end{axis}
+        \end{tikzpicture}       
+    \end{center}
+    \caption{Distribution of benchmark results for the test with an unrestricted set of domain iterations. The X axis denotes the quotient $\frac{t_{prediction}}{t_{result}}$. The closer this quotient is to 1, the better the prediction. A variation of this diagram, showing the distance between predictions and results, is shown in figure \ref{fig:appendix_diagrams_distance_random} in the appendix.}
+    \label{fig:results_evaluation_unrestricted_hist}
+\end{figure}
+
+Figure \ref{fig:results_evaluation_unrestricted_hist} displays the distribution of the quotient $\frac{prediction}{result}$ amongst the test cases in the first test. Each data point holds the result of one test case. The perfect result for a test case would be 1.0, and this holds for all of them. For the first test, the arithmetic mean of the quotient was \textbf{1.262} (rounded to four significant figures), indicating at a slight overestimation of the execution times. The standard deviation is at \textbf{0.5644}, with a standard error of \textbf{0.01785}. From this distribution, some conclusions about the nature of predictions may be drawn.\\
+
+The first one is that predictions tend to be too high, with the mean of the ratios being twenty-five percent above the expected value. Hardware specific optimizations may be the cause of this. An execution unit may be able to perform several operations at once, or start the execution of an operation while waiting for a memory access to complete. This effect was already discussed in section \ref{sect:model_ops_multiple}, in the context of multiple basic operations in the same kernel. It is also likely to be present for other types of operations. \\
+
+Imprecision whilst gathering the values may be a reason for the observed spread of these values. There may be a performance degradation when working with different screen resolutions, or with several screens, as more GPU time is required for refreshing the content that is being displayed. Added to this are applications being executed in the background. These may also require the GPU, thus possibly causing the execution of OpenCL kernels to be interrupted. \\
+
+A third reason may be inaccurate predictions in regards to division and memory accesses. Normal memory accesses that are incorrectly classified as complex, as well as complex ones classified as normal may have an adverse effect on the quality of the runtime prediction. Division operations also have been observed to behave unpredictably regarding their runtime behavior. Time spent on divisions may depend on the values used on both sides of the operator, which makes a prediction difficult, as these are rarely known at compile time. Another explanation may be the optimizations discussed above. There may be several divisions executed at once, in a pipeline or while waiting for a memory access to complete. \\
+
+
+\subsection{Restricted Sample Set}
+\label{sect:results_evaluation_restricted}
+The second test was executed with a thousand randomly generated samples. Here, however, several restrictions were put in place in order to obtain domain iterations that may conceivably be used in real world applications. The number of nodes in the expression tree was limited to the interval $[2;6]$, and memory accesses were limited to at most two nodes per index expression. Division was not allowed\footnote{Runtime prediction for divisions has proven problematic on the test machine, an effect particular to that GPU. See section \ref{sect:future_model}}. \\
+
+\begin{figure}[h]
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                xlabel=Quotient, 
+                ylabel=Number of Samples,
+                ybar,
+                ymin=0
+            ]
+            \addplot +[
+                hist={
+                    bins=30,
+                    data min=0,
+                    data max=3
+                }   
+            ] table [y=ratioPredActual] {data/automatedTestRealisticRatio.csv};
+            \end{axis}
+        \end{tikzpicture}       
+    \end{center}
+    \caption{Distribution of benchmark results for the test using the restricted example set. The X axis denotes the quotient $\frac{t_{prediction}}{t_{result}}$. The closer the quotient is to 1, the better the prediction. A variation of this diagram, showing the distance between predictions and results, figure \ref{fig:appendix_diagrams_distance_realistic}, can be found in the appendix.}
+    \label{fig:results_distribution_realistic}
+\end{figure}
+
+Figure \ref{fig:results_evaluation_unrestricted_hist} displays the distribution of the quotient $\frac{prediction}{result}$ amongst the test cases in the second test. Again, each data point holds the result of one test case, with the perfect result being 1.0. For this test, the arithmetic mean of the quotient was \textbf{1.281} (rounded to four significant figures), again indicating an overestimation of the execution times. The standard deviation is at \textbf{0.3813}, with a standard error of \textbf{0.01206}. \\
+
+Whilst the Standard Deviation of the second test's distribution is lower than the first, the arithmetic mean of the values was similar. The smaller spread of the values is caused by the absence of the complex memory accesses, as these tend to be difficult to predict. As with the first test, hardware specific optimizations may be a cause of the unexpected performance gains. \\
+
+Additionally, predictions for kernels with local memory accesses appear to be less accurate than those without. It is conceivable that there are cache effects influencing the runtime, similar to the those observed with global memory. Values that have been read once may remain available in cache. This makes further accesses to the same values as being essentially without cost. At the time of writing, these effects are not incorporated into the runtime model.

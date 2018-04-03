@@ -1,0 +1,25 @@
+domain three_d{x,y,z}: one_d{x*y*z}(o) = 
+{
+  (j,k,l) | j<x & k < y & l < z
+} 
+
+public class cur
+{
+  static int g(int x) 
+  {
+    cancel 2*x;
+  }
+       
+  static int[three_d{256,256,256}] f(int ma[three_d{256,256,256}]) 
+  {
+    cancel ma.\[a,b,c] {ma[c,a,b]+g(a)};
+  }
+        
+  static int main(int argc, inout unique String[one_d{-1}] argv) 
+  {
+    int test[three_d{256,256,256}] 
+      = new int[three_d{256,256,256}].\[x,y,z]{x+y+z};
+    test'a = f(test);
+    finally 0;
+  }
+}

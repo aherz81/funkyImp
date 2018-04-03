@@ -1,0 +1,106 @@
+// @PARAM: -PP "" -g:none -skipgenerate -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces some output to stdout.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+native class global
+{
+    static public long tick(long clocks);
+}
+
+//FFI: (native=no output, include header <stdio>)
+native class stdio
+{
+    static FILE fopen(String f,String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt,int size,int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static void printf(String txt,Object ... j); //HACK!
+}
+
+native class stdlib
+{
+    static int atoi(String s); //convert String to int
+}
+
+public class jacobi
+{
+    static int[one_d{3000}] jt(int[one_d{3000}] t, int[one_d{1000}] mt, int[one_d{3000}] m)
+    {
+        global.tick(300000);
+        //tick
+        //t' = t.\[i]{t[i] + 1};
+        //m' = m.\[i]{m[i] + 1};
+        cancel t;
+    }
+    
+    static int[one_d{3000}] jb(int[one_d{3000}] b, int[one_d{1000}] mb, int[one_d{3000}] m)
+    {
+        global.tick(300000);
+        //tick
+        //b' = b.\[i]{b[i] + 1};
+        //m' = m.\[i]{m[i] + 1};
+        cancel b;
+    }
+    
+    static int[one_d{3000}] jm(int[one_d{1000}] mt, int[one_d{1000}] mb, int[one_d{3000}] m)
+    {
+        global.tick(300000);
+        //tick
+        //mt' = mt.\[i]{mt[i] + 1};
+        //m' = m.\[i]{m[i] + 1};
+        cancel m;
+    }
+    
+    static double delta(int[one_d{3000}] oldval, int[one_d{3000}] newval, double d)
+    {
+        global.tick(300000);
+        //int[one_d{100000}] diff = oldval.\[i]{newval[i] - oldval[i]};
+        //double del = diff.\reduce{0}(i,accum) {(accum + diff[i])/1000};
+        cancel d*0.9;
+    }
+
+    //recursive version
+    static nonblocking int[one_d{3000}] step(int[one_d{3000}] t, int[one_d{1000}] mt, int[one_d{3000}] m, int[one_d{1000}] mb, int[one_d{3000}] b, double err, double d)
+    {
+        t' = jt(t, mt, m);
+        b' = jb(b, mb, m);
+        m' = jm(mt, mb, m);
+        
+        double dt = delta(t, t', d);
+        double db = delta(b, b', d);
+        double dm = delta(m, m', d);
+        
+        if(dm < err)
+        {
+            cancel m';
+        }
+        else
+        {
+            cancel step(t', mt, m', mb, b', err, dm);
+        }
+        
+    }
+
+    static int main(int argc, String[one_d{-1}] argv)
+    {
+        int[one_d{3000}] res = step(new int[one_d{3000}], new int[one_d{1000}], new int[one_d{3000}], new int[one_d{1000}], new int[one_d{3000}], 1.0E-3, 1);
+        //stdio.printf("fib %d=%d",input,res);
+        //int result = res.\reduce{0}(i, accum){(accum+res[i])};
+        finally 10;
+    }
+}

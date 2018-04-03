@@ -1,0 +1,152 @@
+digraph DepGraphPathTest {
+
+node [shape=box]
+"(204) void DepGraphTest(final int x, final int y);"->"(249) final EVO evo = new EVO()" [style=dashed,color=red] 
+"(204) void DepGraphTest(final int x, final int y);"->"(301) final int a = g1(x)" [color=grey,label="x"] 
+"(249) final EVO evo = new EVO()"->"(204) ;" [style=dashed,color=red] 
+"(301) final int a = g1(x)"->"(323) final int b = g1(a)" [color=grey,label="a"] 
+"(301) final int a = g1(x)"->"(389) final int e = g1(a)" [color=grey,label="a"] 
+"(301) final int a = g1(x)"->"(410) final int f = g2(e, a)" [color=grey,label="a"] 
+"(301) final int a = g1(x)"->"(442) final int g = g1(a)" [color=grey,label="a"] 
+"(323) final int b = g1(a)"->"(367) final int d = g1(b)" [color=grey,label="b"] 
+"(389) final int e = g1(a)"->"(410) final int f = g2(e, a)" [color=grey,label="e"] 
+"(389) final int e = g1(a)"->"(463) final int h = g2(e, f)" [color=grey,label="e"] 
+"(410) final int f = g2(e, a)"->"(463) final int h = g2(e, f)" [color=grey,label="f"] 
+"(442) final int g = g1(a)"->"(487) final int i = g3(d, h, g)" [color=grey,label="g"] 
+"(367) final int d = g1(b)"->"(487) final int i = g3(d, h, g)" [color=grey,label="d"] 
+"(463) final int h = g2(e, f)"->"(487) final int i = g3(d, h, g)" [color=grey,label="h"] 
+"(487) final int i = g3(d, h, g)"->"(204) ;" [style=dashed,color=red] 
+"(442) final int g = g1(a)[PP0][6]"[style=filled,color=azure]
+"(301) final int a = g1(x)[PP0][6]"->"(442) final int g = g1(a)[PP0][6]"
+"(442) final int g = g1(a)[PP0][6]"[style=filled,color=azure]
+"(442) final int g = g1(a)[PP0][6]"->"(487) final int i = g3(d, h, g)[PP0][10]"
+"(389) final int e = g1(a)[PP0][6]"[style=filled,color=azure]
+"(301) final int a = g1(x)[PP0][6]"->"(389) final int e = g1(a)[PP0][6]"
+"WORK 12[PP0]204"[shape=ellipse,style=filled,color=green]
+"(487) final int i = g3(d, h, g)[PP0][10]"->"WORK 12[PP0]204"
+"COM 3 [PP0]204"[shape=ellipse,style=filled,color=pink]
+"(487) final int i = g3(d, h, g)[PP0][10]"->"COM 3 [PP0]204"
+"MEM 6 [PP0]204"[shape=ellipse,style=filled,color=blue]
+"(487) final int i = g3(d, h, g)[PP0][10]"->"MEM 6 [PP0]204"
+"(463) final int h = g2(e, f)[PP1][7]"[style=filled,color=azure]
+"(463) final int h = g2(e, f)[PP1][7]"->"(487) final int i = g3(d, h, g)[PP1][10]"
+"(410) final int f = g2(e, a)[PP1][7]"[style=filled,color=azure]
+"(410) final int f = g2(e, a)[PP1][7]"->"(463) final int h = g2(e, f)[PP1][7]"
+"(301) final int a = g1(x)[PP1][6]"->"(410) final int f = g2(e, a)[PP1][7]"
+"(389) final int e = g1(a)[PP1][6]"->"(410) final int f = g2(e, a)[PP1][7]"
+"(389) final int e = g1(a)[PP1][6]"->"(463) final int h = g2(e, f)[PP1][7]"
+"WORK 14[PP1]204"[shape=ellipse,style=filled,color=green]
+"(487) final int i = g3(d, h, g)[PP1][10]"->"WORK 14[PP1]204"
+"COM 3 [PP1]204"[shape=ellipse,style=filled,color=pink]
+"(487) final int i = g3(d, h, g)[PP1][10]"->"COM 3 [PP1]204"
+"MEM 8 [PP1]204"[shape=ellipse,style=filled,color=blue]
+"(487) final int i = g3(d, h, g)[PP1][10]"->"MEM 8 [PP1]204"
+"(323) final int b = g1(a)[PP2][6]"[style=filled,color=azure]
+"(301) final int a = g1(x)[PP2][6]"->"(323) final int b = g1(a)[PP2][6]"
+"(367) final int d = g1(b)[PP2][6]"[style=filled,color=azure]
+"(323) final int b = g1(a)[PP2][6]"[style=filled,color=azure]
+"(323) final int b = g1(a)[PP2][6]"->"(367) final int d = g1(b)[PP2][6]"
+"(367) final int d = g1(b)[PP2][6]"[style=filled,color=azure]
+"(367) final int d = g1(b)[PP2][6]"->"(487) final int i = g3(d, h, g)[PP2][10]"
+"(301) final int a = g1(x)[PP2][6]"[style=filled,color=azure]
+"(204) void DepGraphTest(final int x, final int y);[PP2][55]"[color=cyan,style=filled]
+"(204) void DepGraphTest(final int x, final int y);[PP2][55]"->"(301) final int a = g1(x)[PP2][6]"
+"WORK 18[PP2]204"[shape=ellipse,style=filled,color=green]
+"(487) final int i = g3(d, h, g)[PP2][10]"->"WORK 18[PP2]204"
+"COM 3 [PP2]204"[shape=ellipse,style=filled,color=pink]
+"(487) final int i = g3(d, h, g)[PP2][10]"->"COM 3 [PP2]204"
+"MEM 9 [PP2]204"[shape=ellipse,style=filled,color=blue]
+"(487) final int i = g3(d, h, g)[PP2][10]"->"MEM 9 [PP2]204"
+"(487) final int i = g3(d, h, g)[PP3][10]"[style=filled,color=azure]
+"(487) final int i = g3(d, h, g)[PP3][10]"->"(204) ;[PP3][0]"
+"WORK 10[PP3]204"[shape=ellipse,style=filled,color=green]
+"(204) ;[PP3][0]"->"WORK 10[PP3]204"
+"COM 3 [PP3]204"[shape=ellipse,style=filled,color=pink]
+"(204) ;[PP3][0]"->"COM 3 [PP3]204"
+"MEM 7 [PP3]204"[shape=ellipse,style=filled,color=blue]
+"(204) ;[PP3][0]"->"MEM 7 [PP3]204"
+"(249) final EVO evo = new EVO()[PP4][1]"[style=filled,color=azure]
+"(204) void DepGraphTest(final int x, final int y);[PP4][55]"[color=cyan,style=filled]
+"(204) void DepGraphTest(final int x, final int y);[PP4][55]"->"(249) final EVO evo = new EVO()[PP4][1]"
+"(249) final EVO evo = new EVO()[PP4][1]"[style=filled,color=azure]
+"(249) final EVO evo = new EVO()[PP4][1]"->"(204) ;[PP4][0]"
+"WORK 1[PP4]204"[shape=ellipse,style=filled,color=green]
+"(204) ;[PP4][0]"->"WORK 1[PP4]204"
+"COM 0 [PP4]204"[shape=ellipse,style=filled,color=pink]
+"(204) ;[PP4][0]"->"COM 0 [PP4]204"
+"MEM 0 [PP4]204"[shape=ellipse,style=filled,color=blue]
+"(204) ;[PP4][0]"->"MEM 0 [PP4]204"
+"(562) int DepGraphTest2(final int x, final int y);"->"(608) final int v = g1(x)" [color=grey,label="x"] 
+"(562) int DepGraphTest2(final int x, final int y);"->"(648) final int w = g1(y)" [color=grey,label="y"] 
+"(608) final int v = g1(x)"->"(625) v'1 = g1(v)" [color=grey,label="v"] 
+"(608) final int v = g1(x)"->"(686) i'1 = g2(v, i)" [color=grey,label="v"] 
+"(648) final int w = g1(y)"->"(669) final int i = g1(w)" [color=grey,label="w"] 
+"(648) final int w = g1(y)"->"(707) w'1 = g2(w, i'1)" [color=grey,label="w"] 
+"(625) v'1 = g1(v)"->"(730) return g2(v'1, w'1);" [color=grey,label="v'1"] 
+"(686) i'1 = g2(v, i)"->"(707) w'1 = g2(w, i'1)" [color=grey,label="i'1"] 
+"(669) final int i = g1(w)"->"(686) i'1 = g2(v, i)" [color=grey,label="i"] 
+"(707) w'1 = g2(w, i'1)"->"(730) return g2(v'1, w'1);" [color=grey,label="w'1"] 
+"(730) return g2(v'1, w'1);"->"(562) ;" [color=grey,label="v'1"] 
+"(730) return g2(v'1, w'1);"->"(562) ;" [color=grey,label="w'1"] 
+"(707) w'1 = g2(w, i'1)[PP0][7]"[style=filled,color=azure]
+"(707) w'1 = g2(w, i'1)[PP0][7]"->"(730) return g2(v'1, w'1);[PP0][7]"
+"(648) final int w = g1(y)[PP0][6]"->"(707) w'1 = g2(w, i'1)[PP0][7]"
+"(686) i'1 = g2(v, i)[PP0][7]"[style=filled,color=azure]
+"(686) i'1 = g2(v, i)[PP0][7]"->"(707) w'1 = g2(w, i'1)[PP0][7]"
+"(669) final int i = g1(w)[PP0][6]"[style=filled,color=azure]
+"(648) final int w = g1(y)[PP0][6]"->"(669) final int i = g1(w)[PP0][6]"
+"(669) final int i = g1(w)[PP0][6]"[style=filled,color=azure]
+"(669) final int i = g1(w)[PP0][6]"->"(686) i'1 = g2(v, i)[PP0][7]"
+"(608) final int v = g1(x)[PP0][6]"->"(686) i'1 = g2(v, i)[PP0][7]"
+"(648) final int w = g1(y)[PP0][6]"[style=filled,color=azure]
+"(562) int DepGraphTest2(final int x, final int y);[PP0][45]"[color=cyan,style=filled]
+"(562) int DepGraphTest2(final int x, final int y);[PP0][45]"->"(648) final int w = g1(y)[PP0][6]"
+"WORK 26[PP0]562"[shape=ellipse,style=filled,color=green]
+"(730) return g2(v'1, w'1);[PP0][7]"->"WORK 26[PP0]562"
+"COM 3 [PP0]562"[shape=ellipse,style=filled,color=pink]
+"(730) return g2(v'1, w'1);[PP0][7]"->"COM 3 [PP0]562"
+"MEM 18 [PP0]562"[shape=ellipse,style=filled,color=blue]
+"(730) return g2(v'1, w'1);[PP0][7]"->"MEM 18 [PP0]562"
+"(625) v'1 = g1(v)[PP1][6]"[style=filled,color=azure]
+"(608) final int v = g1(x)[PP1][6]"->"(625) v'1 = g1(v)[PP1][6]"
+"(625) v'1 = g1(v)[PP1][6]"[style=filled,color=azure]
+"(625) v'1 = g1(v)[PP1][6]"->"(730) return g2(v'1, w'1);[PP1][7]"
+"(608) final int v = g1(x)[PP1][6]"[style=filled,color=azure]
+"(562) int DepGraphTest2(final int x, final int y);[PP1][45]"[color=cyan,style=filled]
+"(562) int DepGraphTest2(final int x, final int y);[PP1][45]"->"(608) final int v = g1(x)[PP1][6]"
+"WORK 12[PP1]562"[shape=ellipse,style=filled,color=green]
+"(730) return g2(v'1, w'1);[PP1][7]"->"WORK 12[PP1]562"
+"COM 3 [PP1]562"[shape=ellipse,style=filled,color=pink]
+"(730) return g2(v'1, w'1);[PP1][7]"->"COM 3 [PP1]562"
+"MEM 8 [PP1]562"[shape=ellipse,style=filled,color=blue]
+"(730) return g2(v'1, w'1);[PP1][7]"->"MEM 8 [PP1]562"
+"(730) return g2(v'1, w'1);[PP2][7]"[style=filled,color=azure]
+"WORK 7[PP2]562"[shape=ellipse,style=filled,color=green]
+"(730) return g2(v'1, w'1);[PP2][7]"->"WORK 7[PP2]562"
+"COM 2 [PP2]562"[shape=ellipse,style=filled,color=pink]
+"(730) return g2(v'1, w'1);[PP2][7]"->"COM 2 [PP2]562"
+"MEM 4 [PP2]562"[shape=ellipse,style=filled,color=blue]
+"(730) return g2(v'1, w'1);[PP2][7]"->"MEM 4 [PP2]562"
+"(730) return g2(v'1, w'1);[PP3][7]"->"(562) ;[PP3][0]"
+"WORK 0[PP3]562"[shape=ellipse,style=filled,color=green]
+"(562) ;[PP3][0]"->"WORK 0[PP3]562"
+"COM 0 [PP3]562"[shape=ellipse,style=filled,color=pink]
+"(562) ;[PP3][0]"->"COM 0 [PP3]562"
+"MEM 0 [PP3]562"[shape=ellipse,style=filled,color=blue]
+"(562) ;[PP3][0]"->"MEM 0 [PP3]562"
+"(777) public static int main();"->"(789) return 0;" [style=dashed,color=red] 
+"(789) return 0;"->"(777) ;" [style=dashed,color=red] 
+"(811) int g1(final int x);"->"(835) return x + 1;" [color=grey,label="x"] 
+"(835) return x + 1;"->"(811) ;" [color=grey,label="x"] 
+"(862) int g2(final int x, final int y);"->"(893) return x + y;" [color=grey,label="x"] 
+"(862) int g2(final int x, final int y);"->"(893) return x + y;" [color=grey,label="y"] 
+"(893) return x + y;"->"(862) ;" [color=grey,label="x"] 
+"(893) return x + y;"->"(862) ;" [color=grey,label="y"] 
+"(920) int g3(final int x, final int y, final int z);"->"(958) return x + y + z;" [color=grey,label="x"] 
+"(920) int g3(final int x, final int y, final int z);"->"(958) return x + y + z;" [color=grey,label="y"] 
+"(920) int g3(final int x, final int y, final int z);"->"(958) return x + y + z;" [color=grey,label="z"] 
+"(958) return x + y + z;"->"(920) ;" [color=grey,label="x"] 
+"(958) return x + y + z;"->"(920) ;" [color=grey,label="y"] 
+"(958) return x + y + z;"->"(920) ;" [color=grey,label="z"] 
+
+}

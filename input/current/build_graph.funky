@@ -1,0 +1,164 @@
+// @PARAM: -XD-skipgenerate -verbose -regression -DEPGRAPH -d ./tmp
+// @TEST noerror
+//  ./custom.sh ./tmp/DepGraphPathTest.funky
+
+import ffi.stdio;
+
+import stdlib.File;
+import stdlib.dynArray;
+
+//members of a unique class are not unique by default
+//elements of unique array are not unique?
+
+abstract class Vertex
+{
+	long id;
+	long childs[one_d{-1}];
+
+	abstract String getName();
+
+	Vertex(long id,long childs[one_d{-1}])
+	{
+		this.id=id;
+		this.childs=childs;
+	}
+}
+
+unique class uVertex
+{
+	unique long id=0;
+	dynArray<long> childs=new dynArray<long>();
+
+	public uVertex setId(long id)
+	{
+		cancel this where this.id=id;
+	}
+
+	public uVertex addChild(long id)
+	{
+		cancel this where childs=childs.append(id);
+	}
+}
+
+class Graph<T>
+{
+	private T& [one_d{-1}] verts;
+
+	public Graph(T& [one_d{-1}] verts)
+	{
+		this.verts=verts;
+	}
+
+	private nonblocking File dumpVertex(long vindex,long cindex,File dot) //FIXME: doesn__t build for blocking
+	{
+		if(cindex>=verts[vindex].childs.size[0])
+			cancel dot;
+		else
+			finally dot.write(verts[vindex].getName()).write("->").write(verts[verts[vindex].childs[cindex]].getName()).write("\n")>>>dumpVertex(vindex,cindex+1);
+	}
+
+	private nonblocking File dumpVertices(long vindex,File dot)
+	{
+		if(vindex>=verts.size[0])
+			cancel dot;
+		else
+			finally dumpVertex(vindex,0,dot)>>>dumpVertices(vindex+1);
+	}
+
+	public void dump(String name)
+	{
+		File dot=new File(name,"wb");
+		(dot.write("digraph {\n")>>>
+		dumpVertices(0)).
+		write("\n}").
+		close();
+	}
+}
+
+//FIXME: keep verts and edges seperate for better unwinding (convert unique to non-unique)?
+unique class uGraphBuilder<T extends uVertex>
+{
+	private dynArray<T> uGraph=new dynArray<T>();
+
+	public uGraphBuilder<T> addVertex(T node,out long nid)
+	{
+		uGraph__size=uGraph.size(nid__loc);
+		nid=nid__loc;
+		cancel this where uGraph=uGraph__size.append((T)node.setId(nid__loc));
+	}
+
+	public uGraphBuilder<T> addVertex(T node)
+	{
+		long nid;
+		uGraph__size=uGraph.size(nid);
+		cancel this where uGraph=uGraph__size.append((T)node.setId(nid));
+	}
+
+	public uGraphBuilder<T> addEdge(long from,long to)
+	{
+		T val;
+		uGraph__val=uGraph.replace(from,null,val);
+		cancel this where uGraph=uGraph__val.replace(from,(T)val.addChild(to));
+	}
+
+	public <R> Graph<R> getGraph()
+	{
+		T& data[one_d{-1}]=uGraph.getData();
+		cancel new Graph<R>((new R&[one_d{data.size[0]}]).\[i]{(data[i]).getData()});
+	}
+}
+
+class MyVertex extends Vertex
+{
+	public String name;
+
+	String getName()
+	{
+		cancel name;
+	}
+
+	MyVertex(String name,long id,long childs[one_d{-1}])
+	{
+		super(id,childs);
+		this.name=name;
+	}
+}
+
+unique class uMyVertex extends uVertex
+{
+	public String name;
+
+	uMyVertex(String name)
+	{
+		this.name=name;
+	}
+
+	MyVertex getData()
+	{
+		cancel new MyVertex(name,id,childs.getData());
+	}
+}
+
+
+public class cur
+{
+    static int main(int argc,inout unique String[one_d{-1}] argv)
+    {
+		//build the graph incrementally (destructively):
+		uGraphBuilder<uMyVertex> uGB=new uGraphBuilder<uMyVertex>();
+		//0,1,2
+		long aid,bid,cid;
+		//add verts
+		uGB__verts=uGB.addVertex(new uMyVertex("A"),aid).addVertex(new uMyVertex("B"),bid).addVertex(new uMyVertex("C"),cid);
+
+		//add edges
+		uGB__edges=uGB__verts.addEdge(aid,bid).addEdge(bid,cid).addEdge(cid,aid);
+
+		//convert to non unique graph (O(n+m) :( )
+		Graph<MyVertex> g=uGB__edges.<MyVertex>getGraph();
+
+		g.dump("test.dot");
+
+        finally 0;
+    }
+}

@@ -1,0 +1,7 @@
+// @PARAM: -verbose -regression -skipgenerate
+
+class Bug {   // @ERROR(compiler.err.invalid)
+	// compiler 
+	
+	int i;
+

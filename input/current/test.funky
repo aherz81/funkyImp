@@ -1,0 +1,101 @@
+// @PARAM: -XD-skipgenerate -verbose -regression -DEPGRAPH -d ./tmp
+// @TEST noerror
+//  ./custom.sh ./tmp/DepGraphPathTest.funky
+
+import ffi.stdio;
+
+unique class dynArray<T>
+{
+	private unique T data[one_d{-1}];
+	private long items;
+
+	public dynArray(T input[one_d{-1}])
+	{
+		//must copy:
+		data = new T[one_d{input.size[0]}].\[i]{input[i]};
+	}
+
+	private dynArray(unique T data[one_d{-1}],long items)
+	{
+		this.data=data;
+		this.items=items;
+	}
+
+	public dynArray()
+	{
+		data=new T[one_d{2}];
+	}
+
+	dynArray<T> append(T obj)
+	{
+		if(items+1<data.size[0])
+			data__next = data;
+		else
+			data__next = data.resize(data.size[0]*2);
+
+		data__ins=data__next where data__next[items]=obj;
+
+		cancel this where {data=data__ins;items=items+1;};
+	}
+
+	dynArray<T> removeLast(out T obj)
+	{
+		obj=data[items-1];
+
+		if(items-1>data.size[0]/2)
+			data__next=data;
+		else
+			data__next=data.resize(data.size[0]/2);
+
+		cancel this where {data=data__next;items=items-1;};
+	}
+
+	T[one_d{-1}] getData()
+	{
+		cancel data.resize(items);
+	}
+}
+/*
+unique class uGraphNode
+{
+	int id;
+	unique int childs[one_d{-1}];
+
+	uGraphNode(int id)
+	{
+		this.id=id;
+		childs=new int[one_d{0}];
+	}
+
+	uGraphNode addEdge(int target)
+	{
+		childs__add=childs.resize(childs.size[0]+1);
+		childs__final=childs__add where childs__add[childs__add.size[0]-1]=target;
+		finally this where childs=childs__final;
+	}
+}
+*/
+public class cur
+{
+	static <T> T test(T i)
+	{
+		cancel i;
+	}
+
+    static int main(int argc,inout unique String[one_d{-1}] argv)
+    {
+		test(0);
+		dynArray<int> da=new dynArray<int>();
+
+		da__full=da.append(1).append(2).append(3).append(4).append(5);
+
+		int item;
+		da__rem=da__full.removeLast(item);
+
+		int data[one_d{-1}]=da__rem.getData();
+
+		data.\[i]{stdio.printf("da__full[%d]=%d\n",i,data[i]);};
+
+        finally item;
+    }
+}

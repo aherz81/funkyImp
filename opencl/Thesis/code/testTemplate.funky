@@ -1,0 +1,66 @@
+import ffi.stdio;
+import stdlib.vector;
+import stdlib.gVector;
+
+#define TYPE float
+
+#define FUNCNAME(HEIGHT, WIDTH) transpose_ ## HEIGHT ## _ ## WIDTH
+
+#define BENCHMARK(HEIGHT, WIDTH) static \
+                    TYPE[two_d{HEIGHT, WIDTH}] \
+        FUNCNAME(HEIGHT,WIDTH) (TYPE matrix[two_d{HEIGHT, WIDTH}])\
+    {\
+        cancel new TYPE[two_d{HEIGHT, WIDTH}].\[x,y]{/*!!*/};\
+    }
+
+#define MATRIX_NAME(HEIGHT, WIDTH) matrix_ ## HEIGHT ## _ ## WIDTH       
+#define BENCHMARK_CALL(HEIGHT, WIDTH) \
+    TYPE MATRIX_NAME(HEIGHT, WIDTH)[two_d{HEIGHT, WIDTH}] \
+        = new TYPE[two_d{HEIGHT, WIDTH}].\[x,y]{(x*10)+(9-y)};\
+    FUNCNAME(HEIGHT, WIDTH)(MATRIX_NAME(HEIGHT, WIDTH))
+        
+domain two_d{x,y}:one_d{x*y}(o) = { (j,k) | j<x & k<y }
+
+public class cur
+{
+    
+    BENCHMARK(32,32)
+    BENCHMARK(32,64)
+    BENCHMARK(64,64)
+    BENCHMARK(64,128)
+    BENCHMARK(128,128)
+    BENCHMARK(256,128)
+    BENCHMARK(256,256)
+    BENCHMARK(256,512)
+    BENCHMARK(512,512)
+    BENCHMARK(512,1024)
+    BENCHMARK(1024,1024)
+    BENCHMARK(2048,1024)
+    BENCHMARK(2048,2048)
+    BENCHMARK(4096,2048)
+    BENCHMARK(4096,4096)
+    BENCHMARK(4096,8192)
+    BENCHMARK(8192,8192)
+        
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+        BENCHMARK_CALL(32,32);
+        BENCHMARK_CALL(32,64);
+        BENCHMARK_CALL(64,64);
+        BENCHMARK_CALL(64,128);
+        BENCHMARK_CALL(128,128);
+        BENCHMARK_CALL(256,128);
+        BENCHMARK_CALL(256,256);
+        BENCHMARK_CALL(256,512);
+        BENCHMARK_CALL(512,512);
+        BENCHMARK_CALL(512,1024);
+        BENCHMARK_CALL(1024,1024);
+        BENCHMARK_CALL(2048,1024);
+        BENCHMARK_CALL(2048,2048);
+        BENCHMARK_CALL(4096,2048);
+        BENCHMARK_CALL(4096,4096);
+        BENCHMARK_CALL(4096,8192);
+        BENCHMARK_CALL(8192, 8192);
+        finally 0;
+    }
+}

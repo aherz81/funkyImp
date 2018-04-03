@@ -1,0 +1,183 @@
+import ffi.stdio;
+import ffi.math;
+import stdlib.File;
+import ffi.FILE;
+
+domain two_d{x,y}:one_d{x*y}(l) = { (j,k) | j<x & k<y }
+//domain two_d{x,y} = { (j,k) | j<x & k<y }
+
+
+class Pixel
+{
+    public char r,g,b;
+}
+
+public class cur {
+
+
+    static double gaussian(double x, double mu, double sigma) {
+      finally 1.0;
+
+    }
+
+     static double sumKernal(double kernal [two_d{3,3}]){
+     finally kernal.one_d.\reduce{0}(i,accum) {accum + kernal.one_d[i] };
+    }
+
+     static double[two_d{3,3}] produce2dGaussianKernel(int radius){
+    double sigma = radius/2;
+
+      double kernal[two_d{3,3}]=new double[two_d{3,3}].\[r,c] {
+      gaussian(r, radius, sigma) * gaussian(c, radius, sigma)
+
+       };
+
+
+
+    finally kernal;
+    }
+
+    static double[two_d{10,10}] readImage(){
+
+        File f=new File("imagefile","rb");
+
+        long size;
+        f__size=f.size(size); //get file size
+
+		//FIXME: distinguish Pixel and Pixel& ??
+        Pixel data[one_d{-1}]; //here we__ll store the data
+
+		//FIXME: dynamic two_d?
+		//FIXME: reinterprete one_d as two_d
+
+        int width,height;
+
+         f__next=
+         f__size
+         .read(width)
+         .read(height);
+
+         f__next
+         .read(width*height*3,data)//read size times char into data
+         .close();//close file
+
+		 //Pixel data2d[two_d{-1,-1}]=new Pixel[two_d{width,height}];
+		 //Pixel p=data.two_d{width,height}[5,5];
+
+         stdio.printf("read: %d\n",width);
+         //stdio.printf("read: %s\n",(char[])data); //print data
+
+         double image[two_d{10,10}]=new double[two_d{10,10}].\[r,c] {
+            getdValue(data,width,r,c)
+          };
+
+
+         cancel image;
+
+     }
+
+     static double getdValue(Pixel data [one_d{-1}],int width,int r,int c){
+
+        int offset=(r*width+c)*3;
+
+        char red=data[offset].r;
+        char green=data[offset].g;
+        char blue=data[offset].b;
+
+        double grey=(red+green+blue)/(3.0*255.0);
+
+        cancel grey;
+
+    }
+
+     static int getNextRow(int row,int hight){
+        if(row==hight-1)
+             cancel 0;
+         else
+            finally row+1;
+     }
+     static int getPreRow(int row,int hight){
+       if(row==0)
+             cancel hight-1;
+         else
+            finally row-1;
+     }
+     static int getNextCol(int col,int width){
+         if(col==width-1)
+             cancel 0;
+         else
+            finally col+1;
+
+     }
+     static int getPreCol(int col,int width){
+         if(col==0)
+             cancel width-1;
+         else
+            finally col-1;
+
+     }
+      static double getValue(int r,int c, int width, int hight,double kernal [two_d{3,3}],double image [two_d{10,10}]){
+
+
+
+         // kernal.size[]
+          int preCol=getPreCol(c,width);
+          int nextCol=getNextCol(c,width);
+          int preRow=getPreRow(r,hight);
+          int nextRow=getNextRow(r,hight);
+
+          // can i use reduce here
+          // or is there a better algorithm
+          double d1=kernal[0,0]*image[preRow,preCol];
+          double d2=kernal[0,1]*image[r,preCol];
+          double d3=kernal[0,2]*image[nextRow,preCol];
+          double d4=kernal[1,0]*image[preRow,c];
+          double d5=kernal[1,1]*image[r,c];
+          double d6=kernal[1,2]*image[nextRow,c];
+          double d7=kernal[2,0]*image[preRow,nextCol];
+          double d8=kernal[2,1]*image[r,nextCol];
+          double d9=kernal[2,2]*image[nextRow,nextCol];
+
+
+         finally d1+d2+d3+d4+d5+d6+d7+d8+d9;
+
+     }
+     static double[two_d{10,10}] blurfilter(double kernal [two_d{3,3}],double image [two_d{10,10}]){
+
+        image__filtered = new double[two_d{10,10}].\[r,c] {
+        getValue(r,c,10,10,kernal,image)
+
+        };
+
+        finally image__filtered;
+
+     }
+    static int main(int argc, inout unique String argv [one_d{-1}]) {
+
+
+       /* double kernal [two_d{3,3}]=produce2dGaussianKernel(3);
+        double sum= sumKernal(kernal);
+        kernal__normalized = new double[two_d{3,3}].\[r,c] { math.round((kernal[r,c]/sum)*1000)/1000};
+
+       stdio.printf("****************************************");
+        kernal.\[i,j]{stdio.printf("kernal[%d,%d]=%f\n",i,j,kernal[i,j]);};
+        stdio.printf("****************************************");
+        stdio.printf("kernal Sum %f\n",sum);
+        stdio.printf("****************************************");
+        kernal__normalized.\[i,j]{stdio.printf("normalized[%d,%d]=%f\n",i,j,kernal__normalized[i,j]);};*/
+        double image[two_d{10,10}]=readImage();
+
+       // image.\[i,j]{stdio.printf("iamge[%d,%d]=%f\n",i,j,image[i,j]);};
+
+       /* image__nimage=blurfilter(kernal,image);
+        image__nimage.\[i,j]{stdio.printf("image__nimage[%d,%d]=%f\n",i,j,image__nimage[i,j]);};
+
+
+        */
+
+
+        finally 0;
+
+
+    }
+}

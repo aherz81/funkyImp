@@ -1,0 +1,21 @@
+% Abstract for the TUM report document
+% Included by MAIN.TEX
+
+
+\clearemptydoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}	
+
+
+
+
+
+\vspace*{2cm}
+\begin{center}
+{\Large \bf Abstract}
+\end{center}
+\vspace{1cm}
+
+This thesis presents a run time prediction model for domain iterations on GPUs. The model includes predictions about transferring data to and from the compute device, the influence of the size of the work-group and kernel base costs. On top of that, a cost model is established for basic operations and memory accesses, taking into account effects of having multiple basic operations or memory accesses in one kernel, and the properties of different kinds of memory access classes. The thesis also describes the benchmark suite developed to take the measurements the model is based on. It also explains the additions made to the funkyIMP compiler in order to facilitate the execution of code on the GPU. The thesis concludes by giving an evaluation of the predictions made with the help of the model. \\
+
+In dieser Arbeit wird eine Modell zur Vorhersage von Ausführungszeiten für Domain Iterations auf GPUs präsentiert. Dieses Modell beinhaltet Vorhersagen über den Transfer von Daten zu und von der Grafikkarte, den Einfluss der Größe der Work-Group, und den Grundkosten bei der Ausführung von Kernels auf der GPU. Dazu wird ein Kostenmodell für Rechenoperationen und Speicherzugriffe etabliert, das auch die Effekte von mehreren Rechenoperationen oder Speicherzugriffen innerhalb eines Kernels berücksichtigt. Außerdem werden Speicherzugriffe in verschiedene Klassen eingeteilt und separat bewertet. In der Arbeit wird auch die Benchmark Suite beschrieben, die im Laufe der Masterarbeit entstanden ist, um die Messungen die dem Modell zu Grunde liegen vorzunehmen. Weiterhin werden die Erweiterungen beschrieben, die am funkyIMP Compiler vorgenommen wurden, um die Ausführung von Code auf der GPU zu ermöglichen. Abschließend wird eine Bewertung der Vorhersagen, die mit dem Modell erstellt wurden durchgeführt.

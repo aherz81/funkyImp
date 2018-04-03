@@ -1,0 +1,100 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+
+import ffi.stdio;
+
+#define MATRIX_SIZE 256
+
+//#define OUTPUT
+
+domain two_d{x,y} = { (j,k) | j<x & k<y } //two free
+
+domain inner_2d{x,y} = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1}
+//domain inner_2d{x,y}:one_d{(x-2)*(y-2)}(j) = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1 & j=a*x+b}
+
+domain range{y,ys,ye}:one_d{ye-ys}(j) = { one_d{y}(a) | ys<=a & a<ye & ye<=y & j=a } //one free (a)
+
+//alex: static dom params __{}__ are optional:
+domain row{x,y}(j):one_d{y}(k) = { two_d{x,y}(a,b) | a=j & k=b } //one free(b)
+domain col{x,y}(j):one_d{x}(k) = { two_d{x,y}(a,b) | b=j & k=a }	//one free(a)
+
+//should be error, cause one_d{x} and trace{x,y} don__t have identical shape:
+domain trace{x,y}:one_d{x}(j) = { two_d{x,y}(a,b) | j=a & a=b & x=y }// one free (a), indep of j //no order on items!! (warn??)
+
+domain utriag{x,y} = { two_d{x,y}(a,b) | b>=a+1 & x=y }
+domain ltriag{x,y} = { two_d{x,y}(a,b) | b<a & x=y }
+
+//domain block{dx,dy,x,y}(i,j):two_d{dx,dy}(q,w) = { two_d{x,y}(a,b) | a>=i*dx & a<(i+1)*dx & b>=j*dy & a<(j+1)*dy & q=a & w=b }
+
+//need templates to build nice matrix/vector classes
+
+#define MATRIX_SIZE 4
+
+class vector<X>
+{
+    public static <T,A extends T[one_d{X}],B extends T[one_d{X}]>
+    T dot(A r,B c)
+    {
+  		cancel r.one_d.\reduce{0}(i,accum) {accum + r.one_d[i] * c.one_d[i]};
+    }
+}
+
+class matrix<X,Y>
+{
+	//X*Y x Y*X = Y*Y
+    public static <T,A extends T[two_d{X,Y}],B extends T[two_d{Y,X}]>
+    T[two_d{Y,Y}] mult(A a,B b)
+    {
+        cancel a.\[i,j]{vector<X>.dot(a.row(i),b.col(j))};
+    }
+}
+
+class ivector<X,T> extends T[one_d{X}]
+{
+    public <B extends ivector<X,T>>
+    T dot(B c)
+    {
+  		cancel this.one_d.\reduce{0}(i,accum) {accum + r.one_d[i] * c.one_d[i]};
+    }
+}
+
+//enrich aray type with ops??
+class imatrix<X,Y,T> extends T[two_d{X,Y}]
+{
+    public <B extends imatrix<Y,X,T>>
+    imatrix<X,Y,T> mult(B b)
+    {
+        cancel this.\[i,j]{row(i).dot(b.col(j))};
+    }
+}
+
+
+public class cur
+{
+	static void test2()
+	{
+		imatrix<MATRIX_SIZE,MATRIX_SIZE,int> mat=new int[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { r*MATRIX_SIZE+c };
+
+		mat__id=new int[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { (int)(r==c) };
+
+		mat__res=mat.mult(mat__id);
+	}
+
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+    	int matrix[two_d{MATRIX_SIZE,MATRIX_SIZE}]=new int[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { r*MATRIX_SIZE+c };
+ 		matrix__ident = new int[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { (int)(r==c) };
+
+ 		matrix__res=matrix<MATRIX_SIZE,MATRIX_SIZE>.mult(matrix,matrix__ident);
+
+		matrix__res.\[i,j]{stdio.printf("matrix__res[%d,%d]=%d\n",i,j,matrix__res[i,j]);};
+
+		test2();
+
+		finally 0; //use finally and don__t add extra wait?? does work with root??
+    }
+}

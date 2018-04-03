@@ -1,0 +1,242 @@
+// @PARAM: -PP "" -g:none -CPP -skipgenerate -d .
+// shows how to run a custom shell script as a test:
+// CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces a couple of text files.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+//foreign function interface
+
+//can use c-style pre processor: (must compile with -PP "")
+
+import ffi.stdio;
+import stdlib.GLWRAPPER;
+import ffi.glut_const;
+//import ffi.freeglut;
+//import domains.*;
+import ffi.unistd;
+
+singular KeyHandler
+{
+	char data=__?__;
+	float x=0.0f;
+	float y=0.0f;
+	float c=1.0f;
+
+	KeyHandler()
+	{
+		stdio.printf("KeyHandler alloced\n");
+	}
+
+#define DELTA 0.05f
+
+	event setColor(float col)
+	{
+		GLWRAPPER.Redisplay();
+
+		finally this where c=col;
+	}
+
+	event setKey(char key)
+	{
+		stdio.printf("KeyHandler received: %c\n",key);
+		//getKey()=key;
+		float x__next;
+		float y__next;
+
+		if(key==__w__)
+		{
+			x__next=x;
+			y__next=y+DELTA;
+		}
+		else if(key==__a__)
+		{
+			x__next=x-DELTA;
+			y__next=y;
+		}
+		else if(key==__s__)
+		{
+			x__next=x;
+			y__next=y-DELTA;
+		}
+		else if(key==__d__)
+		{
+			x__next=x+DELTA;
+			y__next=y;
+		}
+		else
+		{
+			x__next=x;
+			y__next=y;
+		}
+
+
+		GLWRAPPER.Redisplay();
+
+		finally this where {data=key; x=x__next;y=y__next;};
+	}
+
+	final char getKey()
+	{ //this code is executed after getKey() succeeded
+//		keyProcessed()=0;
+		stdio.printf("KeyHandler delivered\n");
+	}
+
+	char sample()
+	{
+		finally data;
+	}
+
+	float getX()
+	{
+		finally x;
+	}
+
+	float getY()
+	{
+		finally y;
+	}
+
+	float getC()
+	{
+		finally c;
+	}
+}
+
+class TestKey
+{
+	static KeyHandler& handler=new KeyHandler(); //use static handler, as some callbacks do not allow to pass through values
+
+	static void input(unsigned char key,int x, int y) //glut compatible keyboard callback
+	{
+		//call getKey() directly??
+		stdio.printf("received key:%c\n",key);
+		cancel handler.setKey(key); //currently not merged with resume path as keyProcessed() is blocking...
+	}
+
+	static void display()
+	{
+//		stdio.printf("display!\n");
+
+		float x=handler.getX();
+		float y=handler.getY();
+		float c=handler.getC();
+
+		GLWRAPPER glw=GLWRAPPER.Get();
+
+		glw.Clear(glut_const.cCOLOR_BUFFER_BIT).
+		Color3f(0.f, c, 0.f).
+		Begin(glut_const.cPOLYGON).
+		Vertex2f(x-0.05, y-0.05).
+		Vertex2f(x-0.05, y+0.05).
+		Vertex2f(x+0.05, y+0.05).
+		Vertex2f(x+0.05, y-0.05).
+		End().
+		Flush().
+		Swap();
+	}
+
+	static GLWRAPPER init_state(GLWRAPPER glw)
+	{
+		cancel glw.ClearColor (0.0, 0.0, 0.0, 0.0).
+		Color3f(1.0, 1.0, 1.0).
+		MatrixMode (glut_const.cPROJECTION).
+		LoadIdentity ().
+		Ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+	}
+
+	public static GLWRAPPER init(GLWRAPPER glw)
+	{
+		cancel ((glw.InitDisplayMode(glut_const.cDOUBLE | glut_const.cRGB).
+					InitWindowSize(500L,500L).
+					InitWindowPosition(0,0).
+					CreateWindow("simple"))>>>
+		init_state()).
+		DisplayFunc(display).
+		KeyboardFunc(input);
+	}
+
+	//MUST be careful with cancel!!
+	void test(char exit) //is blocking due to getKey..
+	{
+		char k=handler.getKey(); //pick up key (can still block if somebody else executed getKey())
+		if(k==exit)
+			cancel; //stop (tail) recursion
+
+
+		finally test(exit);
+	}
+
+#define COL_SUB 0.01f
+
+	void sample(char exit,float col)
+	{
+		float col__new;
+
+		if(col-COL_SUB<0)
+			col__new=1.f;
+		else
+			col__new=col-COL_SUB;
+
+		if(exit==handler.sample())
+		{
+			cancel stdio.printf("loop waiting for __%c__ has finished!\n",exit); //stop (tail) recursion
+		}
+		else
+		{
+			unistd.usleep(10000);
+			handler.setColor(col);
+		}
+
+		finally sample(exit,col__new);
+	}
+}
+
+public class cur
+{
+	static void process() //should mark possibly non-terminating loops as blocking
+	{
+		if(TestKey.handler.sample()==__q__)
+			cancel;
+		else
+		{
+			GLWRAPPER.MainLoopEvent()::
+			unistd.usleep(10000);
+		}
+
+		finally process();
+	}
+
+	static void run()
+	{
+		TestKey tk=new TestKey();
+
+		//both of the following loops eat from the same input queue!!
+
+		//can sample or test!!
+		tk.sample(__x__,1.f);
+
+		tk.sample(__y__,1.f);
+	}
+
+    static int main(int argc, inout unique String[one_d{4}] argv)
+    {
+		//create unique copy of argc:
+		unique int ac=argc;
+		GLWRAPPER glw=GLWRAPPER.Init([ac__next=ac],[argv__next=argv]);
+
+		TestKey.init(glw)::
+		run()::
+		process();
+
+		finally 0;
+    }
+}
+
+

@@ -1,0 +1,60 @@
+% Included by MAIN.TEX
+% Put your content in here or include it by using \input (\include won't work)
+
+\addtolength{\evensidemargin}{-12mm}
+
+% ---------------------------------------------------------------------------
+%
+%Introduction and Background Theory
+%
+% ---------------------------------------------------------------------------
+\part[Introduction and Theory]{Introduction and Theory}
+\label{part:introAndTheory}
+\input{chapters/Introduction}
+\input{chapters/Theory} 
+
+%% ---------------------------------------------------------------------------
+%%
+%% Description of the implementation
+%%
+%%% ---------------------------------------------------------------------------
+\part[Methodology]{Methodology}
+\label{part:methods}
+\input{chapters/FunkyCompiler}
+\input{chapters/BenchmarkSuite}
+
+%% ---------------------------------------------------------------------------
+%%
+%% Model and Results
+%%
+%%% ---------------------------------------------------------------------------
+\part[Runtime Model and Results]{Runtime Model and Results}
+\label{part:modelResults}
+\input{chapters/RuntimeModel}
+%\input{chapters/Results}
+\input{chapters/Results_Evaluation}
+
+%% ---------------------------------------------------------------------------
+%%
+%% Further Work and Conclusion
+%%
+%% ---------------------------------------------------------------------------
+\part[Further Work and Conclusion]{Further Work and Conclusion}
+\label{part:resultsAndConclusion}
+\input{chapters/FutureWork}
+\input{chapters/Conclusion}
+
+
+% ---------------------------------------------------------------------------
+%
+% Appendix
+%
+% ---------------------------------------------------------------------------
+
+\part*{Appendix}
+\addcontentsline{toc}{part}{Appendix}
+\appendix %---------------------------------------
+\input{appendix/Diagrams}
+\input{appendix/Code}
+\input{appendix/Examples}
+\input{appendix/Configurations}

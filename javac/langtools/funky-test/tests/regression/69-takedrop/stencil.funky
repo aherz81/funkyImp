@@ -1,0 +1,63 @@
+// @PARAM: -PP "" -g:none -CPP -analyzearrays -checkarrays -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+
+import ffi.stdio;
+import ffi.math;
+
+//#define STATIC
+#define SWAP swap
+
+#define ARRAY_SIZE 20 //64*2048
+
+#ifdef STATIC
+#define SIZE ARRAY_SIZE
+#else
+#define SIZE size
+#endif
+
+
+#define DUMP
+
+domain d1{x}={ (j) | j<x }
+
+domain take{x}(m):d1{m}(b) = { d1{x}(a) | a < m & b=a & m<=x }
+domain drop{x}(m):d1{x-m}(b) = { d1{x}(a) | a >= m & b=a & m>=0 }
+
+public class cur
+{
+	static unique <T,S> T[d1{S}] swap(T xs[d1{S}],int n)
+	{
+		cancel
+			xs.take(S-n).d1.\[l]{xs.drop(n).d1[l]} ~
+			xs.drop(S-n).d1.\[l]{xs.take(n).d1[l]};
+	}
+
+	static unique <T,S> T[d1{S}] swapIf(T xs[d1{S}],int n)
+	{
+		assert(n>=0);
+		cancel xs.\[l]{if (l<S-n) {xs[l+n]} else {xs[l-(S-n)]}};
+	}
+
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+		int size=ARRAY_SIZE;
+		int a[d1{SIZE}]=new int[d1{SIZE}].\[i]{i};
+
+		a__s=swap(a,ARRAY_SIZE/2);
+		a__sif=swapIf(a,ARRAY_SIZE/2);
+
+#ifdef DUMP
+		stdio.printf("a: ")::a.\[l]{stdio.printf("%d; ",a[l])};
+		stdio.printf("\na__s: ")::a__s.\[l]{stdio.printf("%d; ",a__s[l])};
+#endif
+
+		finally a__s[0]+a__sif[0]; //use finally and don__t add extra wait?? does work with root??
+    }
+}
+
+
+

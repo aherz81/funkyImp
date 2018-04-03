@@ -1,0 +1,11 @@
+unsafe \0 fwrite(inout \Z h,\N s,<T> data); 
+
+\Z main()
+{
+	\Z val=0;
+	\Z data;
+
+	//since fwrite's first arg is marked as inout, we have to supply the old AND the new value
+	fwrite([val,val#new1],4,data);
+	fwrite([val#new,val#new2],4,data);
+}

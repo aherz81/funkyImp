@@ -1,0 +1,33 @@
+<a name="l00262"></a>00262         <span class="keywordflow">if</span>( (is_right_child &amp;&amp; !treat_as_stolen) || !range.is_divisible() || partition.should_execute_range(*<span class="keyword">this</span>) ) {
+<a name="l00262"></a>00262         <span class="keywordflow">if</span>( (is_right_child &amp;&amp; !treat_as_stolen) || !range.is_divisible() || partition.should_execute_range(*<span class="keyword">this</span>) ) {
+<a name="l00197"></a>00197     <span class="keywordtype">bool</span> check_being_stolen(task &amp;) { <span class="keywordflow">return</span> <span class="keyword">false</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00199"></a>00199     <span class="keywordtype">bool</span> divisions_left() { <span class="keywordflow">return</span> <span class="keyword">true</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00284"></a>00284     <span class="keywordtype">bool</span> check_being_stolen( task &amp;t) { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00302"></a>00302     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00382"></a>00382     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00418"></a>00418     <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> task &amp;t) {
+<a name="l00450"></a>00450         <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> <a class="code" href="a00320.html">task</a>&amp; ) {<span class="keywordflow">return</span> <span class="keyword">false</span>;}
+<a name="l00197"></a>00197     <span class="keywordtype">bool</span> check_being_stolen(task &amp;) { <span class="keywordflow">return</span> <span class="keyword">false</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00199"></a>00199     <span class="keywordtype">bool</span> divisions_left() { <span class="keywordflow">return</span> <span class="keyword">true</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00284"></a>00284     <span class="keywordtype">bool</span> check_being_stolen( task &amp;t) { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00302"></a>00302     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00382"></a>00382     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00418"></a>00418     <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> task &amp;t) {
+<a name="l00450"></a>00450         <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> <a class="code" href="a00320.html">task</a>&amp; ) {<span class="keywordflow">return</span> <span class="keyword">false</span>;}
+<a name="l00262"></a>00262         <span class="keywordflow">if</span>( (is_right_child &amp;&amp; !treat_as_stolen) || !range.is_divisible() || partition.should_execute_range(*<span class="keyword">this</span>) ) {
+<a name="l00262"></a>00262         <span class="keywordflow">if</span>( (is_right_child &amp;&amp; !treat_as_stolen) || !range.is_divisible() || partition.should_execute_range(*<span class="keyword">this</span>) ) {
+<a name="l00197"></a>00197     <span class="keywordtype">bool</span> check_being_stolen(task &amp;) { <span class="keywordflow">return</span> <span class="keyword">false</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00199"></a>00199     <span class="keywordtype">bool</span> divisions_left() { <span class="keywordflow">return</span> <span class="keyword">true</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00284"></a>00284     <span class="keywordtype">bool</span> check_being_stolen( task &amp;t) { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00302"></a>00302     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00382"></a>00382     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00418"></a>00418     <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> task &amp;t) {
+<a name="l00450"></a>00450         <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> <a class="code" href="a00320.html">task</a>&amp; ) {<span class="keywordflow">return</span> <span class="keyword">false</span>;}
+<a name="l00197"></a>00197     <span class="keywordtype">bool</span> check_being_stolen(task &amp;) { <span class="keywordflow">return</span> <span class="keyword">false</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00199"></a>00199     <span class="keywordtype">bool</span> divisions_left() { <span class="keywordflow">return</span> <span class="keyword">true</span>; } <span class="comment">// part of old should_execute_range()</span>
+<a name="l00284"></a>00284     <span class="keywordtype">bool</span> check_being_stolen( task &amp;t) { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00302"></a>00302     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00382"></a>00382     <span class="keywordtype">bool</span> divisions_left() { <span class="comment">// part of old should_execute_range()</span>
+<a name="l00418"></a>00418     <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> task &amp;t) {
+<a name="l00450"></a>00450         <span class="keywordtype">bool</span> should_execute_range(<span class="keyword">const</span> <a class="code" href="a00320.html">task</a>&amp; ) {<span class="keywordflow">return</span> <span class="keyword">false</span>;}
+        if( (is_right_child && !treat_as_stolen) || !range.is_divisible() || partition.should_execute_range(*this) ) {

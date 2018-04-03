@@ -1,0 +1,289 @@
+// @PARAM: -XD-skipgenerate -verbose -regression -CPP -DEPGRAPH -d ./tmp
+// @TEST noerror
+
+//#define BRIDGE
+//44444444
+
+interface MyInterface
+{
+	void test(MyInterface i);
+}
+
+native class Imported
+{
+    group TestG;
+    
+	static blocking void blockme(); //cannot group
+	static group(TestG) void grouped();
+}
+
+native class Global
+{
+	static void printf(String txt);    
+}
+
+singular EVOTest
+{
+    
+    int i=0;
+    int j=0;
+
+    event Ev(int x)
+    {
+        Trigger(j)=x;
+        finally this where i=x;
+    }
+    
+    int sample()
+    {
+        finally i;
+    }        
+    
+    final int Trigger(int v);
+    
+}
+
+class Test<T extends MyInterface,Q extends MyInterface>
+{
+	T& xx;
+	T dxx;
+	Q yy;
+	int i;
+	MyInterface& mi;
+	
+	DepGraphPathTest obj;
+
+	Test(int v)
+	{
+	    this.obj=new DepGraphPathTest(20);
+		this.i=v;
+		mi=test(obj);
+		xx=dxx;
+	}
+
+	<G> G template_test(G g)
+	{
+	    EVOTest evo=new EVOTest();
+	    int v2;
+	    int x=evo.Trigger(v2);
+	    
+	    //evo.Trigger(5)=10; //forbidden outside evo!
+	    
+        //int mi=evo.i; //forbidden outside evo!
+	    
+		resume g;
+	}
+	
+    DepGraphPathTest test(DepGraphPathTest t)   
+    {
+        xx.test(xx);
+        yy.test(yy);
+        
+        Imported.blockme();
+
+        DepGraphPathTest res=t.dosome(10);
+        resume obj;
+    }	
+    
+    static int main()
+    {
+		Global.printf("Funy Imp greets the World!");
+    
+        resume 0;
+    }
+}
+
+
+class DepGraphPathTest extends Test<DepGraphPathTest,DepGraphPathTest> implements MyInterface
+{
+    DepGraphPathTest()
+    {
+	    super(10);
+    }
+    
+    DepGraphPathTest(int y)
+    {
+	    super(y);
+    }    
+    
+    public DepGraphPathTest dosome(int i)
+    {
+        resume this;
+    }
+
+    public void test(MyInterface i)
+    {
+        int a,b;
+        i.test(i);
+        a=DepGraphTestPaper(10,b);
+        test(this);
+    }
+
+    void MergePathTest(int y)
+    {
+        int x=y;
+        int a=g1(x);
+        int b=g1(a);
+        b__1=g2(b,x);
+        b__2=g2(b__1,x);
+        b__3=g2(b__2,x);
+        b__4=g2(b__3,i);
+        int c=g2(a,x);
+        c__1=g2(c,x);
+        c__2=g2(c__1,x);
+        c__3=g2(c__2,x);
+        c__4=g2(c__3,x);
+        int d=g2(b__4,c__4);
+    }
+
+    void DepGraphTest(int x)
+    {
+        int a=g1(x);
+        int b=g1(a);
+        b__1=g1(b);
+        b__2=g1(b__1);
+        b__21=g1(b__2);
+        b__3=g1(b__21);
+        int c=g1(a);
+        c__1=g1(c);
+        c__2=g1(c__1);
+        c__3=g1(c__2);
+        c__4=g1(c__3);
+        int d=g2(b__3,c__4);
+    }
+
+    void DepGraphTestBridge(int x)
+    {
+        int a=g1(x);
+        int b=g1(a);
+        b__1=g1(b);
+        b__2=g1(b__1);
+        b__21=g1(b__2);
+        b__22=g1(b__21);
+        b__3=g1(b__22);
+        int c=g1(a);
+        c__1=g1(c);
+        int i=g1(b__2);
+        c__2=g2(c__1,i);
+        c__3=g1(c__2);
+        c__4=g1(c__3);
+        int d=g2(b__3,c__4);
+    }
+
+    void DepGraphSplitJoin(int x)
+    {
+        int i=x;
+        int a=g1(i);
+        int b=g1(i);
+        int c=g2(a,b);
+        int d=g1(c);
+        int e=g1(c);
+        int f=g2(d,e);
+    }
+
+    void DepGraphTest2(int x)
+    {
+        int a=g1(x);
+        int b=g1(a);
+        int c=g1(a);
+        int d=g1(a);
+        int e=g3(b,c,d);
+    }
+
+    void DepGraphTest3Tiny(int y)
+    {
+        int x=y;
+        int a=g1(x);
+        a__1=g1(x);
+        a__2=g1(x);
+
+        int b=g2(a,a__1);
+        b__1=g2(a__1,a__2);
+
+        int c=g2(b,b__1);
+    }
+
+    void DepGraphTest3Small(int y)
+    {
+        int x=y;
+        int a=g1(x);
+        a__3=g1(x);
+        a__2=g1(x);
+        a__1=g1(x);
+
+        int b=g2(a,a__1);
+        b__2=g2(a__2,a__3);
+        b__1=g2(a__1,a__2);
+
+        int c=g2(b,b__1);
+        c__1=g2(b__1,b__2);
+
+        int d=g2(c,c__1);
+    }
+
+    void DepGraphTest3(int y)
+    {
+        int x=y;
+        int a=g1(x);
+        a__4=g1(x);
+        a__2=g1(x);
+        a__3=g1(x);
+        a__1=g1(x);
+
+        int b=g2(a,a__1);
+        b__2=g2(a__2,a__3);
+
+        //int im=g1(a__3);
+
+        b__3=g2(a__3,a__4);
+        b__1=g2(a__1,a__2);
+
+        int c=g2(b,b__1);
+        c__2=g2(b__2,b__3);
+        c__1=g2(b__1,b__2);
+
+        int d=g2(c,c__1);
+        d__1=g2(c__1,c__2);
+
+        int f=g2(d,d__1);
+    }
+
+    int DepGraphTestPaper(int x,out int q)
+    {
+        int a=g1(x);
+        int d=g1(a);
+        int g=g1(d);
+        a__2=g1(a);
+        int b=g1(a__2);
+        int c=g1(a__2);
+        int e=g2(b,c);
+        int f=g2(e,g);
+
+        int dangle=g1(a__2);
+
+        q=0;
+        resume f;
+    }
+
+    int g1(int x)
+    {
+        int q=x;
+        resume q;
+    }
+
+    int g2(int x,int y)
+    {
+
+        if(x>y)
+            resume x;
+        else
+            resume y;
+
+//        resume x+y;
+    }
+
+    int g3(int x,int y,int z)
+    {
+        resume x+y+z;
+    }
+}    

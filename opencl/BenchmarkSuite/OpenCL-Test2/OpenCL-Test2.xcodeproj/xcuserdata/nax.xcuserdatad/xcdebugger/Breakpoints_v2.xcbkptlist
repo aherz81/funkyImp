@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "OpenCL-Test2/BenchmarkRunner.cpp"
+            timestampString = "413983560.617129"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "BenchmarkRunner::runBenchmarkInternal(TableGenerator &amp;tableGen, bool useMemSizeInResult)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BenchmarkRunner::runBenchmarkInternal(TableGenerator&amp;, bool)"
+                  moduleName = "OpenCL-Test2"
+                  urlString = "file:///Users/nax/Documents/Development/funkyimp/opencl/scratchbox-project/OpenCL-Test2/OpenCL-Test2/BenchmarkRunner.cpp"
+                  timestampString = "413309558.436648"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "34">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BenchmarkRunner::runBenchmarkInternal(TableGenerator&amp;, bool)"
+                  moduleName = "OpenCL-Test2"
+                  urlString = "file:///Users/nax/Documents/Development/funkyimp/opencl/scratchbox-project/OpenCL-Test2/OpenCL-Test2/BenchmarkRunner.cpp"
+                  timestampString = "413309558.436844"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68"
+                  offsetFromSymbolStart = "196">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "OpenCL-Test2/BenchmarkRunner.cpp"
+            timestampString = "419343985.499926"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "BenchmarkRunner::runOperationLevel()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BenchmarkRunner::runOperationLevel()"
+                  moduleName = "OpenCL-Test2"
+                  urlString = "file:///Users/nax/Documents/Development/funkyimp/opencl/BenchmarkSuite/OpenCL-Test2/OpenCL-Test2/BenchmarkRunner.cpp"
+                  timestampString = "422367742.945678"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "69"
+                  endingLineNumber = "69"
+                  offsetFromSymbolStart = "4905">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BenchmarkRunner::runOperationLevel()"
+                  moduleName = "OpenCL-Test2"
+                  urlString = "file:///Users/nax/Documents/Development/funkyimp/opencl/BenchmarkSuite/OpenCL-Test2/OpenCL-Test2/BenchmarkRunner.cpp"
+                  timestampString = "422367742.945858"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "69"
+                  endingLineNumber = "69"
+                  offsetFromSymbolStart = "4937">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "OpenCL-Test2/BenchmarkRunner.cpp"
+            timestampString = "419343985.499926"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "BenchmarkRunner::runOperationLevel()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "OpenCL-Test2/MemoryAccessComplexityKernelProvider.cpp"
+            timestampString = "421147716.319761"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "MemoryAccessComplexityKernelProvider::getKernelString(int whichAccess)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "OpenCL-Test2/MemoryAccessComplexityComparisonProvider.cpp"
+            timestampString = "421590664.283275"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "MemoryAccessComplexityComparisonProvider::runKernel(ocl_device *device, int memorySize)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "OpenCL-Test2/MultipleMemoryAccessesKernelProvider.cpp"
+            timestampString = "425290342.781089"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "MultipleMemoryAccessesKernelProvider::runKernel(ocl_device *device, int numberOfAccesses)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

@@ -1,0 +1,219 @@
+// @PARAM: -PP "" -g:none -CPP -skipgenerate -d .
+// shows how to run a custom shell script as a test:
+// CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces a couple of text files.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+
+//can use c-style pre processor: (must compile with -PP "")
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+native class stdio
+{
+    static FILE fopen(String f,String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt,int size,int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static void printf(String txt,Object .. j); //HACK!
+}
+
+native class unistd
+{
+	static mem(0) work(0) int usleep(long amount);
+}
+
+#define GLUT_RGB			0
+#define GLUT_RGBA			GLUT_RGB
+#define GLUT_INDEX			1
+#define GLUT_SINGLE			0
+#define GLUT_DOUBLE			2
+#define GLUT_ACCUM			4
+#define GLUT_ALPHA			8
+#define GLUT_DEPTH			16
+
+#define GL_COLOR_BUFFER_BIT 0x00004000
+#define GL_POLYGON 0x0009
+#define GL_PROJECTION 0x1701
+
+native class glut
+{
+	static void glutKeyboardFunc(void callback(char key,int x, int y));
+	static void glutDisplayFunc(void callback());
+
+	static void glutInitDisplayMode(long flags);
+	static void glutInitWindowSize(long width, long height);
+	static void glutInitWindowPosition(long x, long y);
+	static void glutCreateWindow(String name);
+	static void glutInit(int argc,String[linear{4}] argv);
+	static void glutMainLoop();
+
+	static void glBegin(int i);
+	static void glEnd();
+	static void glVertex2f(double v1,double v2);
+	static void glColor3f(double v1,double v2,double v3);
+
+	static void glClearColor(double c0, double c1, double c2, double c3);
+	static void glFlush();
+	static void glClear(int i);
+
+	static void glMatrixMode (int i);
+	static void glLoadIdentity ();
+	static void glOrtho(double v0, double v1, double v2, double v3, double v4, double v5);
+
+//HACK:
+	static int POINTEROF(int value);
+	static int FLUSH();
+}
+
+
+singular KeyHandler
+{
+	char data=__?__;
+
+	KeyHandler()
+	{
+		stdio.printf("KeyHandler alloced\n");
+	}
+
+	event setKey(char key)
+	{
+		stdio.printf("KeyHandler received: %c\n",key);
+		//getKey()=key;
+		finally this where data=key;
+	}
+
+	final char getKey()
+	{ //this code is executed after getKey() succeeded
+//		keyProcessed()=0;
+		stdio.printf("KeyHandler delivered\n");
+	}
+
+	char sample()
+	{
+		finally data;
+	}
+
+}
+
+class TestKey
+{
+	static KeyHandler& handler=new KeyHandler(); //use static handler, as some callbacks do not allow to pass through values
+
+	static void input(char key,int x, int y) //glut compatible keyboard callback
+	{
+		//call getKey() directly??
+		stdio.printf("received key:%c\n",key);
+		cancel handler.setKey(key); //currently not merged with resume path as keyProcessed() is blocking...
+	}
+
+	static void display()
+	{
+		/* clear window */
+		glut.glClear(GL_COLOR_BUFFER_BIT)::
+		glut.glBegin(GL_POLYGON)::
+		glut.glVertex2f(-0.5, -0.5)::
+		glut.glVertex2f(-0.5, 0.5)::
+		glut.glVertex2f(0.5, 0.5)::
+		glut.glVertex2f(0.5, -0.5)::
+		glut.glEnd()::
+		glut.glFlush();
+	}
+
+	static void init_state()
+	{
+		glut.glClearColor (0.0, 0.0, 0.0, 0.0)::
+		glut.glColor3f(1.0, 1.0, 1.0)::
+		glut.glMatrixMode (GL_PROJECTION)::
+		glut.glLoadIdentity ()::
+		glut.glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+	}
+
+	public static void init()
+	{
+		glut.glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)::
+		glut.glutInitWindowSize(500L,500L)::
+		glut.glutInitWindowPosition(0,0)::
+		glut.glutCreateWindow("simple")::
+		init_state()::
+		glut.glutDisplayFunc(display)::
+		glut.glutKeyboardFunc(input);
+	}
+
+	//MUST be careful with cancel!!
+	loop void test(char exit)
+	{
+		if(handler.getKey) //check if we can pick up a key (doesn__t block and returns whether getKey would currently not block)
+		{
+			char k=handler.getKey(); //pick up key (can still block if somebody else executed getKey())
+			if(k==exit)
+				cancel; //stop (tail) recursion
+		}
+		else
+		{
+			unistd.usleep(1000);
+		}
+
+		finally test(exit);
+	}
+
+	loop void sample(char exit)
+	{
+		if(exit==handler.sample())
+		{
+			cancel; //stop (tail) recursion
+		}
+		else
+		{
+			unistd.usleep(1000);
+		}
+
+		finally test(exit);
+	}
+}
+
+domain linear{y}(i) = { (i) | i < y }	//index set for an array, equivalent to [1..y]
+
+public class events
+{
+	static void run()
+	{
+		TestKey tk=new TestKey();
+
+		//both of the following loops eat from the same input queue!!
+
+		//can sample or test!!
+		tk.sample(__x__)::
+		stdio.printf("loop waiting for __x__ has finished!\n");
+
+		tk.sample(__y__)::
+		stdio.printf("loop waiting for __y__ has finished!\n");
+	}
+
+    static int main(int argc, String[linear{4}] argv)
+    {
+//		stdio.printf("before_glut_init\n")::glut.FLUSH()::
+		glut.glutInit(glut.POINTEROF(argc),argv)::
+//		stdio.printf("after_glut_init\n")::glut.FLUSH()::
+		TestKey.init()::
+		run()::
+		glut.glutMainLoop();
+
+//#FORCE(t1,t2)
+
+		finally 0;
+    }
+}
+
+

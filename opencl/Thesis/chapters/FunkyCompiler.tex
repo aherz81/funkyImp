@@ -1,0 +1,321 @@
+% !TEX root = ../main.tex
+
+\chapter{Extensions to the funkyIMP Compiler}
+\label{chap:compiler}
+The funkyIMP compiler is a heavily modified version of the Java compiler. Its front end has been customized to parse code that adheres to the funkyIMP language specification. More pertinent for this thesis is the compiler back end. It has been replaced completely to emit C++11-compatible code instead of Java byte code. This generated code is then compiled to native machine code using a GNU g++ compiler. In order to support the execution of code on the GPU, several modifications had to be made to the existing code base. This chapter will discuss them in detail, starting with the overview of the process at a high level, and then explaining each component individually.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{System Overview}
+\label{sect:compiler_overview}
+Offloading a computation to the graphics card takes several steps. In the beginning, one must gather all the necessary data and code that will be used in the computation. To do this, all symbols used in the computation need to be collected, including those found in functions called within the original kernel. Functions need to be translated into OpenCL-C, local variables are passed as parameter and memory segments need to be processed and copied to the GPU. As OpenCL does not have a sophisticated array type system, some additional information such as the size of the array in bytes need to be computed. Afterwards, code to allocate space on the GPU to copy the content of the array on host side to the GPU is generated. Further steps to generate the code on the host side include the allocation of space for the computation results on the GPU, the actual invocation of the computation, and the copying of the result of the computation back to the host. \\
+
+In addition to the generation of the boilerplate code to invoke the OpenCL kernel, code for the actual kernel itself needs to be generated as well. This is done, in accordance with the rest of the compiler architecture, by utilizing the Visitor Pattern\footnote{As defined in \cite{gamma1994design}}. It iterates over the Syntax tree, generating code recursively. \\
+
+There also is a runtime component for the funkyIMP language. There is a library\footnote{See C++ Wrapper \cite{medina2013wrapper}} that encapsulates the OpenCL API calls with a simple object-oriented C++ API. The library has been slightly changed to incorporate some additional features, such as querying frequently needed device information. \\
+
+The following sections will give a detailed overview of the additions to the funkyIMP compiler developed in the course of this thesis. They will follow the steps the compiler performs to output the necessary C++ code. 
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Code generation for the Host}
+\label{sect:compiler_code}
+This section details the generation of code to handle the host side of the kernel execution, the compilation of the kernel, its execution, and the management of the necessary variables. 
+
+\subsection{Collection of Identifiers}
+\label{sect:compiler_code_identifiers}
+The first step to be performed is to collect all the identifiers needed for the execution of the kernel. There are several types of identifiers to be considered. The first type is the \textbf{local variable}. Local variables are self-contained values that can be set simply as a parameter for the kernel. The second type of identifier is the \textbf{array}. Arrays are also set as a parameter. In addition, the memory segments they point to need to be copied to the GPU. The third type of identifier holds \textbf{functions}. In the function body, other functions, arrays or local variables may be accessed too. This necessitates an analysis of the body of the function for identifiers. Functions also need to be compiled. The last type of identifiers to be considered are \textbf{Iteration Arguments}. These need not be copied, as they can be computed from the work item id of the kernel. They will be computed on the GPU at runtime.\\
+
+To gather the necessary information about the kernel, the following analysis is performed. Let $\mathcal{V}$ be the set of all the possible syntactical elements of the language (e.g. Identifiers, keywords, Literals, ...) and let $\mathcal{T}$ be the set of all syntax trees defined as in equation \ref{eq:syntaxtree}. Let $\mathcal{L} \subseteq \mathcal{V}, \mathcal{A}\subseteq \mathcal{V}, \mathcal{F}\subseteq \mathcal{V}$ be the set of all local variables, the set of all arrays and the set off all functions, respectively. Let $\mathcal{I}$ denote the set of iteration parameters of the domain. An abstraction of the syntax tree looks as follows:
+\begin{align}
+v &\in \mathcal{V}\notag\\
+t &=\begin{cases}
+		\Node(v, t_1, \dotsc, t_n) \\
+		\Leaf(v)
+	\end{cases}
+	\label{eq:syntaxtree}
+\end{align}
+With those definitions the set of all identifiers needed in a kernel, denoted as  $\mathcal{E} \subseteq \mathcal{L} \cup \mathcal{A} \cup \mathcal{F}$, can be computed as can be seen in equation \ref{eq:compiler_identifier_analysis}. Intuitively, the syntax tree is iterated over, and in the case where there are any identifiers that denote functions, their bodies will also need to be checked for identifiers as. For an example, see \ref{ex:identifiers} in the appendix.\\
+\begin{figure}[H]
+	\begin{align}
+		\llbracket \Node(T_1, T_2, \dotsc T_n) \rrbracket^\sharp &= 
+			\llbracket T_1\rrbracket^\sharp \cup \llbracket T_2 \rrbracket^\sharp \cup \dotsb \cup \llbracket T_n\rrbracket^\sharp &\quad \label{eq:compiler_identifier_analysis} \\
+		\llbracket \Leaf(i) \rrbracket^\sharp &= 
+			\{i\} &\quad (i \in \mathcal{L} \cup \mathcal{A}) \notag\\
+		\llbracket \Leaf(f) \rrbracket^\sharp &= 
+			\{f\} \cup \llbracket\operatorname{resolve}(f)\rrbracket^\sharp &\quad (f \in \mathcal{F}) \notag\\
+		\quad&\quad&\quad \notag\\
+		resolve &: \mathcal{F} \rightarrow \mathcal{T} &\quad \notag\\
+		resolve (f) &= t_f &\quad \text{where $t_f$ is the body of $f$.} \notag
+	\end{align}
+	\caption{Analysis to extract the set of used identifiers from an expression.}
+\end{figure}
+
+Some of the identifiers captured in $\mathcal{E}$ may not be necessary. The iteration arguments are generated on the GPU at runtime, as they depend on the number of the work item they are executed upon. Hence, they need to be taken from the set. Additionally, any variables that are locally defined in called functions may be taken from the set as well. This yields the final set of needed identifiers $\mathcal{E}^* = \mathcal{E} \setminus (\mathcal{I} \cup \mathcal{L}_{local}$
+
+
+\subsection{Code for needed variables}
+\label{sect:compiler_variable_init}
+All array variables that need to be copied to the GPU have to be processed. They have to be mapped to the more simple, C-style memory segment while keeping the information about the array's structure intact. Specifically, the lengths of the array's dimensions need to be obtained. Additionally, code for the allocation of the memory on the GPU has to be generated. For the purpose of code generation, with $\mathbb{T}_p$ denoting the set of primitive types (e.g \code{float}, \code{int}, \code{double}, \code{char},...), an array may be described as follows.
+\begin{gather*}
+	A = \langle m, d, T \rangle \\
+	T \in \mathbb{T}_p, d \in \nat^n, m \in T^{s}\ where\ s = \prod_{k=1}^n d_k
+\end{gather*}
+With this definition the code generation function $code_{Host}$ for array variables can be defined as given in equation \ref{eq:compiler_code_array}. The first step is to extract a simple pointer to the array's memory segment using the FunkyIMP runtime method \code{toNative()}. The next step is to allocate enough space on the GPU to fit the memory segment just extracted. The total size of that segment is calculated from the size of the primitive data type of the array and the product of the sizes of each dimension. Additionally, for each dimension, a local variable, holding its size, is allocated. Finally, the memory segment is copied over to the GPU. \\
+
+Code generation for local variables with a primitive type is less complex than conde generation for arrays. They can be defined as $L = \langle T, v\rangle$ with $T \in \mathbb{T}_p$ and $v\in T$. Their code generation function is given in equation \ref{eq:compiler_code_local}.\\
+
+
+\begin{align}
+\label{eq:compiler_code_array}
+code_{Host}\ A\ = &\ T\ *m = A\rightarrow \operatorname{toNative();} \\
+           				&\ \text{ocl\_mem}\ m_{GPU}\ = \notag\\
+           				&\ \qquad\operatorname{device.malloc}\left (\operatorname{sizeof}\left(T * \prod_{k=1}^n d_k\right),\operatorname{CL\_MEM\_READ\_ONLY}\right);\notag\\
+            			&\ \operatorname{int} m_{dim_0}= d_1;\notag\\
+            			&\ \qquad\vdots\notag\\
+            			&\ \operatorname{int} m_{dim_n}= d_n; \notag\\
+            			&\ m_{GPU}\operatorname{.copyFrom}(m);\notag\\
+            			&\ \notag\\
+	\label{eq:compiler_code_local}
+code_{Host}\ L\ = &\ T\ a = v;
+\end{align}
+
+
+
+\subsection{The return value}
+The return value of a kernel has to be treated slightly differently. There is no direct counterpart on the host, as the object is created by the domain iteration. Hence, memory for the return value needs to be allocated on the GPU as well as on the host. In contrast to the arrays in the section above, the memory is not allocated in read only mode but in write only mode. The return value cannot be referenced from funkyIMP code, so it is not necessary to make it readable. In addition, the memory is not initialized to anything and contains undefined values. \\
+
+\begin{align}
+\label{eq:compiler_code_return}
+code_{Host}^{begin}\ R\ = &\ T\ *ret = \operatorname{new}\ T\left[\prod_{k=1}^n d_k\right];  \\
+           			&\ \text{ocl\_mem}\ ret_{GPU}\ = \notag\\
+           			&\ \qquad\operatorname{device.malloc}\left (\operatorname{sizeof}\left(T * \prod_{k=1}^n d_k\right),\operatorname{CL\_MEM\_WRITE\_ONLY}\right);\notag
+\end{align}
+
+
+The return value needs to be copied back to the host after the computation, and then also translated back into a format compatible with the funkyIMP runtime. The code generation function is shown in equation \ref{eq:compiler_code_return_2}. First a new \code{LinearArray} object is created. Then a new \code{Version} object ($ret_{funky'}$) is built. It is a version of the array enriched with information about the structure of the array, and the value that is returned as the result of the computation.
+
+\begin{align}
+\label{eq:compiler_code_return_2}
+code_{Host}^{end}\ R \ = 	&\ ret_{GPU}\operatorname{.copyTo}(ret);\\
+				 	&\ \operatorname{funky}::\operatorname{LinearArray}<T> *ret_{funky} = \notag\\
+				 	&\ \qquad \operatorname{new} \operatorname{funky}::\operatorname{LinearArray}<T>\left(\prod_{k=1}^n d_k,ret\right); \notag\\
+            		&\ \operatorname{funky}::\operatorname{LinearArray}<T>::\operatorname{Version}\ * ret_{funky'} = \notag\\
+            		&\ \qquad \operatorname{new} \operatorname{funky}::\operatorname{LinearArray}<T>::\operatorname{Version}(ret_{funky},n,d_1,\dotsc, d_n); \notag
+\end{align}
+
+\subsection{Code generation for the Domain iteration}
+\label{sect:compiler_code_program}
+There are more tasks that need to be performed apart from the allocation of variables. The actual code for the GPU needs to be compiled and the parameters set, and then the code needs to be executed. Equation \ref{eq:compiler_code_whole} shows the code generation function $code_{Host}$, a formal definition of the whole process. The kernel is first compiled for execution on the target device. Then code for all variables gathered with the analysis presented in section \ref{sect:compiler_code_identifiers} will be generated. The process is similar for the allocation of the return value. Afterwards, the kernel arguments need to be set. For primitive variables it is enough to pass the address they are stored at, while for an array the actual OpenCL memory object and the variables holding its dimensions need to be given. Subsequently the kernel is executed with $|R|$ work items and a work group size that is the greatest even divider of the number of work items that is less than or equal to the maximum work group size of the GPU $W_{max}$. Section \ref{ex:generated_code} in the appendix shows the actual output of the code generation process for a domain iteration. The identifier names in the output generated by the compiler differ slightly from the ones in the hypothetical output of the the code generation function $code_{Host}$ specified in this section. This deviating naming schema is utilized in the implementation to avoid duplicate identifier names. \\ %Certain about that ???
+
+\begin{figure}
+	\begin{align}
+		\label{eq:compiler_code_whole}
+		code_{Host}\ P\ = 	&\ \operatorname{ocl\_kernel}\ k( \& device, \text{``tmp/k.cl''});\\
+							&\ code_{Host}\ V_1 \notag \\
+							&\ \qquad \vdots \notag \\
+							&\ code_{Host}\ V_n \notag \\
+							&\ code_{Host}^{begin}\ R \notag \\
+							&\ k\operatorname{.setArgs}(args(V_1),\dotsc, args(V_n))\notag\\
+							&\ k\operatorname{.run}(workgroup(|R|), |R|)\notag\\
+							&\ \operatorname{device}.\operatorname{finish}();\notag\\
+							&\ code_{Host}^{end}\ R \notag \\
+							&\ \operatorname{return} ret_{funky'} \notag \\
+							&\ \notag \\
+		\label{eq:compiler_code_whole_idents}
+		\left\{V_1, \dotsc, V_n \right\} = &(\abstsyntax{P}_{ident} \cup R) \setminus (\mathcal{I}\cup \mathcal{F})\\
+		\label{eq:compiler_code_whole_args}
+		args\ V = & 	\begin{cases} 
+						\&V & V \in \mathcal{L} \\
+						\quad\\
+						\begin{matrix}	
+							V.\operatorname{mem}()\\
+							\&v_{dim_0} \\
+							\vdots\\
+							\&v_{dim_n} 
+						\end{matrix} & V \in \mathcal{A}
+					\end{cases} \\
+		\label{eq:compiler_code_whole_workgroup}
+		\left|\langle \_, d, \_\rangle\right| =	&\ \prod_{k=1}^n d_k \\
+		workgroup\ n\ = &\ \operatorname{max}\left\{w |\ w > 0 \wedge w < n \wedge w < W_{max} \wedge w\mod n = 0 \right\} 
+	\end{align}
+	\caption{Code generation function for the whole domain iteration.}
+\end{figure}
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Code Generation on the GPU}
+\label{sect:compiler_gpu}
+In this section the part of the code generation that produces code for the GPU is explained. There are two steps to the process: The first step is to gather all the functions that are called from the kernel, and to build a dependency graph. The second step is to generate code for them and the kernel. The kernel is a function as well, but there are several special properties that need to be considered. 
+
+\subsection{Dependent Function Analysis}
+\label{sect:compiler_gpu_dependent_functions}
+One of the most important ways to structure code is the use of functions and procedures. Unfortunately, support for function calling in OpenCL C is somewhat limited. Function calls will be inlined, and hence it is impossible to generate code for programs with recursive function calls. \cite{khronos2012specification} \\
+
+This necessitates an analysis of the called functions. The call graph of a function can be obtained from the funkyIMP compiler. The call graph in general has the properties of a directed graph, each function being represented by a vertex, and each function call being an edge. All functions that are reachable from the kernel vertex\footnote{i.e $\Path(kernel, f)$} of the call graph need to be included in the translation. Recursion is not allowed, hence a way to detect it is needed. In terms of graph theory, a function $f$ is recursive iff $\Path(f,f)$. It can be seen that this is the case if the graph has a cycle. In case the graph is not recursive, the graph needs to be topologically sorted so that the code for functions can be generated in a way that makes forward declarations unnecessary.
+\begin{small}
+	\begin{align*}
+		G &= \left\langle V, E \right\rangle,\ E \subseteq V\times V &\ \text{(A directed graph)} \\
+		\Path(v_1,v_2) &\Leftrightarrow (v_1, v_2) \in E \vee \exists v':(v_1, v') \in E \wedge \Path(v', v_2) &\ \text{(Path between $v_1$, $v_2$)}\\
+		\operatorname{DAG}(G) &\Leftrightarrow \neg\exists(v_1,v_2)\in E : \Path(v_1,v_2) \wedge \Path(v_1, v_2) &\ \text{(Directed Acyclic Graph)} \\
+		\operatorname{Sorted}([v_1,\dotsc,v_n]) &\Leftrightarrow \neg\exists\ 1\leq k\leq n:\exists\ 1\leq l \leq n: \Path(v_l, v_k) &\ \text{(	Topologically sorted List)}
+	\end{align*}
+\end{small} 
+Section \ref{ex:callgraph} in the appendix illustrates these principles with an example. The code generation for functions is discussed in the next section.
+
+\subsection{Code generation for Functions}
+\label{sect:compiler_gpu_functions}
+
+For the compilation of functions there are two tasks that need to be performed. The first is to generate the function signature, the second to generate the function body itself. The first step will be described here, while the second step is covered below, in section \ref{sect:compiler_gpu_code_kernel}, where code generation for GPU kernels is described.
+
+\paragraph{Function Headers} in C need to have a unique name, whilst funkyIMP allows overloaded functions. For this reason, the compiler needs to generate a unique name from the function specified in funkyIMP. Additionally, if there are any array types, they need to be translated to the appropriate pointer types. The code generation function is given in equation \ref{eq:compiler_code_function_header}.
+
+\begin{align}
+	\label{eq:compiler_code_function_header}
+	code_{GPU}\ T_{ret}\ f(\operatorname{params})
+		\{ \operatorname{body} \}\ = 	&\ code_{GPU}\ T_{ret} &\ \\
+									 	&\ name \ (T_{ret}\ f(\operatorname{params})) &\ \notag \\
+										&\ (code_{GPU} \operatorname{params}) &\ \notag\\
+										&\ code_{GPU} \operatorname{body} &\ \notag\\
+	code_{GPU}\ T\ = 					&\ T &\ (T\in\mathcal{T}_p) \notag \\
+	code_{GPU}\ T\ =					&\ T * &\ (\text{for others}) \notag \\
+	code_{GPU}\ \operatorname{params}\ =&\ code_{GPU}\ T_1\ t_1, &\ \notag\\
+										&\ \qquad\vdots &\ \notag\\
+										&\ code_{GPU}\ T_n\ t_n &\ \notag\\
+	code_{GPU}\ \operatorname{body}\ =  &\ \{code_{GPU} (S_1;\dotsc S_m)\} \notag
+\end{align}
+\begin{align*}
+	name (T_{ret}\ f(\operatorname{T_1 t_1, \dotsc T_n t_n})) &=\ T_{ret}\_f\_T_1\_\dotsc\_T_n
+\end{align*}
+
+
+\subsection{Code Generation for GPU Kernels}
+\label{sect:compiler_gpu_code_kernel}
+The kernel itself is also an OpenCL function, but it has some special properties. Some of these stem from OpenCL and some are limitations imposed by the manner in which funkyIMP handles the domain iterations. OpenCL states that kernels are to be marked with a special \code{kernel} keyword. It is also required that the return type of all kernels is void. The result is stored in a section of the global memory, and a pointer to that section is passed as a parameter. There are also some special considerations for the parameters. Arrays need the \code{global} address space specifier, whilst primitive values need no address space qualifier which makes them implicitly \code{private}. This leads to the slightly modified code generation function specified in equation \ref{eq:compiler_code_kernel_header}.
+
+\begin{align}
+	\label{eq:compiler_code_kernel_header}
+	code_{GPU}\ T_{ret}\ f(\operatorname{params})
+		\{ \operatorname{body} \}\ = 	&\ \operatorname{\_\_kernel} \operatorname{void} k &\ \\
+										&\ (code_{GPU} \operatorname{params}, code_{GPU} V_{R}) &\ \notag\\
+										&\ code_{GPU}^{kernel} \operatorname{body} V_R &\ \notag\\
+	code_{GPU}\ V\ = 					&\ T_{V}\ n_V &\ (T_V \in\mathcal{T}_p) \notag \\
+	code_{GPU}\ V\ =					&\ \operatorname{global} T_V * n_v, &\ (T_V \not\in \mathcal{T}_P)&\ \notag \\
+										&\	\operatorname{int}\ V_{dim_0},&\ \notag \\
+										&\	\qquad\vdots&\ \notag \\
+										&\	\operatorname{int}\ V_{dim_n}&\ \notag \\					
+	code_{GPU}\ \operatorname{V_1,\dotsc, V_n}\ =&\ code_{GPU}\ V_1, &\ \notag\\
+										&\ \qquad\vdots &\ \notag\\
+										&\ code_{GPU}\ V_n &\ \notag
+\end{align}
+
+The parameters $V_1$ to $V_n$ are equal to the ones specified in equation \ref{eq:compiler_code_whole_idents}. Their order is also identical. The name of the kernel ($k$) also matches the name of the kernel on the host side.\\ 
+
+The code generation function given above does not define the code generation for the body of the kernel. In section \ref{sect:compiler_gpu_functions}, when translating helper functions, it was enough to simply compile the statements of the function. The domain iteration however is only an expression, not a series of statements, hence its result needs to be assigned to something so that it does not get lost. In this case it is the element of the return value that is currently processed. That element is determined by querying for the work item ID of the currently executed work item and reconstructing the original position in the array from that. The process can be formalized with the code generation function given in equation \ref{eq:compiler_code_kernel_body}.
+
+\begin{align}
+	\label{eq:compiler_code_kernel_body}
+	code_{GPU}\ \{e\}\ \langle m,d,T\rangle =	&\ \{\\
+						&\quad \operatorname{int} id_{workItem} = \operatorname{get\_global\_id}(0);\notag\\
+						&\quad \operatorname{int} pos_{dim_0} = id_{workItem} / (stride\ d\ 0)\ \%\ d_0;\notag\\
+						&\quad\qquad\vdots\notag\\
+						&\quad \operatorname{int} pos_{dim_n} = id_{workItem} / (stride\ d\ n)\ \%\ d_n;\notag\\
+						&\quad m[id_{workItem}] = code_{GPU}\ e;\notag\\
+						&\ \notag\}\\
+	stride\ d\ k = 		&\ \prod_{i=k+1}^{n} d_i \notag
+\end{align}
+
+The reconstruction of the position in the array is taking advantage of a simplification of the problem domain. It is assumed that the array is an n-dimensional (hyper)-rectangular object. With that simplification one can calculate the position in the current dimension by first dividing the absolute position by the stride. The stride is the amount of memory that has to be skipped in order to get to the element that has the next position in the current dimension. The position in the current dimension can be obtained by taking the result of the division modulo of the size of the current dimension.
+
+\subsection{Code Generation for funkyIMP Constructs}
+\label{sect:compiler_gpu_code_generic}
+There are other funkyIMP constructs that need to be translated to OpenCL C. They are described in this section.
+
+\subsubsection{The Block Statement}
+In C, as well as in funkyIMP, the block statement is used to open a scope for variables and group several statements into a unit, for example to execute them multiple times in a loop. Code generation is fairly straightforward, as there are no significant differences between funkyIMP and OpenCL.
+
+\begin{align}
+	code_{GPU}\ \{S_1;\dotsc S_n\}\ =	&\ \{\\
+							&\quad code_{GPU}\ S_1\notag\\
+							&\quad\qquad\vdots\notag\\
+							&\quad code_{GPU}\ S_n\notag\\
+							&\ \}\notag
+\end{align}
+
+\subsubsection{The \code{if} Statement}
+The if statement, like the block, is very similar in funkyIMP and C. The \code{if} statement is used to branch the execution and enable conditional execution of statements. It is important to note that due to the fact that code is executed in a SIMT fashion, if one work item in a work-group executes a branch, all the other work items in the work-group also have to execute this branch, even if they did not take the branch\footnote{In this case, they ignore the results made in the branch.}. For code that is heavy with branches, this may lead to a significant performance overhead. Whenever possible, branches should be avoided, or replaced by conditional assignments. The code generation function for the \code{if} statement looks as follows. \\
+
+\begin{align}
+	code_{GPU}\ \operatorname{if}\ (condition) S_1 \operatorname{else} S_2\ =	&\ \operatorname{if} (code_{GPU} condition)\\
+											&\quad code_{GPU}\ S_1 \notag\\
+											&\ \operatorname{else} \notag\\
+											&\quad code_{GPU}\ S_2 \notag
+\end{align}
+
+\subsubsection{Assignments}
+Assignments in funkyIMP are slightly more involved. The language has a linear type system that only allows single assignment of identifiers. To reduce unnecessary type annotations, one may assign a value of the same type as the old identifier by suffixing the original name. The example below illustrates this.
+
+\lstinputlisting[morekeywords={cancel, int, new, domain, public, static, class, inout, unique, finally}, tabsize=2]{code/linear.funky}
+
+To translate this construct into OpenCL C, the the original type of the suffixed variable needs to be looked up. Additionally, C does not allow ``\verb!'!'' in identifier names, so they need to be replaced as well.
+
+\begin{align}
+	code_{GPU}\ (T\ n = e) =	&\ code_{GPU}\ T\quad n = code_{GPU}\ e;\\
+	code_{GPU}\ (n's = e) =		&\ code_{GPU}\ T_n\quad n\_s = code_{GPU}\ e; \notag
+\end{align}
+
+\subsubsection{Arithmetical Expressions}
+Arithmetical expressions in funkyIMP are either expressions with an unary or a binary operator application. As the compiler holds expressions in a tree structure and a one-dimensional string is to be generated, parentheses need to be inserted at appropriate places in order to ensure the semantic equality of the output. Let $op <_{P} e$ denote that the operator precedence of $op$ is less then any part of $e$, likewise for the other comparison operators. 
+\begin{align}
+	code_{GPU}\ \operatorname{op_U}\ e = &\ \operatorname{op} code_{GPU}\ e &\ (op_U \leq_P e)\\
+	code_{GPU}\ \operatorname{op_U}\ e = &\ \operatorname{op}\ (code_{GPU}\ e) &\ (op_U >_P e)\notag\\
+	code_{GPU}\ e_1\operatorname{op_B}\ e_2 = &\ code_{GPU}\ e_1\operatorname{op_B}\ code_{GPU}\ e_2 &\ (op_B <_P e_1, op_B \leq_P e_2)\notag\\
+	code_{GPU}\ e_1\operatorname{op_B}\ e_2 = &\ (code_{GPU}\ e_1)\operatorname{op_B}\ code_{GPU}\ e_2 &\ (op_B \geq_P e_1, op_B \leq_P e_2)\notag\\
+	code_{GPU}\ e_1\operatorname{op_B}\ e_2 = &\ code_{GPU}\ e_1\operatorname{op_B}\ (code_{GPU}\ e_2) &\ (op_B <_P e_1, op_B >_P e_2)\notag\\
+	code_{GPU}\ e_1\operatorname{op_B}\ e_2 = &\ (code_{GPU}\ e_1)\operatorname{op_B}\ (code_{GPU}\ e_2) &\ (op_B \geq_P e_1, op_B >_P e_2) \notag
+\end{align}
+\begin{align*}
+	\operatorname{op_U} &\in \{*, !, ++,--,\tilde\ , \& \}\\
+	\operatorname{op_B} &\in \{+,-,*,/,\%,<<,>>,\&,|, <, <=, >, >=, ==\}
+\end{align*}
+
+\subsubsection{Array Accesses}
+Array accesses in funkyIMP have the form \code{arr[a,b,d]}. Each of the values in the index expression indicates the position of the element in the corresponding dimension. This essentially hides the complexity of the address computations from the developer. These computations need to be generated for the OpenCL C code. Due to the simplifications noted in section \ref{sect:compiler_gpu_code_kernel}, the actual offset within the array can be computed by simply multiplying the strides of the dimensions with the indices, and adding up the results. The code generation function looks as follows.
+\begin{align}
+	code_{GPU}\ e_0[e_1,\dotsc,e_n] =	&\ code_{GPU}\ e_0\\
+										&\ [code_{GPU}\ e_1 * stride\ d\ 1\notag\\
+										&\ + \qquad \vdots\notag\\
+										&\ + code_{GPU}\ e_n * stride\ d\ n]\notag\\
+	stride\ d\ k = 						&\ \prod_{i=k+1}^{n} d_i \notag	\\
+	\langle m,d,T\rangle			=	&\ resolve\ e_0 \notag
+\end{align}
+
+\subsubsection{Type Annotations}
+Type annotations are also fairly simple to translate, as arrays are just pointers on the OpenCL C side, and the primitive values simply stay as they are. That leads to the code generation function below.
+
+\begin{align}
+	code_{GPU}\ T = &\ T &\ (T \in \mathcal{T}_P)\\
+	code_{GPU}\ T = &\ T* &\ (T \not\in \mathcal{T}_P)\notag
+\end{align}
+
+\subsubsection{Identifiers}
+For identifiers, the code generation itself is trivial. However, the management of the different variables is more complicated, as there are different variables that need to be correctly mapped. There are the parameters and local variables, which may simply be called, and there are the iteration variables of the domain iteration. For these variables, the appropriate local variable generated at the beginning of the kernel code generation needs to be chosen by using the \textit{resolve} function.
+
+\begin{align}
+	code_{GPU}\ i = &\ resolve\ i &\ (i \in \mathcal{I})\\
+	code_{GPU}\ i = &\ i &\ (i \not\in \mathcal{I})\notag
+\end{align}
+
+\subsubsection{Literals}
+Code generation for literal values is straightforward. To avoid unnecessary casts it is important to add a suffix for the literals as necessary. The code generation function shown below reflects this.
+
+\begin{align}
+	code_{GPU}\ v = &\ v\operatorname{L} &\ (T_i = \operatorname{long})\\
+	code_{GPU}\ v = &\ v\operatorname{f} &\ (T_i = \operatorname{float})\notag\\
+	code_{GPU}\ v = &\ v &\ (T_i \not\in \{\operatorname{long},\operatorname{float}\})\notag
+\end{align}

@@ -1,0 +1,15 @@
+\N muint;
+\Z msint;
+\R mreal;
+\S unicode_string;
+\C unicode_char;
+//\I<\R> imag;
+//\Q rational; //??
+\B boolean;
+\0 voidsih;
+
+//\U uniqueish;
+
+//\F<T> funcptr; //not first class!!!
+\G mygroup;
+\Bit<32> field; //bit field!! 

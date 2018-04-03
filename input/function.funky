@@ -1,0 +1,7 @@
+#include "./file.imp" //include file
+
+fun \Z main(\Z argc) 
+{
+	\Z tmp=arc;
+	return tmp;
+}

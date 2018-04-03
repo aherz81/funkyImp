@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="79">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df name="45-fileio" root=".">
+      <df name="tmp">
+        <in>EVO.cpp</in>
+        <in>EVO.h</in>
+        <in>File.cpp</in>
+        <in>File.h</in>
+        <in>FileIO.cpp</in>
+        <in>FileIO.h</in>
+        <in>KeyHandler.cpp</in>
+        <in>KeyHandler.h</in>
+        <in>TestKey.cpp</in>
+        <in>TestKey.h</in>
+      </df>
+      <in>FileIO.f</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>Intel|GNU</compilerSet>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>tmp/fileio.run</executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>../../../../../../backend/tbb4/include</pElem>
+              <pElem>../../../../../../backend/boehm/bdwgc/include</pElem>
+              <pElem>../../../../../../backend/RunTime/include</pElem>
+              <pElem>.</pElem>
+            </incDir>
+          </ccTool>
+        </makeTool>
+        <requiredProjects>
+          <makeArtifact PL="../../../../../../RunTime"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="false"
+                        WD="../../../../../../RunTime"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/../lib/libFUNKY.a">
+          </makeArtifact>
+          <makeArtifact PL="../../../../../../backend/boehm/bdwgc"
+                        CT="0"
+                        CN="Default"
+                        AC="true"
+                        BL="false"
+                        WD="../../../../../../backend/boehm/bdwgc"
+                        BC="${MAKE} -f Makefile"
+                        CC="${MAKE} -f Makefile clean"
+                        OP="">
+          </makeArtifact>
+          <makeArtifact PL="../../../../../../backend/tbb4/src"
+                        CT="0"
+                        CN="Default"
+                        AC="true"
+                        BL="false"
+                        WD="../../../../../../backend/tbb4/src"
+                        BC="${MAKE} -f Makefile"
+                        CC="${MAKE} -f Makefile clean"
+                        OP="">
+          </makeArtifact>
+        </requiredProjects>
+      </makefileType>
+      <item path="FileIO.f" ex="true" tool="2" flavor="0">
+      </item>
+    </conf>
+    <conf name="Release" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>Intel|GNU</compilerSet>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile release</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>tmp/fileio.run</executablePath>
+        </makeTool>
+        <requiredProjects>
+          <makeArtifact PL="../../../../../../RunTime"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="false"
+                        WD="../../../../../../RunTime"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/../lib/libFUNKY.a">
+          </makeArtifact>
+        </requiredProjects>
+      </makefileType>
+    </conf>
+  </confs>
+</configurationDescriptor>

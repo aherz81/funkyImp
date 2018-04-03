@@ -1,0 +1,80 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+import stdlib.*;
+import ffi.stdio;
+/*
+FFT by Matthias Kohler
+*/
+
+public class fft
+{
+	static Complex<int> fill(int i, Complex<int> even, Complex<int> odd,
+				 Complex<int> unityroot, int length)
+	{
+		if(i <= (length / 2) - 1) {
+			i__ = i % (length / 2);
+			cancel even + unityroot.power(i__) * odd;
+		} else {
+			i__ = i % (length / 2);
+			cancel even + -(unityroot.power(i__) * odd);
+		}
+	}
+
+	static Complex<int>[one_d{length}] FFT(int length,
+Complex<int>[one_d{length}] a,
+						Complex<int> unityroot)
+	{
+		Complex<int>[one_d{length / 2}] even;
+		Complex<int>[one_d{length / 2}] odd;
+		Complex<int>[one_d{length}] ret;
+
+		if(length == 1) {
+			cancel a;
+		}
+		else
+		{
+		even = 	new Complex<int>[one_d{length / 2}].\[i]{ a[i*2] };
+		odd =	new Complex<int>[one_d{length / 2}].\[i]{ a[(i*2) + 1] };
+
+		even__ = FFT(length / 2, even, unityroot.mul(unityroot));
+		odd__ = FFT(length / 2, odd, unityroot.mul(unityroot));
+		
+		ret = new Complex<int>[one_d{length}].\[i]{ fill(i, even__[i %
+(length / 2)],
+							    odd__[i % (length / 2)], unityroot,
+							    length)};
+		cancel ret;
+		}
+	}
+
+	static Complex<int> fill2(int i)
+	{
+		if(i == 0)
+			cancel new Complex<int>(4, 0);
+		else if(i == 1)
+			cancel new Complex<int>(0, 2);
+		else if(i == 2)
+			cancel new Complex<int>(0, 0);
+		else if(i == 3)
+			cancel new Complex<int>(1, -1);
+		else
+			cancel new Complex<int>(1000, 1000);
+	}
+
+	static int main(int argc, inout unique String[one_d{-1}] argv)
+	{
+		int length = 4;
+		Complex<int>[one_d{-1}] a;
+		a = FFT(length, new Complex<int>[one_d{length}].\[i]{ fill2(i) },
+				new Complex<int>(0, 1));
+		
+		a.\[i]{stdio.printf("%d: %d + %di\n", i, a[i].r, a[i].i);};
+		finally 0;
+	}
+}
+
+

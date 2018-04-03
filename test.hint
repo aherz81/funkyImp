@@ -1,0 +1,42 @@
+//use xml or so??
+
+architecture TEST
+{
+	cache_line=32Kbyte
+	cache_size=8Mbyte
+	cores_per_node=4
+	shmem_per_node=1Gbyte
+	
+	network_bandwith=10MB/s
+	network_latency=5ms
+	
+	hint type DrawPrim
+	{
+		group=GFX
+	}
+
+	//global hint for matrix type in arch TEST	
+	hint type Matrix<4,4,\R f>
+	{
+		f@size=4byte //use float by default
+		f@instruction=SSE3
+		align=128byte
+		distribution=??
+	}
+	
+	hint type \R
+	{
+		size=4byte
+	}
+	
+	hint type \S
+	{
+		impl=unicode
+	}
+	
+	hint label mylab
+	{
+		\R@size=8byte //use double
+	}
+	
+}

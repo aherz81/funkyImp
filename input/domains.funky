@@ -1,0 +1,19 @@
+\D one_d<y>(i) = { (i) | i < y & i>1 }	//index set for an array, equivalent to [1..s]
+
+\D range_1d<y>(i,j):one_d<j-i> = {one_d<y>(a) | i<=a & a<j} // ":one_d<j-i>" is optional and says that range_1d<y>(i,j) is equivalent to one_d<j-i>
+
+\0 main()
+{
+	\Z[one_d<10>] mIntArray10;
+
+	mIntArray'2=mIntArray.\D(i) { 2*mIntArray[i] }; //iterate over the domain of mIntArray(=0..9) and assign mIntArray'2[i]=2*mIntArray[i]
+
+	//same as above, do computations on subrange of the full array and join the results using the "~" operator
+	//so : [0..4] ~ [4..9] = [0..9]
+	mIntArray'3 = 
+								mIntArray.\range_1d(0,4) { 2*mIntArray[i] } ~ 
+								mIntArray.\range_1d(5,9) { 2*mIntArray[i] };
+
+
+}
+

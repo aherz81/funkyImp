@@ -1,0 +1,12 @@
+int f (int x) {
+  cancel 2 * x;
+}
+
+int M[two_d{3,3}] = 
+  new int[two_d{3,3}].\(i,j) { 
+    i * 3 + j 
+  };
+
+M't = M.\(i,j) { 
+    M[j,i] + f(i) //1
+  };

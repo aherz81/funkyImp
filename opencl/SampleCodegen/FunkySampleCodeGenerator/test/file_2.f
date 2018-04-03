@@ -1,0 +1,1 @@
+(((((matrix[WIDTH /196, HEIGHT /82])+(matrix[y,x]))+(matrix[WIDTH /89, HEIGHT /222]))-((((matrix[WIDTH /65, HEIGHT /205])-(((((matrix[y,x])-(x))*(585.2476 f))+(matrix[y,x]))-((matrix[WIDTH /82, HEIGHT /114])+(matrix[WIDTH /78, HEIGHT /107]))))+(32.946716 f))+(((matrix[y,x])-(matrix[y,x]))-(matrix[y,x]))))-((matrix[y,x])-(matrix[y,x])))-(matrix[WIDTH /198, HEIGHT /130])

@@ -1,0 +1,102 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+    Alex: currently this is the most important test case, this file generates run-able
+    output which terminates if executed and produces a couple of text files.
+
+    <<<<<<< You should try NOT to break this. >>>>>>>>
+
+ */
+
+
+//can use c-style pre processor: (must compile with -PP "")
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+
+native class stdio
+{
+    static work(100) tasks(1) mem(10) FILE fopen(String f, String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt, int size, int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static work(100) tasks(1) mem(10) void printf(String txt, Object .. j); //HACK!
+}
+
+native class math
+{
+	static float sqrt(float f);
+}
+
+class TestAlloc
+{
+	int i;
+}
+
+atomic singular counter
+{
+	long i=0;
+	long i2=0;
+	long i3=0;
+	long i4=0;
+	long i5=0;
+	long i6=0;
+	long i7=0;
+
+	event up()
+	{
+		finally this where i=i+1;
+	}
+}
+
+public class cur
+{
+    //loop //add keyword and output error if not tail recursive
+
+    static loop int genGarbage(long v,counter c) //call to genGarbage are guaranteed to loop!
+    {
+        if(v <= 0)
+            cancel 0;
+        else
+        {
+
+            //TestAlloc alloc = new TestAlloc();
+			c.up();
+        }
+
+        finally genGarbage(v - 1,c);
+    }
+
+    static int main()
+    {
+		counter c1=new counter();
+        int u = genGarbage(50000L,c1); //does not stack overflow (loop), does not eat mem (gc works)
+
+		counter c2=new counter();
+        int v = genGarbage(50000L,c2); //does not stack overflow (loop), does not eat mem (gc works)
+
+//        int w = genGarbage(1000L,9999999.f); //does not stack overflow (loop), does not eat mem (gc works)
+        //stdio.printf("garbage: %d\n", v);
+
+//        int x = genGarbage(1000000L,9999999.f); //does not stack overflow (loop), does not eat mem (gc works)
+
+        //stdio.printf("garbage: %d\n", q);
+
+//#PARALLEL(v,q) //querry the compiler, are res and f__close calced in parallel?
+
+        finally u+v;
+
+    }
+
+    int g1(int x)
+    {
+        cancel x + 1;
+    }
+}

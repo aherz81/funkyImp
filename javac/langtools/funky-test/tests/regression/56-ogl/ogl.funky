@@ -1,0 +1,173 @@
+// @PARAM: -PP "" -g:none -CPP -skipgenerate -d . -cp ../../../../../../input/current
+// shows how to run a custom shell script as a test:
+// CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces a couple of text files.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+//foreign function interface
+
+//can use c-style pre processor: (must compile with -PP "")
+
+import ffi.stdio;
+import stdlib.GLWRAPPER;
+import ffi.glut_const;
+//import ffi.freeglut;
+import domains.*;
+import ffi.unistd;
+
+
+singular KeyHandler
+{
+	char data=__?__;
+
+	KeyHandler()
+	{
+		stdio.printf("KeyHandler alloced\n");
+	}
+
+	event setKey(char key)
+	{
+		stdio.printf("KeyHandler received: %c\n",key);
+		//getKey()=key;
+		finally this where data=key;
+	}
+
+	final char getKey()
+	{ //this code is executed after getKey() succeeded
+//		keyProcessed()=0;
+		stdio.printf("KeyHandler delivered\n");
+	}
+
+	char sample()
+	{
+		finally data;
+	}
+
+}
+
+class TestKey
+{
+	static KeyHandler& handler=new KeyHandler(); //use static handler, as some callbacks do not allow to pass through values
+
+	static void input(unsigned char key,int x, int y) //glut compatible keyboard callback
+	{
+		//call getKey() directly??
+		stdio.printf("received key:%c\n",key);
+		cancel handler.setKey(key); //currently not merged with resume path as keyProcessed() is blocking...
+	}
+
+	static void display()
+	{
+		GLWRAPPER glw=GLWRAPPER.Get();
+
+		glw.Clear(glut_const.cCOLOR_BUFFER_BIT).
+		Begin(glut_const.cPOLYGON).
+		Vertex2f(-0.5, -0.5).
+		Vertex2f(-0.5, 0.5).
+		Vertex2f(0.5, 0.5).
+		Vertex2f(0.5, -0.5).
+		End().
+		Flush();
+	}
+
+	static GLWRAPPER init_state(GLWRAPPER glw)
+	{
+		cancel glw.ClearColor (0.0, 0.0, 0.0, 0.0).
+		Color3f(1.0, 1.0, 1.0).
+		MatrixMode (glut_const.cPROJECTION).
+		LoadIdentity ().
+		Ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+	}
+
+	public static GLWRAPPER init(GLWRAPPER glw)
+	{
+		cancel ((glw.InitDisplayMode(glut_const.cSINGLE | glut_const.cRGB).
+					InitWindowSize(500L,500L).
+					InitWindowPosition(0,0).
+					CreateWindow("simple"))>>>
+		init_state()).
+		DisplayFunc(display).
+		KeyboardFunc(input);
+	}
+
+	//MUST be careful with cancel!!
+	loop void test(char exit) //is blocking due to getKey..
+	{
+		if(handler.getKey) //check if we can pick up a key (doesn__t block and returns whether getKey would currently not block)
+		{
+			char k=handler.getKey(); //pick up key (can still block if somebody else executed getKey())
+			if(k==exit)
+				cancel; //stop (tail) recursion
+		}
+		else
+		{
+			unistd.usleep(1000);
+		}
+
+		finally test(exit);
+	}
+
+	loop void sample(char exit)
+	{
+		if(exit==handler.sample())
+		{
+			cancel; //stop (tail) recursion
+		}
+		else
+		{
+			unistd.usleep(1000);
+		}
+
+		finally sample(exit);
+	}
+}
+
+public class ogl
+{
+	static blocking loop void process() //should mark possibly non-terminating loops as blocking
+	{
+		if(TestKey.handler.sample()==__q__)
+			cancel;
+
+		GLWRAPPER.MainLoopEvent()::
+		unistd.usleep(1000);
+
+		finally process();
+	}
+
+	static void run()
+	{
+		TestKey tk=new TestKey();
+
+		//both of the following loops eat from the same input queue!!
+
+		//can sample or test!!
+		tk.sample(__x__)::
+		stdio.printf("loop waiting for __x__ has finished!\n");
+
+		tk.sample(__y__)::
+		stdio.printf("loop waiting for __y__ has finished!\n");
+
+
+	}
+
+    static int main(int argc, String[one_d{4}] argv)
+    {
+		GLWRAPPER glw=GLWRAPPER.Init(argc,argv);
+
+		TestKey.init(glw)::
+		run()::
+		process();
+
+		finally 0;
+    }
+}
+
+

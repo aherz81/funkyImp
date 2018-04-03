@@ -1,0 +1,35 @@
+% !TEX root = ../main.tex
+
+\chapter{Configurations}
+\section{Random Example Code Generator Configuration}
+\label{sect:appendix_config_random}
+The tool that generates example domain iterations can be configured using a standard Java Properties file. These files consist of key-value pairs and comments\footnote{Comments are marked with \#}. The syntax for the key-value pairs is as follows:
+
+\begin{verbatim}
+com.example.property=exampleValue
+com.example.num=233 
+\end{verbatim}
+
+There are six proterties in the configuration file of the Code Generator. They are depicted in the table below: \\
+
+\begin{tabular}{c p{6cm}}
+\hline
+\textbf{Key} & \textbf{Description}\\
+\hline
+\hline
+edu.tum.funky.codegen.allow-complex & Boolean value that indicates whether to allow complex memory accesses with more than one node. \\
+\hline
+edu.tum.funky.codegen.allow-float-div & Boolean value that indicates whether to allow floating-point divisions. \\
+\hline
+edu.tum.funky.codegen.min-nodes & Integer value that indicates the minimum number of nodes in the example domain. It must be positive. \\
+\hline
+edu.tum.funky.codegen.max-nodes & Integer value that indicates the maximum number of nodes in the example domain. It must be positive. \\
+\hline
+edu.tum.funky.codegen.generated-examples & Integer value that indicates the number of examples that will be generated. It must be positive. \\
+\hline
+edu.tum.funky.codegen.output-path & String that marks the location the Code generator will output its example classes to.\\
+\hline
+\hline
+\end{tabular}
+
+\newpage

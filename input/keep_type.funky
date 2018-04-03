@@ -1,0 +1,7 @@
+fun \Z main()
+{
+	\Z name = 0; //def var of type \Z (signed int) with name "name"
+	name'1 = 1; //def var with name "name'1" that has the same type as the var before the "'" (you don't have to retype the type "\Z")
+
+	name'some_name = name'1; //after ' any valid var name can be used
+}

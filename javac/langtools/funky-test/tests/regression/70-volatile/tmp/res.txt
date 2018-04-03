@@ -1,0 +1,49 @@
+<<FUNKY RUNTIME>> HLE support missing
+<<PROFILING RUN 1 of 1>>
+Root(0x0x007f263a23fb40)
+[0]=0
+[1]=1
+[2]=0
+[3]=0
+[0]=0
+[1]=1
+[2]=2
+[3]=0
+[0]=0
+[1]=1
+[2]=2
+
+retval: 0
+time: 0.000110 pm -nan [s] 1097810.000000 pm -nan [clocks]
+
+<<<CLEAN_EXIT>>>
+Start GC Stats
+***Static roots:
+From 0x61b000 to 0x61ebd0 (temporary)
+From 0x7f263bd59000 to 0x7f263bd5d358 (temporary)
+From 0x7f263bae0000 to 0x7f263bb236a0 (temporary)
+From 0x7f263b8ac000 to 0x7f263b8b0530 (temporary)
+From 0x7f263b67c000 to 0x7f263b692400 (temporary)
+From 0x7f263b38e000 to 0x7f263b38e168 (temporary)
+From 0x7f263b088440 to 0x7f263b088ae0 (temporary)
+From 0x7f263ae6c000 to 0x7f263ae722c0 (temporary)
+From 0x7f263aaad000 to 0x7f263aaadc78 (temporary)
+From 0x7f263a8a5000 to 0x7f263a8a5048 (temporary)
+From 0x7f263a6a3000 to 0x7f263a6a3130 (temporary)
+From 0x7f263bf81000 to 0x7f263bf821c8 (temporary)
+From 0x7f263a47b000 to 0x7f263a49f7f8 (temporary)
+GC_root_size: 602480
+
+***Heap sections:
+Total heap size: 65536
+Section 0 from 0xb99000 to 0xba9000 0/16 blacklisted
+
+***Free blocks:
+Free list 13 (total size 53248):
+	0xb9c000 size 53248 not black listed
+GC_large_free_bytes: 53248
+
+***Blocks in use:
+(kind(0=ptrfree,1=normal,2=unc.):size_in_bytes, #_marks_set)
+(1:1024,3)(1:1024,4)(1:176,3)
+blocks = 3, bytes = 12288

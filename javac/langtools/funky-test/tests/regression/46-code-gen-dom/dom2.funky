@@ -1,0 +1,93 @@
+// @PARAM: -PP "" -verbose -regression -XD-skipgenerate
+//cfolder
+
+// non projection domains
+domain two_d{x,y} = { (i,j) | i<x & j<y }
+domain two_d_err1{x,x} = { (i,j) | i<x & j<x } // @ERROR(compiler.err.domain.variable.already.defined)
+domain two_d_err2{x,y} = { (i,i) | i<x & j<y } // @ERROR(compiler.err.domain.variable.already.defined)
+domain two_d_err3{x,y} = { (i,x) | i<x & j<y } // @ERROR(compiler.err.domain.variable.already.defined)
+domain two_d_err4{x,y} = { (i,j) | i<a & j<y } // @ERROR(compiler.err.domain.not.a.parameter.or.index)
+//domain two_d_err5{x,y}: two_d{x,y} = { (i,j) | i<x & j<x } // @ERROR(compiler.err.domain.result.type.in.base.domain)
+domain two_d_err6{x,y}(k) = { (i,j) | i<x & j<y } // @ERROR(compiler.err.domain.wrong.number.of.indices)
+
+// projection domains
+domain row{x,y}(k) : one_d{y} = { two_d{x,y}(i,j) | i=k & k<x }
+domain row_err_1{x,y}(k) : one_d{y} = { two_d{z,y}(i,j) | i=k & k<x } // @ERROR(compiler.err.domain.not.a.parameter)
+domain range{y,ys,ye}() : one_d{ye-ys} = { one_d{y}(a) | ys<=a & a<ye & ye<=y } //one free (a)
+domain trace{s} = { two_d{s,s}(a,b) | a = b }
+
+public class dom2
+{
+    
+    // helper functions to test expressions
+    static void xx(Object x) {}
+    static void ff(int x) {}
+
+    static void testfunction()
+    {
+
+        // create 
+        int[one_d{42}] vec = new int[one_d{42}];
+        int[one_d{42}] vec_err_1 = new int[one_d{43}]; // @ERROR(compiler.err.prob.found.req)
+        int[one_d{42}] vec_err_2 = new int[one_d{42,42}]; // @ERROR(compiler.err.domain.wrong.number.of.params)
+        int[two_d{4,5}] mat45 = new int[two_d{4,5}];        
+        int[two_d{4,4}] mat44 = new int[two_d{4,4}];
+        int[row{10,20}] r = null;
+
+        // array initializer for one_d (is this needed ?)
+        int[one_d{4}] init = { 1, 2, 4, 5 };
+
+        // selection
+        ff( vec[0] );
+        ff( vec[100] ); // @ERROR(compiler.err.domain.constraint.violated)
+        ff( vec[0,1] ); // @ERROR(compiler.err.domain.wrong.number.of.indices.req.found)
+        ff( mat45[1,2] );
+        
+        // projection
+        xx( mat45.row(1) );
+        xx( mat45.row(1,2) ); // @ERROR(compiler.err.domain.wrong.number.of.indices)
+        xx( mat45.row ); // 
+        xx( mat45.row{4,5}(2) );
+        xx( mat45.row{4,4}(2) ); // @ERROR(compiler.err.domain.invalid.projection.parameters)
+        xx( vec.range{42, 4, 6}() );
+
+        // projection + selection
+        ff( sqmat.trace{4}()[2,2] );
+
+        // cast
+        xx( r.one_d );
+        xx( r.two_d ); // 
+        xx( r.row );
+
+        // cast + selection
+        ff( r.one_d[2] );
+
+        // projection + cast
+        xx( mat45.row(2).one_d );
+        xx( vec.range{42, 4, 6}().one_d );
+
+        // projection + cast + selection
+        ff( mat45.row(2).one_d[1] );
+
+        // selection iterations
+        xx( mat45.\[a,b] { 42 } );
+        xx( mat45.\[a] { 42 } ); // @ERROR(compiler.err.domain.wrong.number.of.indices)
+        xx( mat45.row(1).\[a,b] { 42 } );
+        
+        // projection iterations
+        xx( mat45.\row(i) { mat45.row(i) } );
+        xx( mat45.\row(i,j) { mat45.row(i) } ); // @ERROR(compiler.err.domain.wrong.number.of.indices)
+        xx( mat45.\row{4,5}(i) { mat45.row(i) } );
+        xx( mat45.\row{4,4}(i) { mat45.row(i) } ); // @ERROR(compiler.err.domain.invalid.projection.parameters)
+
+        // reduce
+        xx( mat45.\reduce{0}(a,b,c)   { a + b } ); // @NOERROR
+        xx( mat45.\reduce{0}(a,b,c)   { ; } );     // @ERROR(compiler.err.non.expression.body.in.reduce.expr)
+        xx( mat45.\reduce{0}()      { 0 } );     // @ERROR(compiler.err.wrong.number.of.indices.for.reduce)
+        
+        // size
+        xx( mat45.size );
+
+    }
+
+} 

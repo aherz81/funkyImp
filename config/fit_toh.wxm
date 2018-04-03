@@ -1,0 +1,25 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 0.8.4 ] */
+
+/* [wxMaxima: input   start ] */
+log10(x) := log(x) / log(10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+toh(c,o):=c*log10(x+1)+o;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d(toh(3334.7,1126),[x,430,48000]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+find_root(toh(3334.7,1126)-x,x,100,50000);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ find_root(toh(4885,-4554)-x,x,100,50000);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

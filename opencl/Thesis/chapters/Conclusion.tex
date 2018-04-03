@@ -1,0 +1,10 @@
+% !TEX root = ../main.tex
+
+\chapter{Conclusion}
+\label{chap:conclusion}
+
+The purpose of the work described in this thesis was to build a model for the prediction of the time spent on the execution of OpenCL kernels. In order to create this model, an OpenCL backend to the funkyImp compiler developed by Alexander Herz (see \cite{herz2013funkywiki}) has been implemented. The results presented in this thesis show that predictions about OpenCL programs without loops with a potentially unlimited number of iterations are possible, with the quality of the predictions being acceptable for typical, compute focused OpenCL kernels. The model is based on the run time behavior of Kepler microarchitecture GPUs and should be flexible enough to be adopted to other types of NVidia GPUs. Some work would need to be done to adopt it to integrated GPUs and dedicated GPUs manufactured by AMD. \\
+
+The predictions are not ends in themselves. A scheduler that manages the resources of a compute node can use them as a metric, and use them to approximate the run time of a more complex computation. This is done by creating a task schedule that uses the metrics generated with the help of the model to find the schedule that utilizes the available hardware as optimally as possible, thus also approximating the run time for the whole program. In some cases it may be useful to perform a computation on the GPU even if it is slower than the CPU, because it frees the CPU to do other tasks while waiting for the result of the GPU.\\
+
+This makes the predictions an important part of taking the reasoning about hardware details out of the programmer's hands. The creation of schedules means letting the compiler decide which computing resource is used for a computation. Instead of worrying about boilerplate code and problems of parallel software, the programmer can instead focus on the algorithm, while still producing a program that optimally uses the available resources. The compiler and the runtime environment will then handle all the details of the resource allocation.

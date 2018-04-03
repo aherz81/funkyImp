@@ -1,0 +1,48 @@
+// @PARAM: -PP "" -verbose -regression -XD-skipgenerate
+// @TEST noerror
+
+//can use c-style pre processor: (must compile with -PP "")
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+native class stdio
+{
+    static FILE fopen(String f,String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt,int size,int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static void printf(String txt,Object o);
+    static void printf(String txt,int i);
+    static void printf(String txt,int i,int j);
+}
+
+public class join
+{
+	//tail //add keyword and output error if not tail recursive
+	static int genGarbage(int v) //somehow should check/guarantee tail call
+	{
+	    int i;
+		if(v<=0)
+		{
+		    i=1;
+			cancel 0;
+		}
+		else
+		{
+		    i=2;
+		    stdio.printf("xxxx",null);
+		}
+
+		resume 0;
+	}
+
+    static int main()
+    {
+		genGarbage(100); //does not stack overflow (icpc applies tail call optim), does not eat mem (gc works)
+    
+		finally 0;
+    }
+}    

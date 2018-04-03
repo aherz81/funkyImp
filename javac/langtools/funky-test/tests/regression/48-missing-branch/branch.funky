@@ -1,0 +1,205 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able 
+	output which terminates if executed and produces some output to stdout. 
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+native class stdio
+{
+    static FILE fopen(String f,String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt,int size,int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static void printf(String txt,Object ... j); //HACK!
+}
+
+atomic singular Counter //a simple atomic counter
+{
+    long count=0;
+    event Inc(out long cur)
+    {
+        long tmp=count+1;
+        cur=tmp;
+        finally this where count=tmp;
+    }
+
+    event Reset()
+    {
+        finally this where count=0;
+    }
+
+    event Set(long a)
+    {
+        finally this where count=a;
+    }
+}
+
+//native unique interface XXX;
+class XXX
+{
+	int i;
+}
+/*
+NOTE: only fields from singular can be (dest.) updated (not the content of the field)
+as such, any version of such a field can be returned (sampling, trigger, etc) without generating a deep copy;
+the only exceptions constitutes are unique array, which can be updated destructively.
+so unique arrays must be copied when returned from an evo; for performance reasons 
+one should trigger wait on the completion of the array and then sample the array contents (rather than returning a copy)
+- array of (unique) arrays should be forbidden?
+*/
+
+//atomic //tell compiler that all events are supposed to be atomic (samples don__t matter if all events are atomic)
+atomic singular RefCount
+{
+	int count;
+	int val;
+	
+	XXX& xx; 
+	XXX& x2;
+	
+	//FIXME: do we need atomic swap???: no!!! atomic swap changes two values atomically which cannot be read consistently by sampling methods!
+	//maybe it__s ok if only one target of the swap may be a member of an evo?
+	
+	RefCount(int cc,XXX xx,unique XXX x2)//params to event must be primitive, final or unique!
+	{
+	    this.count=cc;
+	    val=0;
+	    this.xx=xx;
+	    this.x2=x2;
+		stdio.printf("refcount initial:%d\n",cc);//what is the value of count here??
+	}
+	
+	event Swap(int a)
+	{
+	    int tmp=count;
+	    finally this where count=a;
+	}
+	/*
+	event Test(int i)
+	{
+	    finally this where xx=null;// where xx.i=i; not ok,... cannot modify object__s contents!
+	}
+	*/
+
+	event Set(int amount)
+	{
+	/*
+	    int tmp;
+	    
+	    if(amount==count)
+	        tmp=amount;
+	    else
+	        tmp=count;
+	        
+	    //count=0;//cannot assign to final value
+	        
+	    finally this where count=tmp;//FIXME: flow should process this last, no matter where it__s placed!
+	    
+	    int oldv=val§amount=0;	  //atomic cmp&swap if val==amount then val=0 , returns orig val 
+	  */  
+	  
+        //int tmp=count; //forbidden in atomic cmp&swap
+
+        
+        finally this where
+        {
+            if(count?amount=0) //atomic cmp&swap if val==amount then val=0 , returns if swap was executed
+            {
+                
+                int xx=__LINE__;//nice, supplied by jcpp
+            }
+            //count=0; //FIXME: only one unique allowed!
+        };
+	}
+	
+	event Add(int amount)//atomic pre inc #atomic
+	{
+	    
+	    //Add(tmp);//f(tmp)... can use pre
+	    int tmp=count;	    
+	    stdio.printf("refcount [%d] add(pre inc):%d\n",amount,tmp);
+	    finally this where count=tmp+amount; //use pre only
+
+//        int xx=0;
+	}
+
+	event Add2(int amount)//atomic pre inc #atomic
+	{
+	    finally this where count=count+amount; //postinc...updates count atomically
+
+//        int xx=0;
+	}
+
+	event Sub(int amount)//atomic post inc
+	{
+		int new_amount=count-amount;//calc post
+
+		stdio.printf("refcount sub[%d] (post inc):%d\n",amount,new_amount);
+
+		if(new_amount==0)
+		{
+			stdio.printf("EMPTY() triggered\n",0);
+			Empty()=0; //use post only
+		}
+	    
+
+		finally this where count=new_amount; //store post only
+	}
+
+    int sample()
+    {
+        finally count; 
+    }
+
+	final int Empty();
+}
+
+public class branch
+{
+    static int main(int argc,inout unique String[one_d{-1}] argv)
+    {
+        Counter cc=new Counter();
+        
+        long n0,n1;
+        
+        cc.Inc(n0);
+        cc.Inc(n1);
+    
+        if(n1>0)
+        {
+            if(n0>0)
+                stdio.printf("n0:%d n1:%d\n",n0,n1);
+//			else
+//			{}
+        }
+                
+        RefCount rc=new RefCount(3,null,null);
+
+        finally rc.Empty();
+        
+        //rc.Add(1);
+        
+        rc.Sub(1);
+        rc.Sub(1);
+                
+        rc.Sub(1);
+
+		if(rc.sample()>0)
+	        rc.Sub(1);
+        
+    }
+}

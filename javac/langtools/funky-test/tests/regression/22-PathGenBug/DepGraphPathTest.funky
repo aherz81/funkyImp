@@ -1,0 +1,74 @@
+// @PARAM: -verbose -regression -XD-skipgenerate
+// @TEST noerror
+
+singular EVO
+{
+    int i=0;
+
+    event Ev(int x)
+    {
+        finally this where i=x;
+    }
+}
+
+public class DepGraphPathTest
+{
+
+    void DepGraphTest(int x, int y)
+    {
+        EVO evo=new EVO();
+
+        //evo.Ev(200);
+
+        int a=g1(x);
+
+        int b=g1(a);
+        //int c=g1(a);
+        int d=g1(b);
+
+        int e=g1(a);
+        int f=g2(e,a);
+        
+        int g=g1(a);
+        int h=g2(e,f);
+
+        int i=g3(d,h,g);
+
+        //int j=g1(a);
+        //evo.Ev(y);
+
+    }
+
+
+    int DepGraphTest2(int x, int y)
+    {
+        int v=g1(x);
+        v__1=g1(v);
+        int w=g1(y);
+        int i=g1(w);
+        i__1=g2(v,i);
+        w__1=g2(w,i__1);
+        resume g2(v__1,w__1);
+    }
+
+
+	public static int main()
+	{
+		resume 0;
+	}
+
+    int g1(int x)
+    {
+        resume x+1;
+    }
+
+    int g2(int x, int y)
+    {
+        resume x+y;
+    }
+
+    int g3(int x, int y, int z)
+    {
+        resume x+y+z;
+    }
+}    

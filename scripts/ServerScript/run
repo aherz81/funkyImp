@@ -1,0 +1,3 @@
+cd  /home/waleeds/svn/nsvn
+echo $(pwd)
+/home/waleeds/svn/nsvn/install http://www2.in.tum.de/repos/funkyimp waleeds 'wa"we"2169' funky2 /home/waleeds/svn/nsvn/lang herz@in.tum.de,wshihadeh@live.com funkyreg-javac

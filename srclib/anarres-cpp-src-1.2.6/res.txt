@@ -1,0 +1,7 @@
+		   velocity-tools-generic-1.4.jar
+		   velocity-tools-generic-1.4.jar
+Binary file ./lib/vpp/velocity-1.4.jar matches
+Binary file ./lib/vpp/.svn/text-base/velocity-1.4.jar.svn-base matches
+velocity-1.4.jar
+velocity-1.4.jar
+/repos/funkyimp/!svn/ver/69/anarres-cpp-src-1.2.6/lib/vpp/velocity-1.4.jar

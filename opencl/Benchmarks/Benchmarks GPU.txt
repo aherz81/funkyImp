@@ -1,0 +1,55 @@
+#TIME(transposeRRR_mod::Compile)@1463: 577.8 +/- 66.4 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1463: 440.9 +/- 566.9 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1463: 638.0 +/- 614.1 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1463: 209.7 +/- 58.2 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1471: 778.9 +/- 1366.3 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1471: 535.1 +/- 423.5 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1471: 582.4 +/- 384.5 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1471: 213.5 +/- 48.2 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1471: 770.1 +/- 1335.8 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1471: 724.7 +/- 198.7 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1471: 817.1 +/- 407.4 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1471: 367.8 +/- 81.3 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1471: 848.7 +/- 1352.3 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1471: 2027.3 +/- 729.2 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1471: 2412.0 +/- 730.2 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1471: 804.2 +/- 139.1 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 726.0 +/- 63.8 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 5990.0 +/- 391.6 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 7420.1 +/- 1976.7 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 2196.7 +/- 143.2 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 1048.3 +/- 2248.2 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 11900.5 +/- 1109.4 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 19781.2 +/- 7207.2 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 3883.1 +/- 495.1 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 1076.8 +/- 2444.6 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 18917.9 +/- 5729.2 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 24729.6 +/- 6967.4 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 5130.5 +/- 1152.6 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 740.3 +/- 62.3 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 37351.0 +/- 3398.6 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 54845.0 +/- 21337.2 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 9620.9 +/- 1962.5 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 934.7 +/- 1335.9 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 68187.3 +/- 9414.9 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 93785.1 +/- 28273.4 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 17055.2 +/- 5622.0 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 1933.1 +/- 4835.1 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 188940.5 +/- 45745.6 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 222202.9 +/- 50972.2 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 36053.6 +/- 6647.5 [us] (50 samples)
+
+#TIME(transposeRRR_mod::Compile)@1479: 4105.4 +/- 5015.4 [us] (50 samples)
+#TIME(transposeRRR_mod::CopyTo)@1479: 370384.8 +/- 76175.5 [us] (50 samples)
+#TIME(transposeRRR_mod::GPURun)@1479: 409361.7 +/- 61359.9 [us] (50 samples)
+#TIME(transposeRRR_mod::copyBack)@1479: 62438.5 +/- 6964.2 [us] (50 samples)
+

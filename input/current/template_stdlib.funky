@@ -1,0 +1,79 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+
+import ffi.stdio; //printf
+import stdlib.*;
+
+//unique versions
+	//practically a typedef
+
+unique class uVector<X,T> extends iVector<X,T>{} //must be a template to get a unique version!
+
+	//this will instantiate unique iMatrix<X,Y,T> as base class which in turn will instantiate matrix<X,Y>.mult(this,b) with unique this (in place update)
+
+unique class uMatrix<X,Y,T> extends iMatrix<X,Y,T>{}
+
+//what are unique doms good for?:
+//- partial update
+//- memory reuse
+
+public class cur
+{
+	static void test2()
+	{
+		uMatrix<MS,MS,int> mat=new uMatrix<MS,MS,int>().\[r,c] { r*MS+c };
+
+		mat__id=new uMatrix<MS,MS,int>().\[r,c] { (int)(r==c) };
+
+		mat__res=mat*mat__id; //call operator*
+
+		uVector<MS,int> v=new uVector<MS,int>().\[i]{-i-1};
+
+		v__res=mat__res*-v;//operator uniary minus and mat*vec
+
+		v__res.\[i]{stdio.printf("v__res[%d]=%d\n",i,v__res[i]);};
+
+		//array initializers missing
+		//ivector<MS,int> v={1,2,3,4};
+	}
+
+	static void test3()
+	{
+		iMatrix<MS,MS,int> mat=new iMatrix<MS,MS,int>().\[r,c] { r*MS+c };
+
+		mat__id=new iMatrix<MS,MS,int>().\[r,c] { (int)(r==c) };
+
+		mat__res=mat*mat__id; //call operator*
+
+		//can be uVector:
+		iVector<MS,int> v=new iVector<MS,int>().\[i]{-i-1};
+
+		v__res=mat__res*-v;//operator uniary minus and mat*vec
+
+		v__res.\[i]{stdio.printf("v__res[%d]=%d\n",i,v__res[i]);};
+
+		//array initializers missing
+		//ivector<MS,int> v={1,2,3,4};
+	}
+
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+
+    	unique int matrix[two_d{MS,MS}]=new int[two_d{MS,MS}].\[r,c] { r*MS+c };
+ 		matrix__ident = new int[two_d{MS,MS}].\[r,c] { (int)(r==c) };
+
+ 		matrix__res=matrix<MS,MS>.mult(matrix,matrix__ident);
+
+		matrix__res.\[i,j]{stdio.printf("matrix__res[%d,%d]=%d\n",i,j,matrix__res[i,j]);};
+
+		test2();
+
+		test3();
+
+		finally 0; //use finally and don__t add extra wait?? does work with root??
+    }
+}

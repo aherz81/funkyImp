@@ -1,0 +1,199 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+
+import ffi.stdio; //printf
+import ffi.math; //sqrt
+
+domain two_d{x,y} = { (j,k) | j<x & k<y } //two free
+
+domain inner_2d{x,y} = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1}
+//domain inner_2d{x,y}:one_d{(x-2)*(y-2)}(j) = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1 & j=a*x+b}
+
+domain range{y,ys,ye}:one_d{ye-ys}(j) = { one_d{y}(a) | ys<=a & a<ye & ye<=y & j=a } //one free (a)
+
+domain row{x,y}(j):one_d{y}(k) = { two_d{x,y}(a,b) | a=j & k=b } //one free(b)
+domain col{x,y}(j):one_d{x}(k) = { two_d{x,y}(a,b) | b=j & k=a }	//one free(a)
+
+domain trace{x,y}:one_d{x}(j) = { two_d{x,y}(a,b) | j=a & a=b & x=y }// one free (a), indep of j //no order on items!! (warn??)
+
+domain utriag{x,y} = { two_d{x,y}(a,b) | b>=a+1 & x=y }
+domain ltriag{x,y} = { two_d{x,y}(a,b) | b<a & x=y }
+
+//domain block{dx,dy,x,y}(i,j):two_d{dx,dy}(q,w) = { two_d{x,y}(a,b) | a>=i*dx & a<(i+1)*dx & b>=j*dy & a<(j+1)*dy & q=a & w=b }
+
+//need templates to build nice matrix/vector classes
+
+#define MS 4
+
+//NOTE: dom iterations, new always generate unique objects
+
+//helper classes, operate on (most general) basic domains
+
+class vector<X>
+{
+    public static <T,A extends T[one_d{X}],B extends T[one_d{X}]>
+    T dot(A r,B c)
+    {
+  		cancel r.one_d.\reduce{0}(i,accum) {accum + r.one_d[i] * c.one_d[i]};
+    }
+
+    public static unique <T,A extends T[one_d{X}],B extends T[one_d{X}]>
+    T[one_d{X}] add(A r,B c)
+    {
+  		cancel r.one_d.\[i] {r.one_d[i] + c.one_d[i]};
+    }
+
+    public static unique <T,A extends T[one_d{X}]>
+    T[one_d{X}] scale(A a,T b)
+	{
+		cancel a.one_d.\[i]{a.one_d[i]*b};
+	}
+}
+
+class matrix<X,Y>
+{
+	//X*Y x Y*X = Y*Y
+    public static unique <T,A extends T[two_d{X,Y}],B extends T[two_d{Y,X}]>
+    T[two_d{Y,Y}] multMat(A a,B b)
+    {
+        cancel a.\[i,j]{vector<X>.dot(a.row(i),b.col(j))};
+    }
+
+	public static unique <T,A extends T[two_d{X,Y}],B extends T[one_d{X}]>
+	T[one_d{Y}]	multVec(A a,B b)
+	{
+		cancel new T[one_d{Y}].\[i]{vector<X>.dot(a.row(i),b)};
+	}
+}
+
+/* -------------------REDIRECT---------------------- */
+
+//type wrappers with operators (operators call helpers):
+class iVector<X,T> extends T[one_d{X}]
+{
+    public T operator*(iVector<X,T> b)
+    {
+  		cancel vector<X>.dot(this,b);
+    }
+
+    public unique iVector<X,T> operator+(iVector<X,T> b)
+    {
+  		cancel vector<X>.add(this,b);
+    }
+
+	public unique iVector<X,T> operator*(T val)
+	{
+		cancel vector<X>.scale(this,val);
+	}
+
+	public unique iVector<X,T> operator-()
+	{
+		cancel this*(T)(-1);
+	}
+
+	public T length()
+	{
+		cancel math.sqrt(this*this);
+	}
+}
+
+class iMatrix<X,Y,T> extends T[two_d{X,Y}]
+{
+    public unique <B extends iMatrix<Y,X,T>>
+	iMatrix<X,Y,T> operator*(B b)
+    {
+        cancel matrix<X,Y>.multMat(this,b);
+    }
+
+    public unique <B extends iVector<X,T>>
+	iVector<Y,T> operator*(B b)
+	{
+		cancel matrix<X,Y>.multVec(this,b);
+	}
+
+	//int x;//ok: error
+}
+
+
+//unique versions
+	//practically a typedef
+
+unique class uVector<X,T> extends iVector<X,T>{} //must be a template to get a unique version!
+
+	//this will instantiate unique iMatrix<X,Y,T> as base class which in turn will instantiate matrix<X,Y>.mult(this,b) with unique this (in place update)
+
+unique class uMatrix<X,Y,T> extends iMatrix<X,Y,T>{}
+
+//what are unique doms good for?:
+//- partial update
+//- memory reuse
+
+class XXX
+{
+	public static void nop(){}
+}
+
+public class templates
+{
+	static void test2()
+	{
+		uMatrix<MS,MS,int> mat=new uMatrix<MS,MS,int>().\[r,c] { r*MS+c };
+
+		mat__id=new uMatrix<MS,MS,int>().\[r,c] { (int)(r==c) };
+
+		mat__res=mat*mat__id; //call operator*
+
+		uVector<MS,int> v=new uVector<MS,int>().\[i]{-i-1};
+
+		v__res=mat__res*-v;//operator uniary minus and mat*vec
+
+		v__res.\[i]{stdio.printf("v__res[%d]=%d\n",i,v__res[i])};
+
+		//array initializers missing
+		//ivector<MS,int> v={1,2,3,4};
+	}
+
+	static void test3()
+	{
+		iMatrix<MS,MS,int> mat=new iMatrix<MS,MS,int>().\[r,c] { r*MS+c };
+
+		mat__id=new iMatrix<MS,MS,int>().\[r,c] { (int)(r==c) };
+
+		mat__res=mat*mat__id; //call operator*
+
+		//can be uVector:
+		iVector<MS,int> v=new iVector<MS,int>().\[i]{-i-1};
+
+		v__res=mat__res*-v;//operator uniary minus and mat*vec
+
+		v__res.\[i]{stdio.printf("v__res[%d]=%d\n",i,v__res[i]);};
+
+		//array initializers missing
+		//ivector<MS,int> v={1,2,3,4};
+	}
+
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+
+    	unique int matrix[two_d{MS,MS}]=new int[two_d{MS,MS}].\[r,c] { r*MS+c };
+ 		matrix__ident = new int[two_d{MS,MS}].\[r,c] { (int)(r==c) };
+
+ 		matrix__res=matrix<MS,MS>.multMat(matrix,matrix__ident);
+
+		XXX.nop();
+
+		matrix__res.\[i,j]{stdio.printf("matrix__res[%d,%d]=%d\n",i,j,matrix__res[i,j]);};
+
+		test2(); //FIXME: duplicate two_d if I unique cur.test2() !!
+
+		test3();
+
+		finally 0; //use finally and don__t add extra wait?? does work with root??
+    }
+}
+
+

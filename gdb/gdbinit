@@ -1,0 +1,7 @@
+python
+#.gdbinit file to add pretty printing for funky arrays (place in your home folder after fixing paths)
+#assumes funky was checked out into ~/svn/funkyimp
+import sys 
+sys.path.insert(0, '~/svn/funkyimp/gdb')
+from funky.v6.printers import register_funky_printers
+end

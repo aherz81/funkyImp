@@ -1,0 +1,138 @@
+% !TEX root = ../main.tex
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                                                               %%%
+%%%	THIS SECTION IS DEPRECATED IN FAVOR OF Results_Evaluation.tex %%%
+%%%                                                               %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Results}
+\label{chap:results}
+In this chapter the results of the Thesis are presented. There is the OpenCL compiler backend that supports domain iterations (see chapter \ref{chap:compiler}) and the Runtime model that can be used to make predictions about the runtime of GPU kernels (presented in chapter \ref{chap:model}). The quality of the predictions made with the model is illustrated by generating a number of FunkyIMP domain iterations, compiling them using the compiler extensions made in the course of the thesis and predicting the time needed to transfer and execute them. Then they are executed a number of times, and finally the run time is compared to the prediction. \\
+
+As before, the benchmarks are executed on an early 2013 Retina MacBook Pro with a Intel Core i7-3740QM CPU with 2.7GHz and a NVidia GT650M GPU. The GPU has a clock frequency of 900MHz, with 2 Compute Cores. The GPU is based on the \textit{Kepler Architecture}, which implies a CUDA Compute Architecture of 3.0. \cite{nvidia2009opencl} \\
+
+
+\section{Test Setup}
+\label{sect:results_setup}
+
+The test utilizes a code generator to generate an operation that is to be used in the domain iteration. It uses a template to generate the benchmark, shown in section \ref{sect:appendix_funky_template}. That code acts as the test driver, performing the test for a single domain iteration with different memory sizes ranging from $2^{10} = 1024 $ elements to $2^{26} \approx 64$ million elements. \\
+
+The Kernel itself is generated automatically, with a Java utility\footnote{Included in the funkyIMP repository. Requires Java 8}. This utility recursively generates expression trees that form the body of the domain iteration. The trees return a float value. There are several kinds of expressions:
+
+\begin{itemize}
+	\item \textbf{Literal Expressions} are just floating point literals (e.g. \code{5.3f})
+	\item \textbf{Identifier Expressions} are expressions that consist of an identifier that contains a private variable (e.g. \code{x})
+	\item \textbf{Simple Array Access Expressions} hold a simple array access that accesses the element that matches the current work item (e.g. \verb!matrix[x,y]!)
+	\item \textbf{Random Array Access Expressions} hold an arbitrary array access. This array access consists of recursively generated expression trees for each dimension. These trees may consist of identifiers, literals, or binary expressions. To avoid negative values and divisions by zero, there may be no subtractions and no divisions. Additionally, to avoid out of bounds array accesses, the accesses are taken modulo the array bounds. (e.g \verb!matrix[342%HEIGHT, (x*2)%WIDTH]!) 
+	\item \textbf{Binary Expressions} apply a basic operation ($+$, $-$, $*$, $/$) to two subexpressions. (e.g. \code{3.434 - (x/y)})
+\end{itemize}
+
+Each kind of tree is assigned a probability. In order to get a good variation in tree sizes without generating too large trees, the binary expression tree should have a probability of about 50\%. The probability of literal and identifier expressions is at 10\%, each. Each of the array access expressions are assigned a probability of 15\%. In some cases the trees might still get too big, which would result in a stack overflow, so the number of nodes is capped to 300. \\
+
+There are also some ways to configure the code generator. This is done using a standard Java properties file. One may choose whether to allow divisions and complex memory accesses, and limit the number of nodes in the generated examples with a lower and an upper bound. One may also specify the number of examples that are generated, and the directory they are written to. For a description of the keys used in the configuration file, see section \ref{sect:appendix_config_random} in the appendix. \\
+
+With that generator and the template, one may generate test classes. There is a shell script that automates the process. It may be called by moving into the \code{automatedTest} directory in the funkyIMP repository and executing it from there using the command \verb!./generate.sh!. The script runs the Code generator with the specified number of examples, moves each test case to its own folder, and adds a copy of a Makefile a template for the result table.\\
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Test Execution}
+\label{sect:results_execution}
+
+Now the automated test may be executed. This is done by recursing into each of the generated directories. In each directory, \code{make clean} will be invoked to purge the previously generated binary. Afterwards \code{make} is invoked to start the compilation anew. In the course of that compilation, the runtime predictions for the kernel and the memory transfer will be made. They are captured and saved into a file. The Makefile is configured to compile the code in a way that causes the program to be executed five times, with run times being recorded for each run. \\
+
+Next the newly generated executable is started. Before terminating it will emit the average runtime and the standard deviation between the different runs. The script will collect that data and paste it into another file. In the end, all the temporary files are merged into a single CSV file. Figure \ref{fig:result_automated_sample} shows a graphical representation of such a result table. \\
+
+\begin{figure}[h]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{loglogaxis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Runtime Prediction, Actual Runtime},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=RuntimePrediction]{data/testRun.csv};
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=ActualRuntime, y error=StandardDeviation]{data/testRun.csv};
+			\end{loglogaxis}
+		\end{tikzpicture}
+		\caption{Sample Result of a domain iteration. The domain iteration is \code{(matrix[169 \% HEIGHT, x \% WIDTH] + (matrix[y \% HEIGHT, 3 \% WIDTH] / x)) - matrix[y \% HEIGHT, y \% WIDTH]}. To increase readability, both axes are made logarithmic.}
+		\label{fig:result_automated_sample}
+	\end{center}
+\end{figure}
+
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Test Results}
+\label{sect:results_results}
+To test the quality of the code generation, 1000 completely random samples are generated with the technique described above, using a minimum node count of 2 and a maximum node count of 50. There are no limitations on divisions and memory accesses. Figure \ref{fig:results_distribution} illustrates the distribution of the ratio between the prediction and the measured result in the generated examples. A ratio of 1.0 represents the perfect prediction, values smaller then 1 mean that the actual execution took longer then expected, while a value greater then 1 means that the prediction was too high, and the actual execution was faster then predicted. The average of the predictions is $1.2978$ with a standard deviation of $0.7120$. While promising, there certainly is space for improvement. \\
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+			    xlabel=Ratio, 
+				ylabel=Number of Samples,
+			    ybar,
+			    ymin=0
+			]
+			\addplot +[
+			    hist={
+			    	bins=30,
+			        data min=0,
+			        data max=3
+			    }   
+			] table [y=ratioPredActual] {data/automatedTestRatio.csv};
+			\end{axis}
+		\end{tikzpicture}		
+	\end{center}
+	\caption{Distribution of benchmark results for the test with completely random examples. The X axis denotes the ratio $r = \frac{t_{prediction}}{t_{result}}$. The closer the ratio is to 1, the better the prediction. A variation of the diagram showing the distance between predictions and results can be seen in figure \ref{fig:appendix_diagrams_distance_random} in the appendix.}
+	\label{fig:results_distribution}
+\end{figure}
+
+\subsection{Realistic Use Cases}
+\label{sect:results_results_realistic}
+The randomly generated test cases above include very complex trees with a high number of nodes. Actual kernels will be less complex in most cases, with less complicated memory access patterns and smaller expression trees. Complex memory access patterns such as the one shown in figure \ref{fig:results_results_realistic_complex_access} are prone to out-of-bounds accesses, causing the program to crash, due to the fact that they are simply too large to be grasped by the programmer's mind. The same goes for complex expression trees. Typically the programmer will perform a simple operation on each element of the array, for example maybe the calculation of gaussian blur. These things typically have a limited number of operations. \\
+
+\begin{figure}
+	\lstset{language=c}
+	\begin{lstlisting}
+matrix[(870 * (1060 + (1080 
+         * (y + ((((118314 * x) + y) * y) * x))))) % HEIGHT, 
+         (13 * ((x * (1203 * x)) * (((((654 * y) * y) + ((641 + y) 
+         + 209)) * (881 + x)) * x))) % WIDTH]
+	\end{lstlisting}
+	\caption{This listing shows a complicated memory access. These kinds of memory accesses tend to behave very unpredictably, with low cache locality and a high risks for accesses outside the array boundaries.}
+	\label{fig:results_results_realistic_complex_access}
+\end{figure}
+
+To test the predictions under these limited circumstances, the code generator is configured to output only domain iterations without complex memory accesses, which means only memory accesses that contain constant addresses or one of the identifiers of the domain iteration are allowed. Additionally, the number of nodes is limited to the interval $[2,5]$. Sometimes, the use of divisions causes problems with the prediction, so they are disallowed as well. The test is conducted with 1000 samples as well. \\
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+			    xlabel=Ratio, 
+				ylabel=Number of Samples,
+			    ybar,
+			    ymin=0
+			]
+			\addplot +[
+			    hist={
+			        bins=30,
+			        data min=0,
+			        data max=3
+			    }   
+			] table [y=ratioPredActual] {data/automatedTestRealisticRatio.csv};
+			\end{axis}
+		\end{tikzpicture}		
+	\end{center}
+	\caption{Distribution of benchmark results for the test with the realistic examples. The X axis denotes the ratio $r = \frac{t_{prediction}}{t_{result}}$. The closer the ratio is to 1, the better the prediction.  A variation of the diagram showing the distance between predictions and results can be seen in figure \ref{fig:appendix_diagrams_distance_realistic} in the appendix.}
+	\label{fig:results_distribution_realistic}
+\end{figure}
+
+Figure \ref{fig:results_distribution_realistic} shows the distribution of the ratio between prediction and result for this second test run. One can see that the predictions are way more accurate in this case, with just a small amount of outliers. The average result is at $1.186530$, with a Standard Deviation of $0.1302$. This is far more accurate than the predictions for completely random kernels. 

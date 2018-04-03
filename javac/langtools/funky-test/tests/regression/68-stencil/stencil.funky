@@ -1,0 +1,112 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+
+import ffi.stdio;
+import ffi.math;
+
+#define MATRIX_SIZE 1024
+
+#define TYPE double
+
+domain two_d{x,y}:one_d{x*y}(o) = { (j,k) | j<x & k<y } //two free
+
+domain row{x,y}(j):one_d{y}(k) = { two_d{x,y}(a,b) | a=j & k=b } //one free(b)
+domain col{x,y}(j):one_d{x}(k) = { two_d{x,y}(a,b) | b=j & k=a }	//one free(a)
+
+domain inner{x,y}:two_d{(x-2),(y-2)}(j,k) = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1 & j=a & k=b}
+
+domain north{x,y}:one_d{y-2}(i)={ two_d{x,y}(a,b) | a=0 & b>=1& b<y-1 & i=b  }
+domain south{x,y}:one_d{y-2}(i)={ two_d{x,y}(a,b) | a=x-1 & b>=1& b<y-1 & i=b }
+domain west{x,y}:one_d{x-2}(i)={ two_d{x,y}(a,b) | b=0 & a>=1& a<x-1 & i=a }
+domain east{x,y}:one_d{x-2}(i)={ two_d{x,y}(a,b) | b=y-1 & a>=1& a<x-1& i=a }
+
+domain nw{x,y}={ two_d{x,y}(a,b) | a=0 & b=0 }
+domain ne{x,y}={ two_d{x,y}(a,b) | a=0 & b=y-1 }
+domain se{x,y}={ two_d{x,y}(a,b) | a=x-1 & b=y-1 }
+domain sw{x,y}={ two_d{x,y}(a,b) | a=x-1 & b=0 }
+
+public class cur
+{
+
+//icpc fails to apply proper version of std::abs()..so we put our own
+	static <T> T abs(T a)
+	{
+		if(a<((T)0))
+			cancel a*((T)-1);
+		else
+			cancel a;
+	}
+
+	static nonblocking <X,Y,T> int jacobi(T matrix[two_d{X>1,Y>1}],T error,int count)
+	{
+		matrix__=matrix.inner().\[r,c]
+		{
+			(matrix.inner()[r-1,c]+matrix.inner()[r,c-1]+matrix.inner()[r+1,c]+matrix.inner()[r,c+1])/4
+		}~null;
+
+		T delta=matrix.inner().\reduce{0.0}(r,c,accum)
+		{
+			math.max(accum,abs(matrix.inner()[r,c]-matrix__.inner()[r,c]))
+		};
+
+		if(delta<error)
+			cancel count;
+
+		finally jacobi(matrix__,error,count+1);
+	}
+
+	static <X,Y,T> T[two_d{X,Y}] stencil(T matrix[two_d{X,Y}]) //auto gen dyn and static version!
+	{
+		if(X>1&&Y>1)
+		cancel matrix.inner().\[r,c]{(matrix.inner()[r-1,c]+matrix.inner()[r,c-1]+matrix.inner()[r+1,c]+matrix.inner()[r,c+1]+matrix.inner()[r,c])/5}
+			~matrix.north().\[r]{(matrix.north()[r]+matrix[0,r-1]+matrix[0,r+1]+matrix[1,r])/4}
+			~matrix.east().\[r]{(matrix.east()[r]+matrix[r-1,Y-1]+matrix[r+1,Y-1]+matrix[r,Y-2])/4}
+			~matrix.south().\[r]{(matrix.south()[r]+matrix[X-1,r-1]+matrix[X-1,r+1]+matrix[X-2,r]/4)}
+			~matrix.west().\[r]{(matrix.west()[r]+matrix[r-1,0]+matrix[r+1,0]+matrix[r,1])/4}
+			~matrix.ne().\[]{(matrix[0,Y-1]+matrix[1,Y-1]+matrix[0,Y-2])/3}
+			~matrix.nw().\[]{(matrix[0,0]+matrix[1,0]+matrix[0,1])/3}
+			~matrix.se().\[]{(matrix[X-1,0]+matrix[X-1,1]+matrix[X-2,0])/3}
+			~matrix.sw().\[]{(matrix[X-1,Y-1]+matrix[X-2,Y-1]+matrix[X-1,Y-2])/3}
+			;
+		else
+			cancel null;
+
+	}
+
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+
+		TYPE jacobimatrix[two_d{MATRIX_SIZE,MATRIX_SIZE}]=new TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}].south().\[r]{1.0}~null;
+//		TYPE matrix[two_d{MATRIX_SIZE,MATRIX_SIZE}]=new TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c]{if(r==MATRIX_SIZE-1){1.0}else{0.0}};
+		TYPE matrix[two_d{MATRIX_SIZE,MATRIX_SIZE}]=new TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { 10000000.f/(r*MATRIX_SIZE+c+1) };
+
+		int count=jacobi(jacobimatrix,0.0001,0);
+		stdio.printf("%d iterations; ",count);
+
+		//matrix__j.\[r,c]{stdio.printf("matrix__j[%d,%d]=%f\n",r,c,matrix__j[r,c])};
+
+		matrix__=stencil(matrix);
+
+		stdio.printf("matrix__[%d,%d]=%f; ",MATRIX_SIZE/2,MATRIX_SIZE/2,matrix__[MATRIX_SIZE/2,MATRIX_SIZE/2]);
+
+		int a=MATRIX_SIZE;
+		int b=MATRIX_SIZE;
+
+		TYPE dynmatrix[two_d{x,y}]=new TYPE[two_d{a,b}].\[r,c] { 10000000.f/(r*MATRIX_SIZE+c+1) };
+
+		dynmatrix__=stencil(dynmatrix);
+
+		stdio.printf("dynmatrix__[%d,%d]=%f\n",MATRIX_SIZE/2,MATRIX_SIZE/2,dynmatrix__[MATRIX_SIZE/2,MATRIX_SIZE/2]);
+
+		if(matrix__[MATRIX_SIZE/2,MATRIX_SIZE/2]==dynmatrix__[MATRIX_SIZE/2,MATRIX_SIZE/2]&&count==61)
+			stdio.printf("\nsuccess\n");
+
+		finally 0; //use finally and don__t add extra wait?? does work with root??
+    }
+}
+
+

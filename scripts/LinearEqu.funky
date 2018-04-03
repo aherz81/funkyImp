@@ -1,0 +1,156 @@
+import ffi.stdio;
+import ffi.math;
+import stdlib.File;
+import ffi.FILE;
+
+domain two_d{x,y}:one_d{x*y}(l) = { (j,k) | j<x & k<y }
+//domain two_d{x,y} = { (j,k) | j<x & k<y }
+
+/*
+ this program solve a linear equation system conssist of three equation
+
+
+
+
+*/
+
+
+public class LinearEquation {
+   
+// inisialize the right hand equation values
+    static double getValue(int i){
+
+        double val;
+         if(i==0 ){
+            val= 6.0;
+         }else if(i==1){
+           val=-4.0;
+        }else if(i==2 ){
+            val=27.0;
+        }else {
+        val=0.0;
+        }
+
+        finally val;
+    }
+  // inisialize the left hand equation values
+    static double getValue(int r,int c){
+       
+       double val;
+         if(r==0 && c==0){
+            val= 1.0;
+         }else if(r==0 && c==1){
+           val=1.0;
+        }else if(r==0 && c==2){
+            val=1.0;
+        }else if(r==1 && c==0){
+        val=0.0;
+        }else if(r==1 && c==1){
+        val=2.0;
+        }else if(r==1 && c==2){
+        val=5.0;
+        }else if(r==2 && c==0){
+        val=2.0;
+        }else if(r==2 && c==1){
+        val=5.0;
+        }else if(r==2 && c==2){
+        val=-1.0;
+        }else{
+        val=0.0;
+        }
+        finally val;
+    
+    }
+
+// find the determinint
+    static double getDeterminant( double e [two_d{3,3}],int i){
+        double det;
+        if(i==0)
+            cancel 0.0;
+        int ind=math.abs(i-3);
+        double val=(e[0,ind]*(e[1,(ind+1)%3]*e[2,(ind+2)%3] - e[1,(ind+2)%3]*e[2,(ind+1)%3]));
+        det=getDeterminant(e,i-1)+val;
+        
+        finally det;
+
+    }
+// find the cofactors for the inverse matrix
+    static double getCofactorVal(double e [two_d{3,3}], int r, int c){
+        
+            
+             int r1=(r+1)%3;
+             int r2=(r+2)%3;
+             int c1=(c+1)%3;
+             int c2=(c+2)%3;
+
+             double n1=e[r1,c1];
+             double n2=e[r2,c2];
+
+             double n3=e[r1,c2];
+             double n4=e[r2,c1];
+
+             double d=(((n1* n2) - (n3*n4)));
+   
+
+            finally d;
+
+    }
+// find the inverse matrix
+    static double [two_d{3,3}] findInverse(double e [two_d{3,3}],double  det){
+
+
+         e'cofactors = new double[two_d{3,3}].\[r,c] { 
+              getCofactorVal(e,r,c)      
+         };
+        
+        e'inverse = new double[two_d{3,3}].\[r,c] { 
+              (e'cofactors[c,r]/det)      
+         };
+
+    
+         finally e'inverse;
+    }
+
+    static int main(int argc, inout unique String argv [one_d{-1}]) {
+        
+         stdio.printf("linear Equation Solver\n");
+        
+        double equation [two_d{3,3}]= new double[two_d{3,3}].\[r,c]{
+         getValue(r,c)
+
+         };
+         
+          double values [one_d{3}]= new double[one_d{3}].\[i]{
+           getValue(i)
+         };
+        
+       
+         double  determinant =getDeterminant(equation,3);
+         
+
+         equation.\[i,j]{stdio.printf("equation[%d,%d]=%f\n",i,j,equation[i,j]);};
+         stdio.printf("determinant=%f\n",determinant);
+        // if the determinant is non zero then there is a solution 
+         if(determinant!=0.0){
+            equation'inverse= findInverse(equation,determinant);
+            equation'inverse.\[i,j]{stdio.printf("inverse[%d,%d]=%.2f\n",i,j,equation'inverse[i,j]);};
+
+            double solution [one_d{3}]= new double[one_d{3}].\[i]{
+                 ((equation'inverse[i,0]*values[0])+(equation'inverse[i,1]*values[1])+(equation'inverse[i,2]*values[2]))
+                
+                };
+
+            solution.\[i]{stdio.printf("Solution is x[%d]=%f\n",i,solution[i]);};
+
+         }else{
+            stdio.printf("There is no Solution");
+         }
+
+        finally 0;
+        
+      
+    }
+
+   
+
+}

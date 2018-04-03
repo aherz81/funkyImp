@@ -1,0 +1,74 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+import ffi.stdio;
+import ffi.stdlib;
+import ffi.math;
+import stdlib.File;
+import ffi.FILE;
+
+domain two_d{x,y}:one_d{x*y}(l) = { (j,k) | j<x & k<y }
+
+//packed class has minimum size, cannot be created with new!
+packed class Pixel
+{
+    public char r,g,b; //3 bytes
+}
+
+public class filerw {
+
+    static Pixel[two_d{-1,-1}] readImage(){
+
+        File f=new File("imagefile","rb");
+
+        Pixel data[one_d{-1}]; //here we__ll store the data
+
+        int width,height;
+
+         f__next=f
+         .read(width)
+         .read(height);
+         //must seperate here, eval order of args is undef in c/c++
+		 f__next.read(width*height,data)//must be one d, we don__t know the dimensions
+         .close();//close file
+
+		 //warning, currently there are no size checks here:
+		 Pixel data2d[two_d{-1,-1}]=data.two_d{width,height}; //dynamically reinterprete as 2d (no copy, just rewrap)
+		 
+		 //or, you can also copy the data (less efficient, rewrapping for every index)
+		 //Pixel data2d[two_d{-1,-1}]=new Pixel[two_d{width,height}].\[r,c]{data.two_d{width,height}[r,c]};
+
+         stdio.printf("width/height: %d,%d\n",width,height);
+
+         cancel data2d;
+
+     }
+
+	static void writeImage(Pixel[two_d{-1,-1}] data)
+	{
+        File f=new File("./tmp/outfile","wb");
+
+         f
+         .write(data.size[0])
+         .write(data.size[1])
+         .write(data.one_d)//must be one d, we don__t know the dimensions
+         .close();//close file
+	}
+
+    static int main(int argc, inout unique String argv [one_d{-1}]) {
+
+		Pixel image[two_d{-1,-1}]=readImage();
+
+		writeImage(image);
+
+		stdio.printf("sizeof(Pixel)=%d\n",sizeof(Pixel));
+
+//		Pixel p=new Pixel(); //error
+
+        finally 0;
+    }
+}
+

@@ -1,0 +1,280 @@
+// @PARAM: -XD-skipgenerate -verbose -regression -DEPGRAPH -d ./tmp
+// @TEST noerror
+//  ./custom.sh ./tmp/DepGraphPathTest.funky
+
+import ffi.stdio;
+
+import stdlib.File;
+import stdlib.dynArray;
+
+//members of a unique class are not unique by default
+//elements of unique array are not unique?
+
+abstract class Vertex
+{
+	long id;
+	long childs[one_d{-1}];
+	long parents[one_d{-1}];
+
+	abstract String getName();
+
+	Vertex(long id,long childs[one_d{-1}],long parents[one_d{-1}])
+	{
+		this.id=id;
+		this.childs=childs;
+		this.parents=parents;
+	}
+
+	long [one_d{-1}] getChilds()
+	{
+		cancel childs;
+	}
+
+	long [one_d{-1}] getParents()
+	{
+		cancel parents;
+	}
+
+	long getParentsCount()
+	{
+		cancel parents.size[0];
+	}
+}
+
+unique class uVertex
+{
+	unique long id=0;
+	dynArray<long> childs=new dynArray<long>();
+	dynArray<long> parents=new dynArray<long>();
+
+	public uVertex setId(long id)
+	{
+		cancel this where this.id=id;
+	}
+
+	public uVertex addChild(long id)
+	{
+		cancel this where childs=childs.append(id);
+	}
+
+	public uVertex addParent(long id)
+	{
+		cancel this where parents=parents.append(id);
+	}
+}
+
+class Graph<T>
+{
+	private T& [one_d{-1}] verts;
+
+	public Graph(T& [one_d{-1}] verts)
+	{
+		this.verts=verts;
+	}
+
+	private nonblocking File dumpVertex(long vindex,long cindex,File dot) //FIXME: doesn__t build for blocking
+	{
+		if(cindex>=verts[vindex].childs.size[0])
+			cancel dot;
+		else
+			finally dot.write(verts[vindex].getName()).write("->").write(verts[verts[vindex].childs[cindex]].getName()).write("\n")>>>dumpVertex(vindex,cindex+1);
+	}
+
+	private nonblocking File dumpParentVertex(long vindex,long cindex,File dot) //FIXME: doesn__t build for blocking
+	{
+		if(cindex>=verts[vindex].parents.size[0])
+			cancel dot;
+		else
+			finally dot.write(verts[verts[vindex].parents[cindex]].getName()).write("->").write(verts[vindex].getName()).write("\n")>>>dumpParentVertex(vindex,cindex+1);
+	}
+
+	private nonblocking File dumpVertices(long vindex,File dot)
+	{
+		if(vindex>=verts.size[0])
+			cancel dot;
+		else
+			finally dumpParentVertex(vindex,0,dot)>>>dumpVertices(vindex+1);
+	}
+
+	public T& [one_d{-1}] getNodes()
+	{
+		cancel verts;
+	}
+
+	public T getNode(long id)
+	{
+		cancel verts[id];
+	}
+
+	public long getNodeCount()
+	{
+		cancel verts.size[0];
+	}
+
+	public void dump(String name)
+	{
+		File dot=new File(name,"wb");
+		(dot.write("digraph {\n")>>>
+		dumpVertices(0)).
+		write("\n}").
+		close();
+	}
+}
+
+//FIXME: keep verts and edges seperate for better unwinding (convert unique to non-unique)?
+unique class uGraphBuilder<T extends uVertex>
+{
+	private dynArray<T> uGraph=new dynArray<T>();
+
+	public uGraphBuilder<T> addVertex(T node,out long nid)
+	{
+		uGraph__size=uGraph.size(nid__loc);
+		nid=nid__loc;
+		cancel this where uGraph=uGraph__size.append((T)node.setId(nid__loc));
+	}
+
+	public uGraphBuilder<T> addVertex(T node)
+	{
+		long nid;
+		uGraph__size=uGraph.size(nid);
+		cancel this where uGraph=uGraph__size.append((T)node.setId(nid));
+	}
+
+	public uGraphBuilder<T> addEdge(long from,long to)
+	{
+		T vfrom,vto;
+		uGraph__val=uGraph.replace(from,null,vfrom).replace(to,null,vto);
+		cancel this where uGraph=uGraph__val.replace(from,(T)vfrom.addChild(to)).replace(to,(T)vto.addParent(from));
+	}
+
+	public <R> Graph<R> getGraph()
+	{
+		T& data[one_d{-1}]=uGraph.getData();
+		cancel new Graph<R>((new R&[one_d{data.size[0]}]).\[i]{(data[i]).getData()});
+	}
+}
+
+//NO PARALLELISM HERE:
+singular TopolNodeVisitor<T>
+{
+	Graph<T> g;
+	unique long visited[one_d{-1}];
+	dynArray<long> order;
+
+	public TopolNodeVisitor(Graph<T> g)
+	{
+		this.g=g;
+		visited=new long[one_d{g.getNodeCount()}].\[i]{0};
+		order=new dynArray<long>(); //FIXME: no error if order is not initialized
+	}
+
+	final long[one_d{-1}] getOrder();
+
+	//void processNode(long id){}
+
+	event visitNode(long id)
+	{
+		T node=g.getNode(id);
+		visited__next=visited where visited[id]=visited[id]+1;
+		if(visited__next[id]>=node.getParentsCount())
+		{
+			long size;
+			order__size=order.size(size);
+			if(size>=g.getNodeCount()-1)//are we finished?
+			{
+				order__next=null;
+				getOrder()=order__size.append(id).getData();
+			}
+			else
+				order__next=order__size.append(id);
+
+			long [one_d{-1}] childs=g.getNode(id).getChilds();
+			childs.\[i]{visitNode(childs[i])};
+		}
+		else
+		{
+			order__next=order;
+		}
+
+		finally this where
+		{
+			visited=visited__next;
+			order=order__next;
+		};
+	}
+}
+
+class MyVertex extends Vertex
+{
+	public String name;
+
+	String getName()
+	{
+		cancel name;
+	}
+
+	MyVertex(String name,long id,long childs[one_d{-1}],long parents[one_d{-1}])
+	{
+		super(id,childs,parents);
+		this.name=name;
+	}
+}
+
+unique class uMyVertex extends uVertex
+{
+	public String name;
+
+	uMyVertex(String name)
+	{
+		this.name=name;
+	}
+
+	MyVertex getData()
+	{
+		cancel new MyVertex(name,id,childs.getData(),parents.getData());
+	}
+}
+
+
+public class cur
+{
+    static int main(int argc,inout unique String[one_d{-1}] argv)
+    {
+		//build the graph incrementally (destructively):
+		uGraphBuilder<uMyVertex> uGB=new uGraphBuilder<uMyVertex>();
+		//0,1,2
+		long id;
+		//add verts
+		uGB__verts=
+		uGB.
+		addVertex(new uMyVertex("A"),id__a).
+		addVertex(new uMyVertex("B"),id__b).
+		addVertex(new uMyVertex("C"),id__c).
+		addVertex(new uMyVertex("D"),id__d).
+		addVertex(new uMyVertex("E"),id__e);
+
+		//add edges
+		uGB__edges=
+		uGB__verts.
+		addEdge(id__a,id__b).
+		addEdge(id__a,id__c).
+		addEdge(id__c,id__d).
+		addEdge(id__d,id__e).
+		addEdge(id__b,id__d);
+
+		//convert to non unique graph (O(n) :( )
+		Graph<MyVertex> g=uGB__edges.<MyVertex>getGraph();
+
+		g.dump("test.dot");
+
+		TopolNodeVisitor<MyVertex> visit=new TopolNodeVisitor<MyVertex>(g);
+		visit.visitNode(id__a);
+
+		long order[one_d{-1}]=visit.getOrder();
+
+		stdio.printf("TopolOrder\n")::
+		order.\[i]{stdio.printf("%s\n",g.getNode(order[i]).getName())};
+
+        finally 0;
+    }
+}

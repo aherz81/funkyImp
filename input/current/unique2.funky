@@ -1,0 +1,317 @@
+// @PARAM: -PP "" -g:none -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces some output to stdout.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+import ffi.stdio;
+import ffi.stdlib;
+import domains.*;
+
+class BinTree
+{
+	BinTree& left;
+	BinTree& right;
+	int value;
+
+	BinTree(BinTree left,int value,BinTree right)
+	{
+		this.left=left;
+		this.value=value;
+		this.right=right;
+	}
+
+	BinTree(int nvalue)
+	{
+		left=null;
+		value=nvalue;
+		right=null;
+	}
+
+	nonblocking int sum(int accum)
+	{
+		BinTree next;
+
+		if(left!=null&&right!=null)
+		{
+			int ls=left.sum(0);
+			int rs=right.sum(0);
+			cancel ls+rs+accum+value;
+		}
+		else
+		{
+			if(left!=null)
+				next=left;
+			else if(right!=null)
+				next=right;
+			else
+				cancel accum+value;
+		}
+
+		//could move cancel ls+rs+accum+value; into finally with ifexpr
+		finally next.sum(accum+value);
+	}
+
+	nonblocking int sumseq(int accum)
+	{
+		BinTree next;
+
+		if(left!=null&&right!=null)
+		{
+			cancel left.sumseq(0)+right.sumseq(0)+accum+value;
+		}
+		else
+		{
+			if(left!=null)
+				next=left;
+			else if(right!=null)
+				next=right;
+			else
+				cancel accum+value;
+		}
+
+		//could move cancel ls+rs+accum+value; into finally with ifexpr
+		finally next.sumseq(accum+value);
+	}
+
+	//non destructive add:
+	BinTree add(int value)
+	{
+		if(value==this.value)
+			cancel this;
+		else if(value<this.value)
+		{
+			if(left!=null)
+				cancel new BinTree(left.add(value),this.value,right);
+			else
+				cancel new BinTree(new BinTree(null,value,null),this.value,right);
+		}
+		else
+		{
+			if(right!=null)
+				cancel new BinTree(left,this.value,right.add(value));
+			else
+				cancel new BinTree(left,this.value,new BinTree(null,value,null));
+		}
+	}
+}
+
+unique class uBinTree extends BinTree
+{
+	static uBinTree conv(BinTree bt)
+	{
+		if(bt==null)
+			cancel null;
+		else
+		{
+			uBinTree l=conv(bt.left);
+			uBinTree r=conv(bt.right);
+			cancel new uBinTree(l,bt.value,r);
+		}
+	}
+
+	uBinTree(BinTree bt)
+	{
+		super(conv(bt.left),bt.value,conv(bt.right));
+	}
+
+	uBinTree(uBinTree nleft,int nvalue,uBinTree nright)
+	{
+		super(nleft,nvalue,nright);
+	}
+
+	uBinTree(int nvalue)
+	{
+		super(nvalue);
+	}
+
+	uBinTree uadd(int nvalue)
+	{
+		uBinTree left__next;
+		uBinTree right__next;
+
+		if(nvalue<value)
+		{
+			if(left!=null)
+				left__next=((uBinTree)left).uadd(nvalue);
+			else
+				left__next=new uBinTree(null,nvalue,null);
+			right__next=(uBinTree)right;
+		}
+		else if(nvalue>value)
+		{
+			left__next=(uBinTree)left;
+			if(right!=null)
+				right__next=((uBinTree)right).uadd(nvalue);
+			else
+				right__next=new uBinTree(null,nvalue,null);
+		}
+		else
+		{
+			left__next=(uBinTree)left;
+			right__next=(uBinTree)right;
+		}
+
+		finally this where {left=left__next;right=right__next;};
+
+	}
+
+	uBinTree usum(int accum,out int val)
+	{
+		uBinTree left__next;
+		uBinTree right__next;
+
+//		int res;
+//        uBinTree xx=usum(0,res);
+
+		if(left!=null&&right!=null)
+		{
+			left__next=((uBinTree)left).usum(0,val__l);
+			right__next=((uBinTree)right).usum(0,val__r);
+			val = val__l+val__r+accum+value;
+		}
+		else
+		{
+			if(left!=null)
+			{
+				left__next=((uBinTree)left).usum(accum+value,val);
+				right__next=(uBinTree)right;
+			}
+			else if(right!=null)
+			{
+				right__next=((uBinTree)right).usum(accum+value,val);
+				left__next=(uBinTree)left;
+			}
+			else
+			{
+				val=accum+value;
+				left__next=(uBinTree)left;
+				right__next=(uBinTree)right;
+			}
+		}
+
+		finally this where {left=left__next;right=right__next;};
+	}
+
+}
+
+/*
+class Test extends uBinTree
+{}
+*/
+
+#define SIZE 100000
+#define COUNT 1000
+
+public class cur
+{
+	group gen;//we place gen_tree in group(gen) so that both funs are not executed concurrently
+	//also we call srand() before each gen_tree, so the results should be identical
+
+	static nonblocking group(gen) BinTree gen_tree(int n,BinTree root)
+	{
+		if(n<=0)
+			cancel root;
+
+		finally gen_tree(n-1,root.add(stdlib.rand()));//SLOW!!
+	}
+
+	static nonblocking group(gen) uBinTree gen_tree_U(int n,uBinTree root)
+	{
+		if(n<=0)
+			cancel root;
+		else
+			finally gen_tree_U(n-1,root.uadd(stdlib.rand()));//SLOW!!
+	}
+
+	static nonblocking group(gen) BinTree sumtree(int n,BinTree root,int accum)
+	{
+		if(n<=0)
+			cancel root;
+		else
+			finally sumtree(n-1,root,accum+root.sumseq(0));
+	}
+
+	static nonblocking group(gen) BinTree psumtree(int n,BinTree root,int accum)
+	{
+		if(n<=0)
+			cancel root;
+		else
+			finally psumtree(n-1,root,accum+root.sum(0));
+	}
+
+	static nonblocking group(gen) uBinTree usumtree(int n,uBinTree root,int accum)
+	{
+		if(n<=0)
+			cancel root;
+		else
+			finally usumtree(n-1,root.usum(0,accum__next),accum+accum__next);
+	}
+
+    static int main(int argc,inout unique String[one_d{4}] argv)
+    {
+        uBinTree t2;
+        stdlib.srand(argc)::
+        t2=gen_tree_U(SIZE,new uBinTree(0));
+        #TIME(t2,"gen_tree_U");//time (and dump) calc of t
+/*
+        int res2;
+        t2__next=t2.usum(0,res2);
+        #TIME(res2,"sum_ubt");
+
+        //unique to non-unique is ok (other way around is forbidden):
+        BinTree bt=t2__next;
+
+	    int ress=bt.sumseq(0);
+        #TIME(ress,"sumseq");
+
+
+//        ubt__next.sum(0); //disallowed
+
+
+//		uBinTree ubt=(uBinTree)bt;
+
+		if(ress!=0)
+		{
+//			int resbt2=bt.sum(0);
+//			#TIME(resbt2,"casted");
+
+			uBinTree ubt=new uBinTree(bt);
+
+			int res3;
+			BinTree cbt=ubt.usum(0,res3);
+			#TIME(res3,"sum_ubt_deep_copy");
+
+			int rescbt=cbt.sumseq(0);
+			#TIME(rescbt,"seq_casted_deep_copy");
+
+			stdio.printf("bintree.sumseq %d=%d\n",SIZE,ress);
+			stdio.printf("ubintree.sum %d=%d\n",SIZE,res2);
+			stdio.printf("copy_ubintree.sum %d=%d\n",SIZE,res3);
+//	        stdio.printf("cast_bintree.sum %d=%d\n",SIZE,resbt2);
+		}
+*/
+
+		t2__next=usumtree(COUNT,t2,0);
+
+		#TIME(t2__next,"usum");
+
+		BinTree bt=t2__next;
+
+		bt__next=sumtree(COUNT,bt,0);
+		#TIME(bt__next,"ssum");
+
+		bt__next2=psumtree(COUNT,bt,0);
+		#TIME(bt__next2,"psum");
+
+        finally 0;
+    }
+}

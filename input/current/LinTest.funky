@@ -1,0 +1,52 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces a couple of text files.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+unique class LinTest
+{
+	unique LinTest& i;
+	unique LinTest& ar[one_d{-1}]=null;
+
+	LinTest test(LinTest ut)
+	{
+		if(1<2)
+		{
+			LinTest uti=ut.i.test(null); //read ut.i
+			test(null); //read this
+			cancel ut where ut.i=null; //ut alive, this dead, must write ut.i
+		}
+		else
+		{
+			LinTest mi=i.test(null); //read this.i
+		}
+
+		LinTest ara=ar[0]; //read this.ar[0]
+		LinTest arb=ut.ar[0]; //precision: ut.ar!=ar (due to uniqueness)
+		LinTest arc=ut.ar[0]; //precision: ut.ar!=ar (due to uniqueness)
+		//ut.test(null);
+		LinTest ard=ut.ar[1]; //error: max one index
+
+		cancel this where {i=null;ar[0]=null;}; //this alive (ut dead), must write this.i and this.ar[0]
+	}
+}
+
+public class cur
+{
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+
+		finally 0;
+    }
+}
+
+

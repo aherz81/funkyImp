@@ -1,0 +1,219 @@
+import ffi.stdio;
+import ffi.math;
+import stdlib.File;
+import ffi.FILE;
+
+domain two_d{x,y}:one_d{x*y}(l) = { (j,k) | j<x & k<y }
+//domain two_d{x,y} = { (j,k) | j<x & k<y }
+
+
+/*public class Point {
+
+    public int h;
+    public int w;
+
+}
+
+public class GraphNode {
+
+    public Point aPoint;
+    public GraphNode lNode;
+    public GraphNode rNode;
+
+
+}
+singular StackElement {
+
+    public GraphNode aNode;
+    public StackElement up;
+    public StackElement down;
+
+    event initStackElement(GraphNode node) {
+        
+        finally this where up=null;down=null;aNode=node;
+    }
+
+   event setDown(StackElement adown){
+
+        finally this where down=adown;
+    }
+    event setUp(StackElement aup){
+
+        finally this where up=aup;
+    } 
+
+}
+singular Stack {
+
+    
+    public StackElement top;
+    public StackElement bottom;
+// ask 
+   StackElement getTop(){
+       // finally top;
+       finally null;
+    }
+
+    final StackElement getBottom(){
+        finally bottom;
+     //finally null;
+    }
+
+     event initStack(Stack s) {
+
+        finally this where top=null;bottom=null;
+    }
+    event setTop(StackElement atop){
+
+        finally this where top=atop;
+    }
+    
+    event setBottom(StackElement abottom){
+
+        finally this where bottom=abottom;
+    }
+    event push(Stack s, GraphNode _value) {
+    
+     StackElement  newElement = new StackElement();
+     newElement.initStackElement(_value);
+    
+     if (s.getTop() == null) {
+         s.setTop(newElement); 
+         s.setBottom(newElement);
+     } else {
+            //push it to the top
+            newElement.setDown(s.getTop());
+            s.setTop(newElement); 
+        }
+    }
+
+}*/
+
+singular GraphNode {
+
+    int h;
+    int w;
+    GraphNode left;
+    GraphNode right;
+
+    event intNode(int ah, int aw){
+    
+    finally this where {
+        
+        h=ah;w=aw;
+        right=null;
+        left=null;
+        };
+    }
+
+
+
+    /*
+
+
+  event GraphNode GraphNode(int ah, int aw){
+    
+    finally this where {
+        
+        h=ah;w=aw;
+        right=null;
+        left=null;
+        };
+
+        //this.init()
+    }
+
+    event setLeft(GraphNode aleft){
+    
+    finally this where {
+           left=aleft;
+        };
+    }
+
+    event setRight(GraphNode aright){
+    
+    finally this where {
+           right=aright;
+        };
+    }
+    GraphNode getLeft(){
+    
+    finally left;
+    }
+
+    GraphNode getRight(){
+    
+    finally right;
+    }
+
+*/
+
+    
+
+}
+
+singular Graph {
+
+    GraphNode root;
+
+    event setRoot(GraphNode aroot){
+    
+    finally this where {
+        root=aroot;
+        };
+    }
+
+    GraphNode getRoot(){
+    
+     finally root;
+    }
+
+}
+
+
+public class cur {
+   
+
+
+    static int main(int argc, inout unique String argv [one_d{-1}]) {
+        
+         stdio.printf("DFS Graph\n");
+         
+        Graph g= new Graph();
+        GraphNode currentNode=new GraphNode();
+        currentNode.intNode(0,3);
+        g.setRoot(currentNode);
+
+        g.getRoot().setLeft(new GraphNode(1,2););
+        
+
+
+/*
+
+
+
+   g.root->left = (GraphNode*) malloc(sizeof(GraphNode));
+   *g.root->left = initNode(1, 2);
+   g.root->right = (GraphNode*) malloc(sizeof(GraphNode));
+   *g.root->right = initNode(1, 4);
+   //level 3 nodes
+   (*g.root->left).left = (GraphNode*) malloc(sizeof(GraphNode));
+   *(*g.root->left).left = initNode(2, 1);
+   (*g.root->left).right = (GraphNode*) malloc(sizeof(GraphNode));
+   *(*g.root->left).right = initNode(2, 2);
+   (*g.root->right).left = (GraphNode*) malloc(sizeof(GraphNode));
+   *(*g.root->right).left = initNode(2, 3);
+   (*g.root->right).right = (GraphNode*) malloc(sizeof(GraphNode));
+   *(*g.root->right).right = initNode(2, 5);
+
+
+*/
+
+        finally 0;
+        
+      
+    }
+
+   
+
+}

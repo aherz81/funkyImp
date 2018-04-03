@@ -1,0 +1,115 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+ratprint: false$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a0:0.33612967072681; 
+a1:3.9088700061704897*10^-4;
+a2:-6.2286906573803899*10^-8;
+a3:6.1259030817573896*10^-12;
+a4:-3.7664836294507701*10^-16;
+a5:1.47860828325084*10^-20;
+a6:-3.7542729821618198*10^-25;
+a7:6.1298051598743902*10^-30;
+a8:-6.20835975621435*10^-35;
+a9:3.5476490589997399*10^-40;
+a10:-8.7389768543141293*10^-46;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fit(x):=a0+a1*x+a2*x^2+a3*x^3+a4*x^4+a5*x^5+a6*x^6+a7*x^7+a8*x^8+a9*x^9+a10*x^10;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d(fit(x),[x,0,80000]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(fit(x),x);
+subst(x=2500,%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+inv(x):= if x=1 then 2400 else 1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+etseq(t1,t2):=t1+t2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+etpar(t1,t2):=2*min(t1,t2)/fit(min(t1,t2))+max(t1,t2)-min(t1,t2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+etpp(t1,t2):=if min(t1,t2)>2500 then etpar(t1,t2) else max(t1,t2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot3d(etpp(t1,t2),[t1,0,10000],[t2,0,10000]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+pfit(x):=1.2*(log(1+x)/log(10))^0.64-1.49;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+pinv(x):=10^(((x-1.49)/1.2)^(1/0.647))-1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+middle(t0,t1,t2):=t0+t1+t2-min(t0,t1,t2)-max(t0,t1,t2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ets(t0,t1,t2):=t0+t1+t2;
+etsp(t0,t1,t2):=etpar(etseq(t0,t1),t2);
+etp(t0,t1,t2):=max(etpar(t0,t1),etpar(t1,t2),etpar(t0,t2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(draw)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d(t0,t1,t2):=signum(etsp(t0,t1,t2)-etp(t0,t1,t2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+val(x,n):=if x<10^(n-1) then sconcat("0",val(x,n-1)) else x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot3d(signum(etsp(t0,t0,t1)-etp(t0,t0,t1)),[t0,1,10000],[t1,1,10000]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+for t2:2500 thru 10000 step 1000 do (
+  draw(gr3d(explicit(d(t0,t1,t2),t0,2500,10000,t1,2500,10000))) ,
+  draw_file(file_name = sconcat("/home/aherz/Desktop/gif/etp_max_mid_vs_etp",val(t2,5)),terminal=gif)
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+for t2:1 thru 2500 step 100 do (
+  draw(gr3d(explicit(signum(etpp(etseq(min(t0,t1,t2),max(t0,t1,t2)),middle(t0,t1,t2))-etpp(etseq(min(t0,t1,t2),middle(t0,t1,t2)),max(t0,t1,t2))),t0,1,2500,t1,1,2500))),
+  draw_file(file_name = sconcat("/home/aherz/Desktop/gif/minmax_vs_minmid",val(t2,5)),terminal=gif)
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+for t2:1 thru 2500 step 10 do (
+  draw(gr3d(explicit(signum(etpp(etseq(middle(t0,t1,t2),max(t0,t1,t2)),min(t0,t1,t2))-etpp(etseq(min(t0,t1,t2),middle(t0,t1,t2)),max(t0,t1,t2))),t0,1,2500,t1,1,2500))),
+  draw_file(file_name = sconcat("/home/aherz/Desktop/gif/midmax_vs_minmid",val(t2,5)),terminal=gif)
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d(5!/((5-t)!*t!)*t^(5-t),[t,1,5]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

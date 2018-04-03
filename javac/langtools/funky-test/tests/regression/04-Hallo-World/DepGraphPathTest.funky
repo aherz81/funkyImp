@@ -1,0 +1,21 @@
+// @PARAM: -XD-skipgenerate -verbose -regression -CPP -DEPGRAPH -d ./tmp
+// @TEST noerror
+
+//#define BRIDGE
+
+
+native class stdio
+{
+	static void printf(String txt);    
+}
+
+class Test
+{    
+    static int main()
+    {
+		stdio.printf("Funky Imp greets the World!");
+    
+        resume 10;
+    }
+}
+

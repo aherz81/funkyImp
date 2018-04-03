@@ -1,0 +1,8 @@
+domain one_d{x} = {(a) | a < x}
+domain two_d{x, y} : one_d{x*y} (o) = {(a,b) | a<x & b<y} 
+
+float M[two_d{3,4}] = new float[two_d{3,4}];
+//... Init values ... 
+//init code
+
+M'v2 = M.\(x,y) { M[x,y] * 2 }

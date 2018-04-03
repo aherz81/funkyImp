@@ -1,0 +1,210 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+
+import ffi.stdio;
+import stdlib.vector;
+import stdlib.gVector;
+
+#define MATRIX_SIZE 16
+#define BLOCK_SIZE 8
+
+#define INNER_BLOCK
+#define BLOCK
+
+//#define DUMP
+
+#define TYPE float
+
+domain two_d{x,y}:one_d{x*y} = { (j,k) | j<x & k<y } //two free
+
+//stupid defs cause pp doesn__t replace everything as it should do...
+#define wrapper(n,a) n##a
+#define wrapper2(n,a,b) n##a##b
+
+//avoid non-linear constraints by substituting some constants early on:
+#define region(dx,dy) wrapper2(region,dx,dy)
+#define declregion(dx,dy) region(dx,dy){x,y}(i,j):two_d{dx,dy}(q,w) = { two_d{x,y}(a,b) | a>=i*dx & a<i*dx+dx & b>=j*dy & b<j*dy+dy & q=a & w=b }
+
+domain declregion(BLOCK_SIZE,BLOCK_SIZE)
+
+#define slicex(dx) wrapper(slicex,dx) //block row
+#define declslicex(dx) slicex(dx){x,y}(i):two_d{dx,x}(q,w) = { two_d{x,y}(a,b) | a>=i*dx & a<i*dx+dx & q=a & w=b }
+
+domain declslicex(BLOCK_SIZE)
+
+#define slicey(dy) wrapper(slicey,dy) //block col
+#define declslicey(dy) slicey(dy){x,y}(j):two_d{y,dy}(q,w) = { two_d{x,y}(a,b) | b>=j*dy & b<j*dy+dy & q=a & w=b }
+
+domain declslicey(BLOCK_SIZE)
+
+
+//domain inner_2d{x,y} = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1}
+domain inner_2d{x,y}:two_d{(x-2),(y-2)}(j,k) = { two_d{x,y}(a,b) | a>0 & b>0 & a< x-1&b<y-1 & j=a & k=b}
+
+domain range{y,ys,ye}:one_d{ye-ys}(j) = { one_d{y}(a) | ys<=a & a<ye & ye<=y & j=a } //one free (a)
+
+//alex: static dom params __{}__ are optional:
+domain row{x,y}(j):one_d{y}(k) = { two_d{x,y}(a,b) | a=j & k=b } //one free(b)
+domain col{x,y}(j):one_d{x}(k) = { two_d{x,y}(a,b) | b=j & k=a }	//one free(a)
+
+//domain row{x,y}(j):one_d{y}(k) = { two_d{x,y}(a,b) | a=j & k=b } //one free(b)
+
+//should be error, cause one_d{x} and trace{x,y} don__t have identical shape:
+domain trace{x,y}:one_d{x}(j) = { two_d{x,y}(a,b) | j=a & a=b & x=y }// one free (a), indep of j //no order on items!! (warn??)
+
+domain utriag{x,y} = { two_d{x,y}(a,b) | b>=a+1 & x=y }
+domain ltriag{x,y} = { two_d{x,y}(a,b) | b<a & x=y }
+
+#ifdef TESTOP
+class TestOP
+{
+	public int i=0;
+	public int operator*(TestOP b)
+	{
+		cancel b.i+i;
+	}
+}
+#endif
+
+public class cur
+{
+
+#ifdef BLOCK
+	static TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}] matmultRRR(TYPE ma[two_d{MATRIX_SIZE,MATRIX_SIZE}],TYPE mb[two_d{MATRIX_SIZE,MATRIX_SIZE}])
+	{
+		//iter over all indices and calc corresponding dot product
+		cancel
+				ma.\region(BLOCK_SIZE,BLOCK_SIZE)(br,bc)
+				{
+
+					ma.region(BLOCK_SIZE,BLOCK_SIZE)(br,bc)
+					.two_d.\[r,c]
+					{
+						//dotRR(ma.row(br*BLOCK_SIZE+r),mb.row(bc*BLOCK_SIZE+c))
+						((gVector<MATRIX_SIZE,TYPE,TYPE[row{MATRIX_SIZE,MATRIX_SIZE}]>)ma.row(br*BLOCK_SIZE+r))*((gVector<MATRIX_SIZE,TYPE,TYPE[row{MATRIX_SIZE,MATRIX_SIZE}]>)mb.row(bc*BLOCK_SIZE+c))
+						//vector<MATRIX_SIZE>.dot(ma.row(br*BLOCK_SIZE+r),mb.row(bc*BLOCK_SIZE+c))
+						//(br*BLOCK_SIZE+r)*BLOCK_SIZE+bc*BLOCK_SIZE+c
+					}
+
+				};
+	}
+#endif
+
+#ifdef INNER_BLOCK
+/*
+	static TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] mulRegion(TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] ra,TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] rb)
+	{
+		cancel ra.two_d.\[r,c]
+		{
+			vector<BLOCK_SIZE>.dot(ra.two_d.row(r),rb.two_d.row(c))
+		};
+	}
+
+	static TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] addRegion(TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] tmp,TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] rb)
+	{
+		cancel tmp.two_d.\[r,c]
+		{
+			tmp.two_d[r,c]+rb.two_d[r,c]
+		};
+	}
+*/
+	//merge adding and multiplying to avoid copy of block
+	static TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] mulAddRegion(TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] tmp,TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] ra,TYPE[region(BLOCK_SIZE,BLOCK_SIZE){MATRIX_SIZE,MATRIX_SIZE}] rb)
+	{
+		cancel tmp.two_d.\[r,c]
+		{
+			tmp.two_d[r,c]+vector<BLOCK_SIZE>.dot(ra.two_d.row(r),rb.two_d.row(c))
+		};
+	}
+
+	static TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}] matmultInner(TYPE ma[two_d{MATRIX_SIZE,MATRIX_SIZE}],TYPE mb[two_d{MATRIX_SIZE,MATRIX_SIZE}])
+	{
+		//use MATRIX_SIZE^2 sized tmp?
+		//TYPE tmp[two_d{MATRIX_SIZE,MATRIX_SIZE}]=null;//=new TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}]; //init to 0? (automatically done by GC)
+
+		cancel
+				ma.\region(BLOCK_SIZE,BLOCK_SIZE)(br,bc)
+				{
+					ma.slicex(BLOCK_SIZE)(br).two_d.slicey(BLOCK_SIZE)//reduce over col blocks of block row br
+					.\reduce{0}(col,accum)
+					{
+						mulAddRegion(accum,ma.region(BLOCK_SIZE,BLOCK_SIZE)(br,col),mb.region(BLOCK_SIZE,BLOCK_SIZE)(bc,col))
+/*
+						ma.region(BLOCK_SIZE,BLOCK_SIZE)(br,bc).two_d.\[r,c]
+						{
+							accum.two_d[r,c]+vector<BLOCK_SIZE>.dot(ma.region(BLOCK_SIZE,BLOCK_SIZE)(br,col).two_d.row(r),mb.region(BLOCK_SIZE,BLOCK_SIZE)(bc,col).two_d.row(c))
+						}
+*/
+					}
+				};
+	}
+
+#endif
+
+	static TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}] transposeRRR(TYPE ma[two_d{MATRIX_SIZE,MATRIX_SIZE}])
+	{
+		cancel ma.\[r,c]{ma[c,r]};
+	}
+
+#ifdef MATMULT
+	static TYPE dotRR(TYPE r[row{MATRIX_SIZE,MATRIX_SIZE}],TYPE c[row{MATRIX_SIZE,MATRIX_SIZE}])
+	{
+		cancel r.one_d.\reduce{0}(i,accum) {accum + r.one_d[i] * c.one_d[i]};
+	}
+
+	static TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}] matmult(TYPE ma[two_d{MATRIX_SIZE,MATRIX_SIZE}],TYPE mb[two_d{MATRIX_SIZE,MATRIX_SIZE}])
+	{
+		//iter over all indices and calc corresponding dot product
+		cancel ma.\[r,c]{dotRR(ma.row(r),mb.row(c))};
+	}
+#endif
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+		TYPE matrix[two_d{MATRIX_SIZE,MATRIX_SIZE}]=new TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { 10000000.f/(r*MATRIX_SIZE+c+1) };
+
+		matrix__b = new TYPE[two_d{MATRIX_SIZE,MATRIX_SIZE}].\[r,c] { 10000000.f/(c*MATRIX_SIZE+r+1) };
+
+		matrix__btrans=transposeRRR(matrix__b);
+
+#ifdef BLOCK
+
+		#ifdef INNER_BLOCK
+			matrix__block=matmultInner(matrix,matrix__btrans); //blocked version
+		#else
+			matrix__block=matmultRRR(matrix,matrix__btrans); //blocked version
+		#endif
+#else
+		#ifdef INNER_BLOCK
+			matrix__block=matmultInner(matrix,matrix__btrans); //blocked version
+		#else
+			matrix__block=matmult(matrix,matrix__btrans);
+		#endif
+#endif
+
+		stdio.printf("matrix__block[%d,%d]=%f (%d)\n",(MATRIX_SIZE/2),(MATRIX_SIZE/2),matrix__block[(MATRIX_SIZE/2),(MATRIX_SIZE/2)],matrix__block[(MATRIX_SIZE/2),(MATRIX_SIZE/2)]);
+		TYPE sum=matrix__block.\reduce{0}(i,j,accum){accum+matrix__block[i,j]};
+		stdio.printf("sum %f",sum);
+
+#ifdef DUMP
+		matrix.\[r,c]{stdio.printf("matrix[%d,%d]=%f (%d)\n",r,c,matrix[r,c],matrix[r,c])};
+		matrix__b.\[r,c]{stdio.printf("matrix__b[%d,%d]=%f (%d)\n",r,c,matrix__b[r,c],matrix__b[r,c])};
+		matrix__btrans.\[r,c]{stdio.printf("matrix__btrans[%d,%d]=%f (%d)\n",r,c,matrix__btrans[r,c],matrix__btrans[r,c])};
+		matrix__block.\[r,c]{stdio.printf("matrix__block[%d,%d]=%f (%d)\n",r,c,matrix__block[r,c],matrix__block[r,c])};
+#endif
+
+#ifdef TESTOP
+		TestOP a=new TestOP();
+		TestOP b=new TestOP();
+
+		int res=a*b;
+#endif
+
+		finally 0; //use finally and don__t add extra wait?? does work with root??
+    }
+}
+
+

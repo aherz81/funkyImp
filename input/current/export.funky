@@ -1,0 +1,43 @@
+// PARAM: -PP "" -g:none -CPP -d .
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @CUSTOM ./custom.sh
+// @TEST noerror
+
+/*
+    Alex: compiling this will generated the C++ sources for class TestExport along with a file __TestExport.funky__
+	Another project can import the gereated TestExport.funky and link to the generated C++ source to allow modular compilation of funky stuff
+
+    <<<<<<< You should try NOT to break this. >>>>>>>>
+
+ */
+//can use c-style pre processor: (must compile with -PP "")
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+#define WTM work(100) tasks(1) mem(10) 
+native class stdio
+{
+    static WTM FILE fopen(String f, String m); //thread safe method fopen, String==char*
+    static WTM void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static WTM void fread(out String txt, int size, int items, inout FILE f);
+    static WTM void fclose(inout FILE f);
+    static WTM void printf(String txt, Object .. j); //HACK!
+}
+
+export class TestExport
+{
+	int i;
+
+	public TestExport(int i)
+	{
+		this.i=i;
+	}
+
+	public void test()
+	{
+		stdio.printf("i=%d\n",i);
+	}
+}

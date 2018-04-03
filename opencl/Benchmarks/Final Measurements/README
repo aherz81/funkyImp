@@ -1,0 +1,8 @@
+The benchmarks are in SciDAVis format.
+tables have one of two possible schemes.
+
+Scheme 1:
+x-v1-v1_StdDev-v1_StdErr-v2-v2_StdDev-v2_StdErr-...
+
+Scheme 2 (For tables with derived data):
+x-v1-v1_StdErr-v2-v2_StdErr 

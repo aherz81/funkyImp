@@ -1,0 +1,92 @@
+% !TEX root = ../main.tex
+
+\chapter{The Benchmark Suite}
+\label{chap:suite}
+In order to make reliable predictions about the suitability of running a computation on the GPU, a model of the costs of the operations that can be performed is needed. There are several kinds of costs to consider, for example time spent on transferring the memory to and from the GPU, and the execution of the kernel itself, which should be decomposed into smaller units. In order to obtain these measurements, a benchmark suite was implemented. The design of that suite is explained in this chapter.
+
+\section{Configuration}
+\label{sect:suite_configuration}
+The Benchmark suite comes with a CMake Configuration file \code{CMakeLists.txt}. CMake is a configuration tool that can generate project files or Makefiles for every major platform. The Benchmark suite has been tested with Mac OS X 10.9, GNU/Linux (Ubuntu 13.04), and Windows 8.1.
+The prerequisites to running the suite are as follows:
+\begin{itemize}
+	\item An OpenCL compatible computing device. While CPUs are supported as well, a dedicated GPU is recommended.
+	\item A runtime environment for OpenCL. For OpenCL capable GPUs, it is usually bundled with the display driver. On OS X, the runtime environment is provided by Apple.
+	\item The runtime library for C++. On OS X and Linux, this will not be a problem, as they usually ship with \code{libstdc++.dylib} or \code{libc++.so}. On Windows the libraries \code{MSVCP120.dll} (Visual C++ 2012 Runtime library) and \code{MSVCR120.dll} (C Runtime Library) need to be distributed with the code.
+\end{itemize}
+
+The build process is backed by the CMake\footnote{\url{http://www.cmake.org} CMake is a configuration tool that manages the build process in a platform independent manner.} configuration tool. To generate the platform specific build files, run \code{cmake <path to CMakeLists.txt>} from any folder. Usually this is done from an empty folder (\code{build}) inside the source directory. On Unix systems a makefile will be generated, and on Windows a Visual Studio project\footnote{\url{http://www.visualstudio.com/} Visual Studio is an IDE for Windows that was developed by Microsoft}. These can then be built in the usual way. There are some other requirements for building, however. The first is a compiler that is C++11-compliant. On Windows, the C++ compiler included in Visual Studio 2013 is required. On Linux and OS X, any gcc version above or equal to 4.7 or any clang version above or equal to 3.1 suffices. Additionally, Header files for OpenCL need to be installed. OS X provides them by default, on GNU/Linux there are usually packages available that contain them. On Windows, one installs the SDK that is compatible with the GPU with which the computer has been shipped. 
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{System Design}
+\label{sect:suite_design}
+The Benchmark Suite is an object oriented C++ application. There are two components. One is responsible for driving the benchmark, while the other provides facilities for managing the data that is being collected by the benchmark driver component. Consider figures \ref{fig:suite_system_design} and \ref{fig:suite_kernel_providers} for UML 2.0 class diagrams of the Benchmark Suite. The first diagram shows the general structure of the application, while the second one shows the different \code{KernelProvider} subclasses.
+
+\subsection{Driving the Benchmark}
+\label{sect:suite_design_driver}
+
+The benchmark is started from the \code{main} function of the application. From there, the user may specify which GPU is to be tested. Based upon the input of the user, a computing device is selected and the benchmarks are run. There are benchmarks to test the run time of empty kernels, time for memory accesses, basic operations and the influences arising from changing the work-group size. There are also benchmarks to measure the time spent on transferring memory to and from the device. The benchmarks themselves will be discussed in detail in chapter \ref{chap:model}, where the runtime model is discussed. \\
+ 
+Each benchmark has three components. The first one is an instance of a subclass of the \code{KernelProvider} class, which may provide one or more kernels to be executed, for example different basic operations, or different kinds of memory accesses. One may obtain the kernel using the \code{getKernelString()} method. The class also manages the execution of a single sample in the benchmark, essentially encapsulating all the functionality that is unique to a type of benchmark. For a single run that usually implies allocating the memory segment that is to be executed, creating and compiling the kernel and transferring memory to the GPU. Afterwards, a timed run is performed, the resulting memory segment is copied back to the device and the time spent on the execution is returned. \\
+
+The second component is responsible for the orchestration of a single benchmark. Consider the control flow graph given in figure \ref{fig:suite_benchrunner} in the appendix. It illustrates the typical run of a single benchmark. On the top level, a value for the metric that is to be used is generated, and if the value is smaller then a certain threshold, a given number of samples will be executed using the \code{KernelGenerator}. After the samples are taken, the standard error percentage of the samples is computed. If the percentage is below a given threshold, the results will be stored and the next value for the given metric will be benchmarked. Otherwise, the process is repeated with a new batch of samples until the standard error percentage of all samples is below a given value. The current implementation uses the target standard error percentage of 2\%. Once all values are benchmarked, the results are stored using the facilities explained in section \ref{sect:suite_design_collection}.\\
+
+The third component is the generator function, a function that takes as input the number of the current run and returns a value that is used as a metric for subsequent runs. Different benchmarks might differ in their requirements for the size of the metric, e.g. some might require a exponential or a linear progression of these, and the increase of the metric might differ as well.
+
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+			    ybar,
+			    ymin=0
+			]
+			\addplot +[
+			    hist={
+			        bins=10,
+			        data min=100,
+			        data max=200
+			    }   
+			] table [y index=0] {data/distribution.csv};
+			\end{axis}
+		\end{tikzpicture}		
+	\end{center}
+	\caption{Sample value distribution of a benchmark for a single size. It can be seen that the run time is not always the same, but spread out over an interval.}
+	\label{fig:suite_value_distribution}
+\end{figure}
+
+\subsection{Collecting Measurements}
+\label{sect:suite_design_collection}
+A single benchmark unit is usually run multiple times. This is done since the execution time for a single sample is not always the same, but rather is spread over an interval. Figure \ref{fig:suite_value_distribution} shows a sample distribution of run times. To store these values, the class \code{ResultAnalyzer} is used. It stores the values collected by the benchmark in a \code{std::vector} and calculates statistics. The \code{ResultAnalyzer} is able to calculate the arithmetic mean of the values, the standard deviation, and the Standard error percentage. The definitions for the arithmetic mean, the standard deviation and the standard error are given in the equations below. \cite{kuckartz2010statistik}.
+\begin{gather}
+\label{eq:suite_avg}
+\operatorname{avg}(V) = \frac{\sum_{v \in V} v}{|V|}\\[2ex]
+\label{eq:suite_stdDev}
+\operatorname{stdDev}(V) = \sqrt{\frac{\sum_{v\in V} (v - \operatorname{avg}(V))^2}{|V|}}\\[2ex]
+\label{eq:suite_stdErr}
+\operatorname{stdErr}(V) = \frac{\operatorname{stdDev}(V)}{\sqrt{|V|}}
+\end{gather}
+The \textit{standard deviation} is a metric used to describe how the values are spread out over an interval. It is used to visualize this spread of execution times. It may also be interesting to see the approximate error of the average of the distribution. This metric is used to determine the point at which the mean value gathered by the suite is sufficiently precise, so that the execution of samples may be stopped. \cite{kuckartz2010statistik}\\
+
+It is also possible to merge two \code{ResultAnalyzers} using the overloaded \code{+} operation. The resulting object has the values of both pre-existing analyzers. After a merge, the three metrics will then have to be recomputed. \\
+
+Usually, a benchmark will be executed with a variation in at least one metric, for example the size of the memory segment upon which the kernel is executed. For each value in the metric a table is generated. It will contain the size of the metric, the average runtime, the standard deviation and the standard error. Such a table is depicted in table \ref{tab:suite_tablegen_table}. The functionality for this is located in the class \code{TableGenerator}. \\
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{c|ccc}
+			Metric & Runtime & StdDev & StdErr\\
+			\hline
+			$v_1$ & $r_{v_1}$ & $s_{v_1}$ & $e_{v_1}$ \\
+			$v_2$ & $r_{v_2}$ & $s_{v_2}$ & $e_{v_2}$ \\
+			$\vdots$& $\vdots$ & $\vdots$ & $\vdots$\\
+			$v_n$ &$r_{v_n}$ &$s_{v_n}$ &$e_{v_n}$ 
+		\end{tabular}
+		\caption{Sample table generated by the class \code{TableGenerator}.}
+		\label{tab:suite_tablegen_table}
+	\end{center}
+\end{table}
+
+In some cases another dimension is needed, in order to group a set of related benchmarks together. This is be the case, e.g. when looking at the basic operation types \code{+},\code{-},\code{*} and \code{/}. The class \code{AccumulatedReportGenerator} provides this functionality. It acts as a container for \code{TableGenerators}, and is able to produce tables of tabulator-separated values. These tables can be simply imported into data visualization software, e.g. SciDAVis\footnote{\url{http://scidavis.sourceforge.net} SciDAVis is a free data analysis and plotting tool.}. \\
+

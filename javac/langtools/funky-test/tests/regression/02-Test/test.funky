@@ -1,0 +1,14 @@
+// @PARAM: -verbose -regression -XD-printflat -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh @error @output ./tmp/test.funky
+// as can be seen from the cmdl, the CWD is set to the .funky file
+
+class test
+{
+	int fun(int i)
+	{
+		int j=i;
+		resume j;
+	}
+	
+}

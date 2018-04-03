@@ -1,0 +1,103 @@
+/* --------- 1. defaults  --------- */
+
+* {
+		margin: 0;
+		padding: 0;
+		}
+
+body {
+		padding: 20px;
+		}
+		
+/*  --------- 2. fonts ---------- */
+
+html {
+		font-size: 100%;
+		}
+
+body {
+		font: 62.5%/1.5 "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+		}
+		
+.outertable{
+    display:table-row-group;
+}
+
+.outerbody{
+    display:table-row-group;
+    padding: 0 0;
+}
+
+.outer_td,.outer_tr{
+	border: 1px solid #bbbbbb; 
+    padding: 0 0;
+	border-top: 1;
+	border-bottom: 1;    
+	border-left: 1;
+	border-right: 1;
+}
+
+/* ---------- 3. tables ---------- */
+
+table {
+		border-collapse: collapse;
+		} 
+
+tbody {
+		display: table-row-group;
+		}
+		
+th, td { 
+		border: 1px solid #bbbbbb; 
+		font-size: 0.8em;
+		padding: 4px 10px;
+		line-height: 1.2;
+		} 
+
+tbody td {
+		border-top: 0;
+		border-bottom: 0;
+		width:400px;
+		}
+		
+tfood td {
+		padding: 0 0;
+		}			
+
+caption {
+		font-weight: bold;
+		font-size: 1.0em;
+		text-transform: uppercase;
+		padding: 0 0 5px;
+		color: #333333;
+		}
+
+th {
+		background: #e4e5e4 url(table-heading-background.gif) 0 50% repeat-x; 
+		text-align: left;
+		}
+
+thead {
+		background-color: #e2e2e2;
+		color: #555555;
+		}
+
+thead td {
+		font-size: 0.8em;
+		text-align: left;
+		padding: 0 0;
+		width:800px !important;
+		}
+
+thead a {
+		display: none;
+		}
+
+tbody tr.alt td {
+		background: #d8ddf0;
+		}
+
+tbody tr.over+tr td {
+		background-image: url(shadow.png);
+		background-repeat: repeat-x;
+		}

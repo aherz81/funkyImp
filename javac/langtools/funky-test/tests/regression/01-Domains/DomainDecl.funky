@@ -1,0 +1,443 @@
+// @PARAM: -PP "" -verbose -regression -XD-skipgenerate -classpath .
+// TEST noerror  # tell the test script that no errors are allowed
+
+import domains.*; //@NOERROR(*)
+
+//domain defs
+/*
+domain linear<q>(j) = { (j) | j < q }
+
+domain my_first_domain<a,b>(i):linear<a> = { (i) | i < a+b & i > 2 }
+*/
+
+#ifdef TEST
+
+int x;
+
+#endif
+
+
+class Fst
+{
+		//user tags:
+		//tag mytag=exp;
+		//int var{mytag=exp} = 0;
+		
+    int xx=0;
+    
+    static int yy=0;
+  
+    public static void gah(String[linear<5>] args)
+    {
+    	//error: incomp type
+      //int mav2=if(yy>2){ "" } else { "" };
+      
+      //err: type
+      //int mpq = case yy {0 : {""}}; 
+      
+
+			//Fst.yy = 0;
+
+      //TODO: (user) tags, sets
+      //eg: [1..10],this@members
+      //#if (cond) { stats } #else { stats }
+      /*
+      #for(v,linear)
+      {
+      	v name = null;
+      }
+      */
+
+
+    }
+
+
+    public int Inject(int a, int b)
+    {
+       resume b+a;
+    }
+
+    public Fst DoSomething(int i)
+    {
+        resume this;// where this.xx=this.xx+i;
+    }
+
+    public int qq=0;
+}
+
+singular MS
+{
+		public group gMS;
+    private int x;
+    private int z=0;
+    
+    MS ind;
+
+    MS()
+    {
+    	ind=this;
+			x=0;
+    }
+
+    MS(int y)
+    {
+    	ind=this;
+      x=y;						
+    }
+
+    private int getx()
+    {
+        resume x;
+    }
+
+    private int write_arg(out int v,inout int q)
+    {
+    	//????TODO: fixme:
+    	int a=q;
+    	//q=a;
+      resume 0 where {v=x; q=x;};
+    }
+    
+    private int pass(int q)
+    {
+    	resume q;
+    }
+
+    final int Trigger(int val);
+
+    final int EmptyTrigger() //trigered when event queue has emptied
+    {
+        resume 10;
+    }
+
+    event eEvent(int input)
+    {
+        int www;
+        //ERROR: 0 is no var
+        //write_arg(0,www);
+        
+        //ERROR: www uninit
+        //write_arg(www__2,www);
+        
+        www__2=0;
+        
+        www__3=pass(www__2);
+        
+        write_arg(www__out1,[www__next=www__2]);
+        
+        //FIXME: linear type error
+        www__5=www__2; 
+                    
+
+        this.eEvent(0);
+
+        Trigger(0)=0;
+
+        int y=this.getx() where x=0;
+
+        this__zero=
+        this where
+        {
+            this.x=0;
+            this.z=0;
+        };      
+
+        MS n=this where
+        {
+            this.x=1;
+            this.z=1;
+        };
+        
+
+        int q=(this where
+        {
+            this.x=1;
+            this.z++; //OK!
+        }).getx();
+
+				//error, double assignment
+				//this.z++;
+
+				int w;
+        if(input>2)
+				{
+            w=(2+x where x=0)+5;
+				}
+        else
+				{
+            w=0;
+				}
+
+        w__2 = w+1;
+        
+        int ggg;
+        /*
+        //Error: doubly assigned ggg
+        boolean nw = if(input>2){ ggg=5 } else { ggg=10 };        
+        ggg=12;
+        */
+                
+        ggg = if(input>2){ 5 } else { 10 };
+        
+        boolean bbb;
+        case input {0 : {bbb=true} 1 : {bbb=true} _ : {false}};                
+                
+        //error: bbb might be uninit!
+        //boolean sss = bbb;
+        
+        //error: bbb might be init!
+        //bbb=true;
+
+        
+        //error: w__2 already assigned
+        //w__3 = this.ind.write_arg(w__4,[w__2=w]);
+
+        //w__2 = ... //error: sias!
+
+        //this where this.x=1; //error!
+
+        resume this__zero;
+//      	resume 0; //error: wrong type
+ 
+    }
+
+    void eXXX()
+    {
+        String s = "lala";
+				char c = __V__;
+				c__b = __X__;
+    }
+
+
+}
+
+//group
+unique interface FileHandle;
+
+#define ATTRIBS(x) x static unsafe group(MS.gMS)
+
+class FileWrapper
+{
+	group g;
+
+	private FileHandle& mHandle=null;
+	
+  //private static unsafe group(MS.gMS)
+  ATTRIBS(private)
+	int fread(inout FileHandle handle,int size,out Object buffer);
+
+  ATTRIBS(private)
+	int fwrite(inout FileHandle handle,int size,Object buffer);
+
+  ATTRIBS(private)
+	int fwrite(inout FileHandle handle,int size,int buffer);
+
+  //private static unsafe group(MS.gMS)
+  ATTRIBS(private)
+	FileHandle fopen(String name,String mode);
+
+  ATTRIBS(private)
+	void fclose(FileHandle handle);
+
+	public FileWrapper Open(String name,String mode)
+	{
+		resume this where mHandle=fopen(name,mode);
+	}
+
+  public void Close()
+  {
+    fclose(mHandle);
+  }
+
+  ATTRIBS(private)
+  void test(inout int x);
+
+	public int Test(in int x)
+	{
+		test([x__2=x]);	
+		resume x__2;
+	}
+	  
+	public void Test2(inout int x)
+	{
+		test(x);	
+	}
+	  
+  public FileWrapper Read(out Object buffer)
+  {
+    //FIXME: reflections buf@memory
+    
+    fread([mHandle__after=mHandle],10,buffer);
+    //buffer = null;
+    resume this where mHandle=mHandle__after;
+  }
+
+  public FileWrapper unique(Object buffer)
+  {
+    fwrite([mHandle__after=mHandle],10,buffer);
+    //buffer = null;
+    resume this where mHandle=mHandle__after;
+  }
+
+  public FileWrapper unique(int val)
+  {
+    fwrite([mHandle__after=mHandle],2,val);
+    //buffer = null;
+    resume this where mHandle=mHandle__after;
+  }
+	//...
+}
+
+public class DomainDecl
+{
+    public void TestFor(int v)
+    {
+        FileWrapper fw=new FileWrapper();
+
+        Object buffer;
+        fw__open=fw.Open("safe.txt","wb");
+
+        fw__0=fw__open.unique(x);
+        fw__1=fw__0.unique(y);
+        fw__1.Close();
+
+/*
+        fw__open.
+        #for(i,this@MemberVariables)
+        {
+            *.unique(i)
+        }
+        .Close();
+*/
+    }
+
+    int x=0,y=0,q=0;
+    int marray[linear<5>];//={0,0};
+    
+    int& int_option=0;
+
+    int SelectTest(int y)
+    {       
+        int x = (if(y>10) {this} else {this}).x; 
+				x__2 = x+2;       
+
+				//select expression:
+				int z = (select 
+				{ 
+					y>5 : {this} 
+					_ : {this} //default case
+				}).x;
+
+				//select statement:
+
+				select
+				{
+					false : { resume 5; }
+				};
+
+				int hgh = case y
+				{
+					0 : {2}
+                    _ : {5}
+				};
+
+				case y
+				{
+					2 : {  }
+                    _ : { resume 5; }
+				};
+
+				//int abc= //error, statement has no type
+				resume select 
+				{
+					false : {1}
+					_ : {0}
+				};
+
+        //resume 0; //err: unreachable
+    }
+
+    int ArTest()
+    {
+        q__2=q where q=2;
+
+        int l,m,n;
+        int j=10;
+        //apply calc to array
+				marray__2=marray.\linear(l) {2*marray[l+j]};
+
+        marray__4=marray__2 ~ marray.\linear(m) {3*marray[m]} ~ marray.\linear(n) {4*marray[n*j]};
+
+        //iter over array, cannot use resume value??
+        marray.\linear(o)
+        {
+            if(marray[o]>j) resume 0;
+        };
+
+        finally 0;
+    }
+
+    void InjectTest()
+    {
+        int obj=0;
+        Fst f=new Fst();
+        f__a = f;
+
+        //file handle wrapper style:
+        f__xx = f__a
+                .DoSomething(0)
+                .DoSomething(1);
+
+        //syntax sugar for passing unique objects
+        obj__after = obj >>> f.Inject(10) >>> f.Inject(20);
+        
+        obj >>> f.Inject(10);
+                
+        //error: string not compatible to int
+        //String sobj;
+        //sobj__after=sobj >>> f.Inject(10);
+
+        //obj = obj >>> obj+1; //error: obj+1 is not method invocation
+    }
+ 
+    static String Test(in String s)
+    {
+        MS ms=new MS();
+        //MS ret= //error, Event resumes void
+        ms.eEvent(10);
+
+        //imported singular:
+        Something sob=new Something();
+        sob.eSome(10);
+        
+				resume s;
+    }
+
+    public static void main(String[linear<5>] args)
+    {
+				String arg=args[0];
+
+        arg__fun=Test(arg);
+
+        FileWrapper fw=new FileWrapper();
+
+        Object b1,b2;
+        fw__next=fw  .Open("test.txt","r+b")
+                    .Read(b1)
+                    .Read(b2);
+
+        //where is __out__ defined?? :
+        //System.out.println("FunkyImp rules!"); // Display the string.
+    }
+
+}
+
+//nested comments:
+/*
+    /*
+        nested comment
+    */
+
+    sdköljfsdkölj
+*/
+

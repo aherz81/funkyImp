@@ -1,0 +1,85 @@
+// @PARAM: -PP "" -g:none -skipgenerate -d ./tmp
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces some output to stdout.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+#define unknown native unique interface
+
+//FFI: declare an unkown type (native=no outout from compiler, unique=mutable):
+unknown FILE;
+
+//FFI: (native=no output, include header <stdio>)
+native class stdio
+{
+    static FILE fopen(String f,String m); //thread safe method fopen, String==char*
+    static void fprintf(inout FILE f, String txt); //inout means var is read and written
+    static void fread(out String txt,int size,int items, inout FILE f);
+    static void fclose(inout FILE f);
+    static void printf(String txt,Object ... j); //HACK!
+}
+
+native class stdlib
+{
+    static int atoi(String s); //convert String to int
+}
+
+public class cur
+{
+/*
+    static loop int fibl(int n,int accum,int n1,int n2)
+    {
+        if(n==0)
+            cancel accum;
+
+        finally fibl(n-1,accum+n1+n2,accum,n1);
+    }
+
+    static int fib(int v)
+    {
+        if(v==0)
+            cancel 0;
+        if(v==1)
+            cancel 1;
+        cancel fibl(v,0,1,0);
+    }
+*/
+    static int[one_d{1000000}] g1(int[one_d{1000000}] x)
+    {
+        //tick
+        cancel x;
+    }
+
+    //recursive version
+    static int rfib(int[one_d{1000000}] n, int[one_d{1000000}] x, int z)
+    {
+        z'=z+1;
+        #WORK(z',10000)
+        if(z'>100000)
+            cancel z';
+        else{
+            n'=g1(n);
+            #WORK(n',100000)
+            x'=g1(x);
+            #WORK(x',100000)
+            cancel rfib(n',x',z')+1;
+        }
+    }
+
+    static int main(int argc, String[one_d{-1}] argv)
+    {
+        int input=30;
+        
+        int res= rfib(new int[one_d{1000000}], new int[one_d{1000000}], 0);
+        stdio.printf("fib %d=%d",input,res);
+        finally res;
+    }
+}

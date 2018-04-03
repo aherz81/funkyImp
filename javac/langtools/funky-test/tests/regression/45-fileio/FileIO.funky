@@ -1,0 +1,175 @@
+// @PARAM: -PP "" -g:none -CPP -d ./tmp -cp ../../../../../../input/current/
+// shows how to run a custom shell script as a test:
+// @CUSTOM ./custom.sh
+// as can be seen from the cmdl, the CWD is set to the .funky file
+// @TEST noerror
+
+/*
+	Alex: currently this is the most important test case, this file generates run-able
+	output which terminates if executed and produces a couple of text files.
+
+	<<<<<<< You should try NOT to break this. >>>>>>>>
+
+*/
+
+import stdlib.File;
+import ffi.stdio;
+import ffi.FILE;
+import domains.*;
+
+singular KeyHandler
+{
+//	final int keyProcessed();
+
+	event setKey(char key)
+	{
+		getKey()=key;
+		finally this;
+	}
+
+	final char getKey();
+/*
+	{ //this code is executed after getKey() succeeded
+		keyProcessed()=0;
+	}
+*/
+}
+
+//event object type EVO:
+singular EVO
+{
+//	int magic=0xaffe;
+    int i=-1;
+    //FILE& handle; //singular is unique by default
+
+    //event:
+    event Set(int ni)
+    {
+/*
+		if(magic!=0xaffe)
+			stdio.printf("MAGIC CHECK FAILED!\n",null);
+*/
+        if(ni==1)
+		{
+            Trigger()=ni;
+		}
+        //mfun();
+		int xx=sample();
+        finally this where i=ni;//this.sample();
+    }
+
+    //trigger:
+    final int Trigger();
+
+    //sample:
+    int sample()
+    {
+        finally i;
+    }
+
+}
+
+
+public class FileIO
+{
+    static File test(File f)
+    {
+        //File f2=f;
+        cancel f.write("lala");
+    }
+
+	//loop //add keyword and output error if not tail recursive
+	static nonblocking int genGarbage(int v) //call to genGarbage are guaranteed to loop!
+	{
+		if(v<=0)
+			cancel 0;
+		else
+		{
+
+			EVO evo=new EVO();
+		}
+
+		finally genGarbage(v-1);
+	}
+
+    static int main(int argc, inout unique String[one_d{-1}] argv)
+    {
+		int v=genGarbage(10000); //does not stack overflow (icpc applies tail call optim), does not eat mem (gc works)
+
+		stdio.printf("garbage: %d\n",v);
+
+        EVO evo=new EVO();
+
+
+        //void not= //FIXME: do not emit void x=void
+		stdio.printf("EVO: 0x%08x\n",evo);
+
+		stdio.printf("sample value1: %d\n",evo.sample());
+
+        evo.Set(0);
+
+		stdio.printf("sample value2: %d\n",evo.sample());
+
+        evo.Set(1);
+
+		stdio.printf("sample value3: %d\n",evo.sample());
+
+        int res = evo.Trigger()-1; //ret 0 to indicate success??
+
+        File f=new File("out.txt","w");
+
+        f__close=(f.write("mytext1\n")  //f__close fails with ptr type!
+        .write("mytext2\n")
+        >>>test())
+        .close();
+
+
+        if(evo.sample()==0)
+		{
+			FILE fh=stdio.fopen("out1.txt","w");
+
+			//FILE fx=fh;
+
+			stdio.fprintf([fh__1=fh],"mytext1\n");
+			stdio.fprintf([fh__2=fh__1],"mytext2\n");
+			stdio.fclose([fh__close=fh__2]);
+			stdio.printf("out1.txt written\n",fh__close);
+
+        }else{
+
+			FILE mh=stdio.fopen("out2.txt","w");
+			stdio.fprintf([mh__1=mh],"mytext1\n");
+			stdio.fprintf([mh__2=mh__1],"mytext2\n");
+			stdio.fprintf([mh__3=mh__2],"mytext3\n");
+			stdio.fclose([mh__close=mh__3]);
+			stdio.printf("out2.txt written\n",mh__close);
+//			#FORCE(mh,f__close)
+		}
+
+
+
+#PARALLEL(v,f__close) //querry the compiler, are res and f__close calced in parallel?
+//#FORCE(v,f__close)	 //force the compiler to calc res and f__close in parallel (if at all possible)
+//#FORCE(f,f__close) //ERROR: data dependent
+//#FORCE(v,not)
+//rather use :
+//#WORK(v,10) //modifies compiler work estimate (+10) for v = ...
+
+        stdio.printf("out.txt written\n",f__close);
+
+		if(evo.sample()>1000)
+			resume 10;
+
+//        File f2=f; //should be error!
+
+
+		finally res;
+    }
+
+     int g1(int x)
+     {
+         cancel x+1;
+     }
+}
+
+

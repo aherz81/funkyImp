@@ -1,0 +1,536 @@
+% !TEX root = ../main.tex
+
+\chapter{Diagrams}
+\section{OpenCL}
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{object}{macbook - Platform}{10.5 ,-4.75}
+				\attribute{name = "Apple"}
+				\attribute{vendor = "Apple"} 
+			\end{object}
+			\begin{object}{gt650 - Device}{5 ,0}
+				\attribute{name = "GeForce GT650M"}
+				\attribute{vendor = "NVIDIA"} 
+				\attribute{type = GPU}
+			\end{object}
+			\begin{object}{hd4000 - Device}{5 ,-4.5}
+				\attribute{name = "HD Graphics 4000"}
+				\attribute{vendor = "Intel"} 
+				\attribute{type = GPU}
+			\end{object}
+			\begin{object}{corei7 - Device}{5 ,-9}
+				\attribute{name = "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz"}
+				\attribute{vendor = "Intel"} 
+				\attribute{type = CPU}
+			\end{object}
+			\begin{object}[text width=3.33cm]{n0 - ExecutionUnit}{0 ,0}
+				\attribute{processingElements = 256}
+			\end{object}
+			\begin{object}[text width=3.33cm]{n1 - ExecutionUnit}{0 ,2}
+				\attribute{processingElements = 256}
+			\end{object}
+			\begin{object}[text width=3.33cm]{h0 - ExecutionUnit}{0 ,-3.25}
+				\attribute{processingElements = 16}
+			\end{object}
+			\node[draw] at (0,-5.5) {...};
+			\begin{object}[text width=3.5cm]{h15 - ExecutionUnit}{0 ,-6}
+				\attribute{processingElements = 16}
+			\end{object}
+			\begin{object}[text width=3.33cm]{i0 - ExecutionUnit}{0 ,-8.5}
+				\attribute{processingElements = 4}
+			\end{object}
+			\node[draw] at (0,-10.5) {...};
+			\begin{object}[text width=3.33cm]{i7 - ExecutionUnit}{0 ,-11}
+				\attribute{processingElements = 4}
+			\end{object}
+			\association{macbook - Platform}{}{}{gt650 - Device}{}{}		
+			\association{macbook - Platform}{}{}{hd4000 - Device}{}{}		
+			\association{macbook - Platform}{}{}{corei7 - Device}{}{}
+			\association{gt650 - Device}{}{}{n0 - ExecutionUnit}{}{}
+			\association{gt650 - Device}{}{}{n1 - ExecutionUnit}{}{}
+			\association{hd4000 - Device}{}{}{h0 - ExecutionUnit}{}{}
+			\association{hd4000 - Device}{}{}{h15 - ExecutionUnit}{}{}
+			\association{corei7 - Device}{}{}{i0 - ExecutionUnit}{}{}
+			\association{corei7 - Device}{}{}{i7 - ExecutionUnit}{}{}
+		\end{tikzpicture}
+		\caption{UML object diagram of a possible configuration of an OpenCL computing environment. The platform in this case would be OS X, with Apple as the platform vendor. The configuration has three devices. One of them is a dedicated Graphics Card, the GT650M, the other the HD4000 graphics that is integrated in the CPU. Lastly there is the CPU itself.}
+		\label{fig:platform_example}
+	\end{center}	
+\end{figure}
+\section{Benchmark Suite System Design}
+
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{class}{BenchmarkRunner}{-4,-2} 
+				\attribute{currentRun : int}
+				\attribute{device : ocl\_device*}
+				\attribute{maxMemSize : int}
+				\attribute{samplesPerLevel : int}
+				\operation{runBenchmark( function$<$int(int)$>$ generator ) : TableGenerator}
+			\end{class}
+			\begin{abstractclass}{KernelProvider}{6,-1}
+				\attribute{operationName : string}
+				\operation{getKernelString(int numberOfOperations) : string}
+				\operation[0]{getKernelCodeBegin() : string}
+				\operation[0]{getKernelCodeEnd() : string}
+				\operation[0]{runKernel( device:ocl\_device*, memorySize:int ) : float}
+			\end{abstractclass}
+			\begin{class}[text width=7cm]{TableGenerator}{-3,5}
+				\attribute{operations : vector$<$int$>$}
+				\operation{addResult(operationSize:int, result:ResultAnalyzer)}
+				\operation{generateTable() : string}
+				\operation{generateDifferenceTable( other:TableGenerator\& ) : string}
+				\operation{generateTablePerOperation() : string}
+			\end{class}
+			\begin{class}[text width=7cm]{ResultAnalyzer}{7,5}
+				\attribute{runtimes:vector$<$int$>$}
+				\operation{getAverage() : float}
+				\operation{getStandardDeviation() : float}
+				\operation{getStandardError() : float}
+				\operation{\textbf{operator}+( other : ResultAnalyzer\& ) : ResultAnalyzer}
+				\operation{\textbf{operator}+=( other : ResultAnalyzer\& ) : ResultAnalyzer}
+			\end{class}
+			\begin{class}[text width=11cm]{AccumulatedReportGenerator}{0,12}
+				\attribute{numberOfRows:size\_t}
+				\operation{addTable(table:TableGenerator)}
+				\operation{generateCombinedTable() : string}
+				\operation{generateOperationsTable() : string}
+				\operation{generateOperationsTable( baseCost:double ) : string}
+				\operation{generatePerKernelTable() : string}
+				\operation{generateOperationsPerKernelTable() : string}
+				\operation{generateOperationsPerKernelTable( baseCost:double ) : string}
+			\end{class}
+			\unidirectionalAssociation{BenchmarkRunner}{kernelProvider}{1}{KernelProvider}
+			\unidirectionalAssociation{TableGenerator}{results}{0..*}{ResultAnalyzer}
+			\unidirectionalAssociation{AccumulatedReportGenerator}{tables}{0..*}{TableGenerator}
+			\draw[umlcd style dashed line ,->] (BenchmarkRunner) --node[above, sloped, black]{$<<$import$>>$} (TableGenerator);		
+		\end{tikzpicture}
+		\caption{UML class diagram that shows the System Design of the Benchmark Suite. The subclasses of \code{KernelProvider} are omitted for space reasons. They can be found in figure \ref{fig:suite_kernel_providers}.}
+		\label{fig:suite_system_design}
+	\end{center}
+\end{figure}
+\begin{figure}[H]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{abstractclass}{KernelProvider}{8,10}
+				\attribute{operationName : string}
+				\operation{getKernelString(int numberOfOperations) : string}
+				\operation[0]{getKernelCodeBegin() : string}
+				\operation[0]{getKernelCodeEnd() : string}
+				\operation[0]{runKernel( device:ocl\_device*, memorySize:int ) : float}
+			\end{abstractclass}
+			\begin{class}[text width=7.25cm]{MemoryAccessKernelProvider}{7, 0}
+				\inherit{KernelProvider}
+				\attribute{accessType : string}
+			\end{class}
+			\begin{class}[text width=7.25cm]{AlternateMeasureKernelProvider}{5, 1.5}
+				\inherit{KernelProvider}
+			\end{class}
+			\begin{class}[text width=7.4cm]{MemoryAccessComplexityKernelProvider}{1, 4}
+				\inherit{KernelProvider}
+				\attribute{access : string}
+				\attribute{operationType : OperationType}
+			\end{class}
+			\begin{class}[text width=7.25cm]{MemoryAccessPatternKernelProvider}{-1, 6}
+				\inherit{KernelProvider}
+				\attribute{addressType : AccessPatternType}
+			\end{class}
+			\begin{class}[text width=7.25cm]{MemoryTransferKernelProvider}{-1, 8}
+				\inherit{KernelProvider}
+				\attribute{transferType : TransferType}
+			\end{class}
+			\begin{class}[text width=7.25cm]{EmptyKernelBaseCostProvider}{-1, 10}
+				\inherit{KernelProvider}
+			\end{class}
+			\begin{class}[text width=7.25cm]{WorkgroupSizeKernelProvider}{1, 12}
+				\inherit{KernelProvider}
+			\end{class}
+			\begin{class}[text width=7.25cm]{MultipleMemoryAccessesKernelProvider}{5, 14}
+				\inherit{KernelProvider}
+			\end{class}
+			\begin{class}[text width=7.25cm]{MultipleBasicOperationsKernelProvider}{7, 16}
+				\inherit{KernelProvider}
+				\attribute{operationType : OperationType}
+
+			\end{class}
+		\end{tikzpicture}
+		\caption{The \code{KernelProvider} subclasses. Each subclass implements one actual benchmark run.}
+		\label{fig:suite_kernel_providers}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\begin{tikzpicture}[->, >=stealth', shorten >=1pt, auto, node distance=2.8cm, semithick]
+		\node (start) [startstop] {Start};
+		\node (createtab) [process, below of=start] {Create Table};
+		\node (generate) [process, below of=createtab] {Generate Value};
+		\node (threshold) [decision, below of=generate] {$v > v_{max}$?};
+		\node (return) [startstop, below of=threshold] {Return table};
+		\node (createsample) [process, left of=threshold,xshift=-1.5cm] {Create sample vector};
+		\node (runsample) [process, below of=createsample] {Run Sample};
+		\node (addsample) [process, below left of=runsample, xshift=-1.5cm] {Add to sample vector};
+		\node (enoughsamples) [decision, below right of=addsample, yshift=-1cm] {$i < samples$?};
+		\node (storevec) [process, right of=enoughsamples, xshift=1cm] {Store vector};
+		\node (stderr) [decision, right of=storevec,xshift=1.5cm] {$stdErr(V) < e_{Target}$};
+		\node (addtotable) [process, right of=return, xshift=1cm] {Add to Table};
+
+		\draw [arrow] (start) -- (createtab);
+		\draw [arrow] (createtab) -- (generate);
+		\draw [arrow] (generate) -- (threshold);
+		\draw [arrow] (threshold) -- node {yes} (return);
+		\draw [arrow] (threshold) -- node {no} (createsample);
+		\draw [arrow] (createsample) -- (runsample);
+		\draw [arrow] (runsample) -- (addsample);
+		\draw [arrow] (addsample) -- (enoughsamples);
+		\draw [arrow] (enoughsamples) -- node {yes} (storevec);
+		\draw [arrow] (storevec) -- (stderr);
+		\draw [arrow, bend left] (enoughsamples) -- node {no} (runsample);
+		\draw [arrow] (stderr) -- node {no} (createsample);
+		\draw [arrow] (stderr) -- node {yes} (addtotable);
+		\draw [arrow] (addtotable) -- (generate);
+	\end{tikzpicture}
+	\caption{Control flow graph illustrating the iterative Process the Benchmark Suite uses.}
+   	\label{fig:suite_benchrunner}
+\end{figure}
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Runtime Model}
+This section contains additional diagrams illustrating the performance of various operations on the GPU. If it is not specified otherwise, the measurements were taken on a NVidia GT-650M.
+\subsection{Floating Point Arithmetics}
+The Execution time for floating point arithmetics is depicted in figures \ref{fig:model_ops_single_float_add} to \ref{fig:model_ops_single_float_div}.
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Addition},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Add, y error = AddStdDev]{data/singleFloat.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic add operation on floating point values.}
+		\label{fig:model_ops_single_float_add}
+	\end{center}
+\end{figure}
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Subtraction},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Sub, y error = SubStdDev]{data/singleFloat.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic subtract operation on floating point values.}
+		\label{fig:model_ops_single_float_sub}
+	\end{center}
+\end{figure}
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Multiplication},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Mul, y error = MulStdDev]{data/singleFloat.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic multiply operation on floating point values.}
+		\label{fig:model_ops_single_float_mul}
+	\end{center}
+\end{figure}
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Division},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Div, y error = DivStdDev]{data/singleFloat.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic division operation on floating point values.}
+		\label{fig:model_ops_single_float_div}
+	\end{center}
+\end{figure}
+
+\subsection{Integer Arithmetics}
+The Execution time for integer arithmetics is depicted in figures \ref{fig:model_ops_single_int_add} to \ref{fig:model_ops_single_int_div}.
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Addition},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Add, y error = AddStdDev]{data/singleFloat.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic add operation on integer values.}
+		\label{fig:model_ops_single_int_add}
+	\end{center}
+\end{figure}
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Subtraction},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Sub, y error = SubStdDev]{data/singleInt.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic subtract operation on integer values.}
+		\label{fig:model_ops_single_int_sub}
+	\end{center}
+\end{figure}
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Multiplication},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Mul, y error = MulStdDev]{data/singleInt.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic multiply operation on integer values.}
+		\label{fig:model_ops_single_int_mul}
+	\end{center}
+\end{figure}
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Division},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Div, y error = DivStdDev]{data/singleInt.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for the basic division operation on integer values.}
+		\label{fig:model_ops_single_int_div}
+	\end{center}
+\end{figure}
+
+\subsection{Experiments into Memory access complexity}
+To research different classes of memory complexity, a test with a kernel with a memory access with an increasing number of nodes in its index expression tree is performed. The results are shown in figure \ref{fig:model_access_complexity_test}. 
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Run Time},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=TestNumber, y=Time, y error = StdDev]{data/complexMemory.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for different randomly generated memory accesses. The number of nodes in the index expression tree are increased every twenty samples.}
+		\label{fig:model_access_complexity_test}
+	\end{center}
+\end{figure}
+
+\subsection{Measurements from the NVidia Quadro K4000}
+There have been measurements taken with the NVidia Quadro K4000 workstation GPU. Measurements revealing a behavior diverging from the one observed in the NVidia GT-650M are depicted here in figure \ref{fig:appendix_k4000_ops}.
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={ADD, SUB, MUL, DIV},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Add]{data/k4000/singleFloat.csv};
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Sub]{data/k4000/singleFloat.csv};
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Mul]{data/k4000/singleFloat.csv};
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Div]{data/k4000/singleFloat.csv};
+
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for basic operations on floating point values on the NVidia Quadro K4000 Workstation GPU. The Standard Deviation is omitted from this diagram for legibility reasons.}
+		\label{fig:appendix_k4000_ops}
+	\end{center}
+\end{figure}
+
+\subsection{Measurements from the Intel HD4000}
+There have been measurements taken with the Intel HD4000 integrated GPU. Measurements revealing a behavior diverging from the one observed in the NVidia GT-650M are depicted here in figures \ref{fig:appendix_hd4000_ops}, \ref{fig:appendix_hd4000_access} and \ref{fig:appendix_hd4000_wgsize}.
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={ADD, SUB, MUL, DIV},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Add, y error=AddStdDev]{data/hd4000/singleFloat.csv};
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Sub, y error=SubStdDev]{data/hd4000/singleFloat.csv};
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Mul, y error=MulStdDev]{data/hd4000/singleFloat.csv};
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Div, y error=DivStdDev]{data/hd4000/singleFloat.csv};
+
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for basic operations on floating point values on the Intel HD4000 integrated GPU. Unfortunately there is not too much to be gained from this diagram, other than the fact that the time spent on basic operations cannot be measured the way it was done on the GT-650M.}
+		\label{fig:appendix_hd4000_ops}
+	\end{center}
+\end{figure}
+
+%NumberOfElements	private_access	private_StdDev	global_read	read_StdDev	global_write	write_StdDev	read_write_access	read_write_StdDev	const_ivl_access	const_ivl_StdDev	ivl_access	ivl_StdDev	cont_const_access	cont_const_StdDev	two_cont_access	two_cont_StdDev	cont2_cont1_access	cont1_cont2_StdDev
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={Private, Interval, Interval+Constant, Continuous, Continuous+Constant, 2 identical Continuous, 2 different Continuous},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=global_write, y error=write_StdDev]{data/hd4000/singleAccess.csv};
+				\addplot [pink, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=ivl_access, y error=ivl_StdDev]{data/hd4000/singleAccess.csv};
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=const_ivl_access, y error=const_ivl_StdDev]{data/hd4000/singleAccess.csv};
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=read_write_access, y error=read_write_StdDev]{data/hd4000/singleAccess.csv};
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=cont_const_access, y error=cont_const_StdDev]{data/hd4000/singleAccess.csv};
+				\addplot [black, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=two_cont_access, y error=two_cont_StdDev]{data/hd4000/singleAccess.csv};
+				\addplot [brown, error bars/.cd, y dir=both, y explicit] table [x=NumberOfElements, y=cont2_cont1_access, y error=cont1_cont2_StdDev]{data/hd4000/singleAccess.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution times for memory access operations on the Intel HD4000 integrated GPU. This benchmark compares different kinds of global accesses. The Standard deviation (Comparatively small with $\sim 2 \%$) is omitted for legibility reasons. All operations contain a write to global memory, the first operation is given as a reference.}
+		\label{fig:appendix_hd4000_access}
+	\end{center}
+\end{figure}
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of work items per work-group, 
+							ylabel=Time in µs,
+							legend entries={Kernel Runtime, Interpolated Function},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [green] table [x=WorkgroupSize, y=Runtime]{data/hd4000/wgSize.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for different work-group sizes. Although the greatest work-group size of the HD4000 is 512, the graph is limited to work-group sizes up to 100 in order to show the difference from the graph depicting the GT-650M's performance.}
+		\label{fig:appendix_hd4000_wgsize}
+	\end{center}
+\end{figure}
+
+\subsection{Measurements from the AMD Radeon HD 5750}
+Measurements taken on the AMD Radeon HD 5750 are depicted here, in figures \ref{fig:appendix_hd5750_wgsize}, \ref{fig:appendix_hd5750_ops} and \ref{fig:appendix_hd5750_multiple_float}
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of work items per work-group, 
+							ylabel=Time in µs,
+							legend entries={Kernel Runtime, Interpolated Function},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [green] table [x=WorkgroupSize, y=Runtime]{data/hd5750/wgSize.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for different work-group sizes. The data reveals the a periodic runtime behavior similar to the one observed in with the Intel HD 4000.}
+		\label{fig:appendix_hd5750_wgsize}
+	\end{center}
+\end{figure}
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Elements, 
+							ylabel=Time in µs,
+							legend entries={ADD, SUB, MUL, DIV},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Add, y error=AddStdDev]{data/hd5750/singleFloat.csv};
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Sub, y error=SubStdDev]{data/hd5750/singleFloat.csv};
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Mul, y error=MulStdDev]{data/hd5750/singleFloat.csv};
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumElements, y=Div, y error=DivStdDev]{data/hd5750/singleFloat.csv};
+
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Execution time for basic operations on floating point values on the AMD Radeon HD 5750 GPU.}
+		\label{fig:appendix_hd5750_ops}
+	\end{center}
+\end{figure}
+
+\begin{figure}[p]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[	xlabel=Number of Operations, 
+							ylabel=Time in µs,
+							legend entries={ADD, SUB, MUL, DIV},
+							legend style={at={(1.03, 0.5)}, anchor=west}]
+				\addplot [blue, error bars/.cd, y dir=both, y explicit] table [x=NumOps, y=Add]{data/hd5750/multipleFloat.csv};
+				\addplot [green, error bars/.cd, y dir=both, y explicit] table [x=NumOps, y=Sub]{data/hd5750/multipleFloat.csv};
+				\addplot [red, error bars/.cd, y dir=both, y explicit] table [x=NumOps, y=Mul]{data/hd5750/multipleFloat.csv};
+				\addplot [orange, error bars/.cd, y dir=both, y explicit] table [x=NumOps, y=Div]{data/hd5750/multipleFloat.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Total execution time for multiple basic operations (ADD, SUB, MUL and DIV) on floating point values. The x axis denotes the number of operations of a single type that are executed within a single kernel. The Standard Deviation is omitted for legibility reasons. In this case, it is fairly small, about $\pm10\mu s$ for the memory size of 256kB.}
+		\label{fig:appendix_hd5750_multiple_float}
+	\end{center}
+\end{figure}
+
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\subsection{Distance between Predictions and Results in Automated Tests}
+There is an alternative way to illustrate the quality of a prediction. This is done by depicting the distance between the prediction and the result as follows:
+
+\begin{gather}
+d(p,a) = \frac{\operatorname{max}\{p, a\}}{\operatorname{min}\{p,a\}}
+\end{gather}
+
+This computes the quotient of the larger to the smaller value, resulting in values that are always greater or equal than one. While information about the kind of the prediction error is lost, instead one may gain information about how far the numbers are off, e.g. less than $20\%$. The figures below show the distance for the results of the tests described in chapter \ref{chap:results}. \\
+
+\begin{figure}[h]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+			    xlabel=Ratio, 
+				ylabel=Number of Samples,
+			    ybar,
+			    ymin=0
+			]
+			\addplot +[
+			    hist={
+			    	bins=30,
+			        data min=1,
+			        data max=4
+			    }   
+			] table [y=ratioPredActual] {data/automatedTestDistance.csv};
+			\end{axis}
+		\end{tikzpicture}		
+	\end{center}
+	\caption{Distribution of benchmark result distances for the test with the unrestricted example set. The closer the distance is to 1, the better the prediction.}
+	\label{fig:appendix_diagrams_distance_random}
+\end{figure}
+
+\begin{figure}[h]
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+			    xlabel=Ratio, 
+				ylabel=Number of Samples,
+			    ybar,
+			    ymin=0
+			]
+			\addplot +[
+			    hist={
+			        bins=30,
+			        data min=1,
+			        data max=4
+			    }   
+			] table [y=ratioPredActual] {data/automatedTestRealisticDistance.csv};
+			\end{axis}
+		\end{tikzpicture}		
+	\end{center}
+	\caption{Distribution of benchmark result distances for the test with the restricted example set. The closer the distance is to 1, the better the prediction.}
+	\label{fig:appendix_diagrams_distance_realistic}
+\end{figure}

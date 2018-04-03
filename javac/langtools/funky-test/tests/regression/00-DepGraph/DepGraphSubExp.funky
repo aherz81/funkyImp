@@ -1,0 +1,32 @@
+// @PARAM: -verbose -regression -XD-skipgenerate
+// @TEST noerror
+
+class V
+{
+    public int x,y,z;
+    V(int x, int y, int z)
+    {
+        this.x=x;
+        this.y=y;
+        this.z=z;
+    }
+}
+
+class X
+{
+    public V a=new V(1,2,3);
+    public int i = 1;
+}
+
+public class DepGraphSubExp
+{
+    int main(int x,int y)
+    {
+        X mx=new X();
+
+        int dep1=mx.a.x;
+        mx__2=mx;
+
+        resume mx.i;
+    }
+}    

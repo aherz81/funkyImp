@@ -1,0 +1,3 @@
+int M[two_d{3,3}] = new int[two_d{3,3}].\(i,j){ i * 3 + j };
+M't = M.\(i,j) { M[j,i] };
+int v = M.\reduce {0} (i,j, accum) { M[i,j] + accum };

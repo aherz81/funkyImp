@@ -1,0 +1,13 @@
+//unsafe/safe is an attribute which says whether the function is thread safe or not
+unsafe \0 fopen(\S name,\S option); //declare non thread safe ext func fopen that returns a Handle and takes 2 strings
+//the argement names for declarations are optional, so this decl is equivalent to:
+//unsafe \0 fopen(\S,\S);
+
+unsafe \0 fwrite(\inout \Z h,\in \N s,\in <T> data); 
+//returns void, each argument can be prefixed by an attribute that says what the declared function does with the argument
+//inout means the functions reads from AND writes to the argument
+//out means the function ONLY writes to the argument
+//in (optional, default attribute) says that the function ONLY rads the argument
+//so the full declaration for fwrite would be:
+//unsafe \0 fwrite(inout Handle h,in \N s,in <T> data); 
+
