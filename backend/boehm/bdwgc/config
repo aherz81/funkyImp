@@ -1,0 +1,1 @@
+./configure --enable-threads=pthreads --enable-parallel-mark --enable-cplusplus --enable-thread-local-alloc --enable-redirect-to-local --enable-gc-debug
