@@ -1,0 +1,3 @@
+[submodule "backend/boehm/bdwgc"]
+	path = backend/boehm/bdwgc
+	url = git://github.com/ivmai/bdwgc.git
