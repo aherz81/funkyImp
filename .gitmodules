@@ -1,3 +1,4 @@
-[submodule "backend/boehm/bdwgc"]
-	path = backend/boehm/bdwgc
-	url = git://github.com/ivmai/bdwgc.git
+
+[submodule "backend/boehm/bdwgc/libatomic_ops"]
+	path = backend/boehm/bdwgc/libatomic_ops
+	url = git://github.com/ivmai/libatomic_ops.git
